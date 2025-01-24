@@ -1,0 +1,35 @@
+/* @import "./css-variable.css"; */
+
+
+/* Style the video: 100% width and height to cover the entire window */
+#myVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -100;
+  }
+
+.title {
+    display: grid;
+    justify-items: right;
+    color: white;
+    margin: 10rem 1rem 10rem 2rem;
+    z-index: 100;
+    font-family: var(--primary-font);
+    text-shadow: black 2px 0 36px;
+  }
+
+  h1 {
+    font-size: 48px;
+  }
+
+  p {
+    font-size: 20px;
+    font-weight: 200;
+  }
+
+  /* body {
+    margin: 30px !important
+  } */

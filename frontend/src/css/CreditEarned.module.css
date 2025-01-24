@@ -1,0 +1,25 @@
+.pageTitle {
+  font-family: var(--primary-font);
+  display: flex;
+  justify-content: center;
+  margin: 70px 0 40px 0;
+}
+
+.packageTitle {
+  font-family: var(--primary-font);
+  display: flex;
+  justify-content: center;
+  margin-bottom: 80px;
+  font-size: 20px;
+}
+
+.tableTitle {
+  font-family: var(--primary-font);
+  font-size: 20px;
+  border-top: none;
+}
+
+.tableItem {
+  font-family: var(--primary-font);
+  font-size: 20px;
+}

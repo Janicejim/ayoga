@@ -1,0 +1,17 @@
+@import "./css-variable.css";
+
+.modalButton {
+  background-color: var(--primary-color) !important;
+  border-radius: 0% !important;
+  border: none !important;
+  font-family: var(--primary-font);
+}
+
+.modalTitle {
+  border: none !important;
+  font-family: var(--primary-font);
+}
+
+.modalFooter {
+  border: none !important;
+}

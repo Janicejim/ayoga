@@ -1,0 +1,22 @@
+import express from "express";
+import { authRoutes } from "./routers/AuthRoutes";
+import { userInfoRoutes } from "./routers/UserInfoRoutes";
+import { classRoutes } from "./routers/ClassRoutes";
+import { isAdminAPI, isLoggedInAPI } from "./utils/guard";
+import { transactionInfoRoutes } from "./routers/TransactionRoutes";
+import { catalogRoutes } from "./routers/CatalogRoutes";
+import { posesRoutes } from "./routers/PosesRoutes";
+import { packageRoutes } from "./routers/PackageRoutes";
+import { teacherRoutes } from "./routers/TeacherRoutes";
+import { adminRoutes } from "./routers/AdminRoutes";
+
+export const routes = express.Router();
+routes.use("/poses", posesRoutes);
+routes.use("/auth", authRoutes);
+routes.use("/user", isLoggedInAPI, userInfoRoutes);
+routes.use("/class", classRoutes);
+routes.use("/transaction", isLoggedInAPI, transactionInfoRoutes);
+routes.use("/catalog", catalogRoutes);
+routes.use("/payment", isLoggedInAPI, packageRoutes);
+routes.use(teacherRoutes);
+routes.use("/admin", isAdminAPI, adminRoutes);

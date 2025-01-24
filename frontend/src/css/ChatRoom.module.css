@@ -1,0 +1,93 @@
+@import "./css-variable.css";
+
+
+@media (min-width: 540px){
+    .chatModalContainer {
+        max-width: 80vw !important;
+    };
+
+};
+
+.closingCross{
+    position: absolute;
+    right:1.5rem;
+    top: 1.5rem;
+}
+.closingCross:hover{
+    cursor: pointer;
+}
+
+
+
+/* 
+.modalCloseBtn{
+    position: absolute;
+    right: 1.5em;
+    top: 1.5em;
+}
+
+.modalCloseBtn:hover{
+    cursor: pointer;
+} */
+
+.messageDisplay{
+    border:1px solid lightgrey;
+    padding: 1.5rem 2rem;
+    border-radius: 5px;
+    max-height: 450px;
+    overflow-y: scroll;
+    /* width: auto; */
+}
+
+.roomBtnContainer{
+    display: -ms-inline-grid;
+}
+
+.changeRoomBtn{
+    margin-right:0.5rem;
+    margin-bottom:0.5rem;
+    text-transform: capitalize;
+    font-family: var(--primary-font);
+    border-color: var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+.changeRoomBtn:focus{
+
+    box-shadow: rgb(0 0 0 / 80%) 0px 5px 8px !important;
+    transition: 0.2s;
+}
+
+/* .changeRoomBtn:focus{
+    box-shadow: none;
+    box-shadow: rgb(0 0 0 / 80%) 0px 5px 8px !important;
+    transition: 0.2s;
+} */
+
+
+.messageBubble{
+    border: 1px solid lightgrey ;
+    width: fit-content;
+    max-width: 40%;
+    height: auto;
+    overflow-wrap: break-word;
+    padding: 0.25rem 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+};
+
+.messageSendForm{
+    display: flex;
+};
+
+
+
+.emojiPicker{
+    top: 17px;
+    position: absolute;
+    right: 80px;
+}
+
+
+

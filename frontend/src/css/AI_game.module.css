@@ -1,0 +1,58 @@
+.webCamAndCanvas{
+    position:absolute;
+    left:1rem;
+    top:4rem;
+    padding:0;
+
+}
+
+.canvasOnly{
+    position:absolute;
+    left:1rem;
+    top:4rem;
+    padding:0;
+    z-index: 1;
+}
+
+.dropdownMenu{
+    font-family: var(--primary-font);
+    margin: 0.75rem 0
+}
+
+.dropdownMenu div{
+    font-family: var(--primary-font);
+    height: 400px;
+    width: 300px;
+    overflow-y: scroll;
+    /* inset: 0px auto auto -70px; */
+}
+
+.poseToDo{
+    margin: 0.5rem 0
+}
+
+.steps, .poseToDo, .stopPoseBtn, .dropDownItem, .startPosing{
+    font-family: var(--primary-font);
+}
+
+.posePerformance{
+    font-family: var(--primary-font);
+    margin: 0 2rem;
+
+}
+
+.startPosing, .stopPoseBtn, .dropdownMenu button{
+    background-color: var(--primary-color) !important;
+    border: none !important;
+}
+
+.startPosing:focus, .stopPoseBtn:focus, .dropdownMenu button:focus{
+    box-shadow: none !important;
+}
+
+
+.dropDownItem, .poseToDo{
+    text-transform: capitalize;
+}
+
+

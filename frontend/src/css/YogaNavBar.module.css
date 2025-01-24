@@ -1,0 +1,103 @@
+@import "./css-variable.css";
+.icon {
+  padding-left: 15px;
+}
+
+.BarDiy {
+  color: var(--primary-color) !important;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+.mobileItem {
+  display: flex;
+  align-items: center;
+  margin-right: 1rem;
+}
+@media only screen and (max-width: 767px) {
+    .mobileItem {
+        display: block;
+        text-align: end;
+    }
+  } 
+/* Link from react-router-dom will generate a <a> tag in DOM */
+.mobileItem a {
+  text-decoration: none !important;
+  text-align: center;
+  color: black;
+  font-weight: 400;
+  padding: 12px;
+  font-size: 18px;
+}
+
+.mobileItem a:focus {
+  color: black !important;
+}
+
+.mobileItem a:hover {
+  color: gray;
+}
+#findClassBtnContainer a {
+  padding-right: 0 !important;
+}
+.keyButton {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  text-decoration: none !important;
+  border-color: var(--primary-color) !important;
+  padding: 0.6rem 1.2rem !important;
+  border-radius: 0% !important;
+  box-shadow: none !important;
+}
+
+.keyButton a:focus {
+  color: black !important;
+}
+
+.keyButton:hover {
+  border-color: var(--btn-hover-primary-color) !important;
+  background-color: var(--btn-hover-primary-color) !important;
+}
+
+.marginForPage {
+  /* margin-bottom: 60px; */
+  margin: 0.3rem 3rem 0.3rem;
+}
+
+@media only screen and (max-width: 550px) {
+  .marginForPage {
+    margin: 0.3rem 0.7rem 0.3rem 0.1rem !important;
+  }
+}
+
+.secondButton {
+  background-color: transparent !important;
+  color: var(--text-color) !important;
+  text-decoration: none !important;
+  border-color: var(--text-color) !important;
+  padding: 0.6rem 1.3rem !important;
+  border-radius: 0% !important;
+  box-shadow: none !important;
+  font-weight: 500;
+}
+
+.secondButton:hover {
+  border-color: var(--btn-hover-primary-color) !important;
+  background-color: var(--btn-hover-primary-color) !important;
+  color: white !important
+}
+
+.navMobile{
+  border: none !important;
+}
+
+/* .navIndex{
+  margin: 20px 0 !important;
+  display: none;
+} */
+
+/* .navbar-nav{
+  display: flex !important;
+  flex-direction: row-reverse !important;
+} */

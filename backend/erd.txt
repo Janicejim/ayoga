@@ -1,0 +1,169 @@
+users
+-----
+id PK integer
+email string
+name string
+password string
+icon string
+phone string
+role enum ("user","teacher","admin")
+created_at timestamp
+updated_at timestamp
+
+yoga_type
+---------
+id PK integer
+name string
+status enum ("active","inactive")
+created_at timestamp
+updated_at timestamp
+
+
+class
+--------
+id PK integer
+yoga_type_id FK >- yoga_type.id
+uuid string
+name string
+type enum ("online","offline")
+link string
+introduction string
+teacher_id FK >- users.id
+venue string
+venue_point point
+capacity integer
+credit integer
+status enum ("active","inactive")
+language string
+image string
+date date
+start_time string
+end_time string
+created_at timestamp
+updated_at timestamp
+
+
+
+student_class
+-------------
+id PK integer
+class_id FK >- class.id
+user_id FK >- users.id
+status enum ("active","inactive","pending")
+created_at timestamp
+updated_at timestamp
+
+
+packages
+------------------
+id PK integer
+name string
+credit integer
+price integer
+created_at timestamp
+updated_at timestamp
+
+
+
+bank
+----
+id PK integer
+name string
+code string
+status enum ("active","inactive")
+created_at timestamp
+updated_at timestamp
+
+user_credit_record
+------------------
+id PK integer
+package_id FK >-packages.id
+transaction_id string
+type enum ("top-up","earn","withdrawal","use","refund","student-refund")
+user_id FK >- users.id
+class_id FK >- class.id
+credit integer
+bank_id FK >- bank.id
+bank_number string
+full_name string
+created_at timestamp
+updated_at timestamp
+
+target_area
+-----------
+id PK integer
+name string
+created_at timestamp
+updated_at timestamp
+
+pose
+----
+id PK integer
+name string
+image string
+target_area_id FK >- target_area.id
+level enum ("beginner","intermediate")
+created_at timestamp
+updated_at timestamp
+
+
+bookmark
+----------------
+id PK integer
+type enum ("class","teacher")
+user_id FK >- users.id
+class_id FK >- class.id
+teacher_id FK >- users.id
+created_at timestamp
+updated_at timestamp
+
+
+pose_history
+-------
+id PK integer
+pose_id FK >- pose.id
+user_id FK >- users.id
+accuracy integer
+created_at timestamp
+updated_at timestamp
+
+
+
+
+
+teacher_info
+-------------
+id FK >- users.id
+photo string
+sex enum ("F","M")
+introduction string
+newest_qualification string
+id_photo string
+cert string
+status enum ("accept","reject","pending")
+remark string
+created_at timestamp
+updated_at timestamp
+
+
+student_comment
+-------------
+id PK integer
+user_id FK >- users.id
+class_id FK >- class.id
+star integer
+comment string
+created_at timestamp
+updated_at timestamp
+
+
+
+# view: (-163, -626)
+# users (-17, -392)
+# zoom: 1.278
+# student_class (238, 20)
+# class (985, -705)
+# yoga_type (1439, -283)
+# user_credit_record (552, 48)
+# packages (171, -273)
+# bank (179, -433)

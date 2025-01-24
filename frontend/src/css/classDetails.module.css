@@ -1,0 +1,250 @@
+@import "./css-variable.css";
+
+.classInfoPic {
+  text-align: center;
+  /* outline: 1px solid; */
+  min-width: 250px;
+  min-height: 250px;
+  /* height: 300px; */
+  width: 300px;
+}
+
+.dataText {
+  color: var(--primary-color) !important;
+}
+
+.keyButton {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  border-color: var(--primary-color) !important;
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  text-decoration: none !important;
+  border-radius: 0 !important;
+  /* width: 100%; */
+  min-width: 250px;
+  min-height: 2.75rem;
+  font-weight: 500;
+    font-size: 1.1rem;
+    margin-top: 1.8rem !important;
+}
+
+.cancelButton {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  border-color: black !important;
+  background-color: black !important;
+  color: white !important;
+  text-decoration: none !important;
+  border-radius: 0 !important;
+  /* width: 100%; */
+  min-width: 250px;
+  min-height: 2.75rem;
+  margin-top: 10px !important;
+  font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.chatButton {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  /* width: 100%; */
+  min-width: 250px;
+  min-height: 2.75rem;
+  margin-top: 0.8rem !important;
+  border-radius: 0 !important;
+  background-color: white !important;
+  color: black !important;
+  text-decoration: none !important;
+  border-color: black !important;
+  font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.keyButton:focus,
+.chatButton:focus,
+.cancelButton:focus {
+  box-shadow: none !important;
+}
+
+.keyButton:hover,
+.chatButton:hover,
+.cancelButton:hover {
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 6px !important;
+  transition: 0.2s;
+}
+
+.BsBookmarkBtn:hover {
+  cursor: pointer;
+}
+
+#backButton {
+  width: fit-content;
+  padding: 3px;
+}
+#backButton:hover {
+  cursor: pointer;
+  color: black !important;
+  transition: 0.2s;
+  text-decoration: none !important;
+}
+
+@media (max-width: 768px) {
+  .nameTopMarginInMd {
+    margin-top: 1.5rem;
+  }
+}
+
+.modalNameTopMargin {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.modalContainer {
+  position: relative;
+  padding: 2rem;
+  text-align: center;
+}
+
+.modalCloseBtn {
+  position: absolute;
+  right: 1.5em;
+  top: 1.5em;
+}
+
+.modalCloseBtn:hover {
+  cursor: pointer;
+}
+
+.modalConfirmBtn {
+  background-color: var(--primary-color) !important;
+  border: 3px solid var(--primary-color) !important;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: 75%;
+}
+
+.productCard {
+  border: none !important;
+  margin-top: 2rem;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-family: var(--primary-font);
+  text-transform: capitalize;
+}
+
+.scoreText {
+  font-family: var(--primary-font);
+  color: var(--primary-color);
+}
+
+.cardText {
+  margin: 8px 0;
+  text-transform: capitalize;
+  color: var(--secondary-color-dark);
+  font-family: var(--primary-font);
+}
+
+.otherTitle {
+  font-family: var(--primary-font);
+  margin: 1rem 0 0 0 !important;
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--secondary-color-dark);
+}
+
+.linkText {
+  color: var(--secondary-color-dark) !important;
+  text-decoration-color: var(--primary-color);
+  font-size: 1.3rem;
+}
+.modalConfirmBtn {
+  background-color: var(--primary-color) !important;
+  border: 3px solid var(--primary-color) !important;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: 75%;
+}
+
+.modalCancelButton {
+  background-color: black !important;
+  border: 3px solid black !important;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: 75%;
+}
+
+.rollingUpBtnContainer {
+  display: flex !important;
+  align-content: center;
+  justify-content: flex-end;
+  position: sticky;
+  bottom: 10px;
+  font-size: 2rem;
+  z-index: 100;
+  margin: 1rem;
+  color: #8a8a89
+}
+
+.rollingUpBtnContainer Button {
+  background-color: var(--primary-color) !important;
+  border: 3px solid var(--primary-color) !important;
+}
+.rollingUpBtnContainer Button:focus {
+  box-shadow: none !important;
+}
+.cardImg {
+  height:150px
+}
+
+.headerElem {
+  border-bottom: 1.5px solid #f4efe9;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 2rem;
+  padding-top: 2rem;
+}
+
+.classPic {
+  max-height: 500px !important;
+  max-width: 500px !important;
+}
+
+.infoBox {
+  margin-bottom: 20px;
+}
+
+/* .information {
+  padding-left: 50px;
+} */
+
+.infoContainer {
+  margin-top: 2rem;
+}
+
+.parent {
+  margin-top: 3rem;
+}
+
+.btnnGroup {
+  margin-top: 2rem;
+}
+
+@media only screen and (min-width: 650px) {
+  .imgContainer {
+    max-width: 19rem;
+    max-height: 19rem;
+    overflow: hidden !important;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .infoOuterBox {
+    margin-left: 2rem !important;
+  }
+}

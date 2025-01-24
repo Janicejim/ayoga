@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100;200;300;400;500;600;700;800;900&family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --primary-color: #fb6855;
+  --secondary-color: #d5d5d5;
+  --secondary-color-dark: #5c5c5c;
+  --text-color: #404044;
+  --bg-color-light: #2084e21e;
+  --border-color-light: #d3d3d5;
+  --border-color-dark: #a8a8ab;
+  --btn-hover-primary-color:#c15042;
+  --error-color:red;
+  --primary-font: "Outfit", sans-serif;
+  --secondary-font: "Lexend", sans-serif;
+}

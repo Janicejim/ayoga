@@ -1,0 +1,171 @@
+@import "./css-variable.css";
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 900px !important;
+  }
+}
+
+.bg {
+  margin: 0;
+  padding: 0;
+  /* background-image: url("../assets/bg-login-01.jpg"); */
+  height: 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  z-index: -100;
+}
+
+/* body {
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+    
+  } */
+
+.logo {
+  padding-left: 37px;
+  padding-top: 47px;
+}
+
+.logo {
+  padding: 20px 0;
+}
+
+.registerImg {
+  display: flex;
+  justify-content: center;
+}
+.registerTitle {
+  font-weight: 500;
+  font-size: 34px;
+  text-align: center;
+  font-family: var(--primary-font);
+  text-transform: uppercase;
+  margin: 35px 0 35px;
+}
+
+.registerPage {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  overflow-y: hidden;
+}
+
+/* .register-right-page {
+    background-image: url("../assets/signin-page.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100%;
+  } */
+/*  
+  .registerRightPage{
+      height:100%;
+  } */
+
+.inputContainer {
+  margin: 0 0 20px 0;
+  text-transform: uppercase;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: var(--primary-font);
+}
+input {
+  height: 50px;
+  display: block;
+  border-radius: 0px !important;
+}
+
+.btnRegister {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  font-weight: 500 !important;
+  font-size: 16px !important;
+  width: 50%;
+  height: 53px;
+  margin: 20px;
+  font-family: var(--primary-font);
+  border-radius: 0 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08rem;
+}
+
+.btnRegister:hover {
+  background-color: var(--btn-hover-primary-color) !important;
+  cursor: pointer;
+}
+
+.btn-outline-secondary {
+  border-radius: 0 !important;
+  border: 1px solid #ced4da !important;
+  color: black !important;
+  font-size: 16px !important;
+}
+.btn-outline-secondary.btn-check.btn-lg:hover {
+  background: var(--primary-color) !important;
+  color: white !important;
+}
+.btn-check.btn-lg:hover {
+  background: var(--primary-color) !important;
+}
+
+.form-select {
+  border-radius: 0 !important;
+  padding: 0.75rem 0.75rem !important;
+  margin: 0 0 -12px !important;
+}
+
+.button-container {
+  margin: 20px 0 0 0;
+}
+
+.btn-group {
+  display: flex !important;
+}
+
+.my-drop-box {
+  height: 50px;
+  border-radius: 10px !important;
+  border-style: solid;
+  padding: 0 !important;
+  width: 100% !important;
+}
+.sign-in-link {
+  text-decoration: none;
+  color: black;
+  font-size: medium;
+  font-family: var(--primary-font);
+}
+.sign-in-link:hover {
+  color: var(--primary-color);
+}
+
+.multiple-select {
+  width: 500px;
+}
+
+.problem-area {
+  font-size: 12px;
+}
+
+.checkbox-inline {
+  font-size: 12px;
+}
+
+.form-label {
+  margin-bottom: 0 !important;
+}
+
+.header-img {
+  max-width: 855px;
+}
+
+.error-msg {
+  font-family: var(--primary-font);
+}
+
+.rowBtn {
+  display: flex;
+  justify-content: space-around;
+}
