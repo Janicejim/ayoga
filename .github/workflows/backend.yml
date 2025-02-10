@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     container: node:lts-alpine
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install yarn deps # name 用來指明這個小步驟在進行什麼
         working-directory: backend #working-directory =要行以下code ge folder 名
         run: | # run 就是在terminal執行下方指令
@@ -28,7 +28,7 @@ jobs:
         run: |
           yarn build
       - name: archive built files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dist #backend build完ge folder名
           path: backend/dist #個build完folder ge path
@@ -38,9 +38,9 @@ jobs:
     runs-on: ubuntu-latest
     container: docker:20.10.21-alpine3.16
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: restore built files server
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: dist
           path: backend/dist #提取上一部build左ge dist,所以要同上方path一樣
