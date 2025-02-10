@@ -400,6 +400,52 @@ var TeacherController = /** @class */ (function () {
                 }
             });
         }); };
+        this.getTeachers = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+            var data, error_9;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.teacherService.getTeachers()];
+                    case 1:
+                        data = _a.sent();
+                        res.json({ success: true, data: data });
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_9 = _a.sent();
+                        console.log(error_9);
+                        res.status(401).json({
+                            msg: "system error",
+                            success: false,
+                        });
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        }); };
+        this.getHighScoreComment = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+            var data, error_10;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.teacherService.getHighScoreComment()];
+                    case 1:
+                        data = _a.sent();
+                        res.json({ success: true, data: data });
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_10 = _a.sent();
+                        console.log(error_10);
+                        res.status(401).json({
+                            msg: "system error",
+                            success: false,
+                        });
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        }); };
     }
     return TeacherController;
 }());

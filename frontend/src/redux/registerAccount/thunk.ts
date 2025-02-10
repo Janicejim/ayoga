@@ -1,5 +1,5 @@
 import { Dispatch } from "redux";
-import { fetchRegisterAccount } from "../../api/userRegister";
+import { fetchRegisterAccount } from "../../api/auth";
 import { IRegisterAction } from "./actions";
 import { CallHistoryMethodAction, push } from "connected-react-router";
 import { IAuthAction, loadToken, loginSuccess } from "../auth/actions";

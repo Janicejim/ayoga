@@ -1,5 +1,5 @@
 import { Dispatch } from "redux";
-import { fetchGetTransactionInfo } from "../../api/transaction";
+import { fetchGetTransactionInfo } from "../../api/payment";
 import { gotTransactionInfo, ITransactionAction } from "./actions";
 
 export function getTransactionInfo() {

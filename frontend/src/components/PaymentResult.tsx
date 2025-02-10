@@ -35,7 +35,7 @@ export default function PaymentResult() {
       </Modal.Body>
 
       <Modal.Footer className={styles.modalFooter}>
-        <Link to="/findClass">
+        <Link to="/classes">
           <Button className={styles.modalButton}>Book a Class</Button>
         </Link>
         <Link to="/transaction">

@@ -10,7 +10,10 @@
     "build": "rm -rf dist && tsc"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.744.0",
+    "@aws-sdk/lib-storage": "^3.744.0",
     "@types/node": "^22.10.9",
+    "aws-sdk": "2.1311.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.2",
     "connected-react-router": "^6.8.0",

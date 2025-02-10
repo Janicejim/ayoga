@@ -71,21 +71,21 @@
   }
 }
 
-.secondButton {
+.navBtn {
   background-color: transparent !important;
   color: var(--text-color) !important;
   text-decoration: none !important;
-  border-color: var(--text-color) !important;
   padding: 0.6rem 1.3rem !important;
-  border-radius: 0% !important;
+  border:none !important;
   box-shadow: none !important;
   font-weight: 500;
 }
 
-.secondButton:hover {
-  border-color: var(--btn-hover-primary-color) !important;
-  background-color: var(--btn-hover-primary-color) !important;
-  color: white !important
+.navBtn:hover {
+  /* border-color: var(--btn-hover-primary-color) !important; */
+  background-color: rgba(101, 27, 229, 0.54) !important;
+  color: white !important;
+  border-color: var(--text-color) !important;
 }
 
 .navMobile{

@@ -2,33 +2,32 @@ import { YogaNavBar } from "./components/YogaNavBar";
 import { ConnectedRouter } from "connected-react-router";
 import { Route, Switch } from "react-router-dom";
 import { history, IRootState } from "../src/redux/store";
-import NoMatch from "../src/components/NoMatch";
-import { Home } from "../src/components/Home";
-import InfoBox from "../src/components/UserInfoBox";
-import { ClassDetails } from "../src/components/Class/ClassDetails";
-import Login from "../src/components/Login";
-
-import Packages from "../src/components/Packages";
-import Transaction from "../src/components/Transaction";
-import CreateClass from "../src/components/CreateClass";
-import RegisterAccount from "../src/components/UserRegister";
-import PrivateRoute from "../src/components/PrivateRoute";
-import OtherClasses from "../src/components/OtherClass";
-import { AiGame } from "../src/components/AIgame/AI_game";
-import CreditEarned from "../src/components/CreditEarned";
-import PaymentResult from "../src/components/PaymentResult";
-
+import NotFindPage from "./pages/404Page";
+import Homepage from "./pages/Homepage";
+import UserInfoPage from "./pages/UserInfoPage";
+import ClassDetailPage from "./pages/ClassDetailPage";
+import LoginPage from "./pages/LoginPage";
+import PackagesPage from "./pages/PackagesPage";
+import Transaction from "./pages/TransactionPage";
+import CreateClassPage from "./pages/CreateClassPage";
+import RegisterPage from "./pages/RegisterPage";
+import PrivateRoute from "./components/PrivateRoute";
+import OtherClasses from "./components/OtherClass";
+import AiGamePage from "./pages/AIGamePage";
+import CreditEarnedPage from "./pages/CreditEarnedPage";
+import PaymentResult from "./components/PaymentResult";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useSelector } from "react-redux";
-import AdminPage from "./components/AdminPage";
-import ApplyTeacherPage from "./components/ApplyTeacherPage";
-import WithdrawCreditPage from "./components/WithdrawCreditPage";
-import StudentList from "./components/StudentList";
-import TeacherInfoPage from "./components/TeacherInfoPage";
-import { FindClass } from "./components/Catalog/FindClass";
-import TeacherRevenue from "./components/TeacherRevenue";
-import EditUserInfoPage from "./components/EditUserInfoPage";
+import AdminPage from "./pages/AdminPage";
+import ApplyTeacherPage from "./pages/ApplyTeacherPage";
+import WithdrawCreditPage from "../src/pages//WithdrawCreditPage";
+import StudentListPage from "./pages/StudentListPage";
+import TeacherInfoPage from "./pages/TeacherInfoPage";
+import FindClassPage from "./pages/FindClassPage";
+import TeacherRevenuePage from "./pages/TeacherRevenuePage";
+import EditUserInfoPage from "./pages/EditUserInfoPage";
+import Footer from "./components/Footer";
 
 function App() {
   const { user } = useSelector((state: IRootState) => state.auth);
@@ -38,36 +37,37 @@ function App() {
         <YogaNavBar />
 
         <Switch>
-          <Route path="/login" component={Login} />
-          <Route path="/register" component={RegisterAccount} />
-          <PrivateRoute path="/create" component={CreateClass} />
+          <Route path="/login" component={LoginPage} />
+          <Route path="/register" component={RegisterPage} />
+          <PrivateRoute path="/create" component={CreateClassPage} />
           {user.role === "admin" ? (
             <Route path="/" exact={true} component={AdminPage}></Route>
           ) : (
-            <Route path="/" exact={true} component={Home}></Route>
+            <Route path="/" exact={true} component={Homepage}></Route>
           )}
 
-          <PrivateRoute path="/userInfo" component={InfoBox}></PrivateRoute>
+          <PrivateRoute path="/userInfo" component={UserInfoPage}></PrivateRoute>
           <PrivateRoute
             path="/class/detail/:id"
-            component={ClassDetails}
+            component={ClassDetailPage}
           ></PrivateRoute>
 
-          <PrivateRoute path="/package" component={Packages} />
-          <Route path="/transaction" component={Transaction} />
-          <Route path="/creditsEarned" component={CreditEarned} />
-          <Route path="/aigame" component={AiGame} />
-          <Route path="/findClass" component={FindClass} />
-          <Route path="/teacherClass/:id" component={OtherClasses} />
-          <Route path="/payment/:result/:id" component={PaymentResult} />
-          <Route path="/teacher/apply" component={ApplyTeacherPage} />
-          <Route path="/withdrawal" component={WithdrawCreditPage} />
-          <Route path="/class/student/:id" component={StudentList} />
+          <PrivateRoute path="/package" component={PackagesPage} />
+          <PrivateRoute path="/transaction" component={Transaction} />
+          <PrivateRoute path="/creditsEarned" component={CreditEarnedPage} />
+          <PrivateRoute path="/aigame" component={AiGamePage} />
+          <Route path="/classes" component={FindClassPage} />
+          <PrivateRoute path="/teacherClass/:id" component={OtherClasses} />
+          <PrivateRoute path="/payment/:result/:id" component={PaymentResult} />
+          <PrivateRoute path="/teacher/apply" component={ApplyTeacherPage} />
+          <PrivateRoute path="/withdrawal" component={WithdrawCreditPage} />
+          <PrivateRoute path="/class/student/:id" component={StudentListPage} />
           <Route path="/teacher/:id" component={TeacherInfoPage} />
-          <Route path="/revenue" component={TeacherRevenue} />
-          <Route path="/edit/info" component={EditUserInfoPage} />
-          <Route component={NoMatch} />
+          <PrivateRoute path="/revenue" component={TeacherRevenuePage} />
+          <PrivateRoute path="/edit/info" component={EditUserInfoPage} />
+          <Route component={NotFindPage} />
         </Switch>
+        <Footer />
       </ConnectedRouter>
     </div>
   );

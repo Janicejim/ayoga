@@ -30,12 +30,7 @@ export async function fetchApplyTeacherRole(
 
 export async function fetchTeacherInfoAndStudentComment(teacherId: number) {
   let res = await fetch(
-    `${process.env.REACT_APP_API_SERVER}/api/teacher/info?teacher_id=${teacherId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }
+    `${process.env.REACT_APP_API_SERVER}/api/teacher/info?teacher_id=${teacherId}`
   );
   let result = await res.json();
   return result;
@@ -93,5 +88,21 @@ export async function editTeacherInfo(data: any) {
     }
   );
   const result = await res.json();
+  return result;
+}
+
+export async function fetchHighScoreTeachers() {
+  let res = await fetch(
+    `${process.env.REACT_APP_API_SERVER}/api/teachers`,
+  );
+  let result = await res.json();
+  return result;
+}
+
+export async function fetchNewestComments() {
+  let res = await fetch(
+    `${process.env.REACT_APP_API_SERVER}/api/comments`,
+  );
+  let result = await res.json();
   return result;
 }

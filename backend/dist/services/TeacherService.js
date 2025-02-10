@@ -293,6 +293,26 @@ var TeacherService = /** @class */ (function () {
             });
         });
     };
+    TeacherService.prototype.getTeachers = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.knex.raw("select coalesce(score,0) as score,users.id, name,photo from teacher_info left join users on users.id=teacher_info.id left join \n(select avg(star) as score,class.teacher_id from student_class join class on class.id=student_class.class_id left join student_comment on\nstudent_comment.class_id =student_class.class_id group by class.teacher_id ) as score_info on score_info.teacher_id=teacher_info.id\nwhere status='accept' order by score desc limit 10\n")];
+                    case 1: return [2 /*return*/, (_a.sent()).rows];
+                }
+            });
+        });
+    };
+    TeacherService.prototype.getHighScoreComment = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.knex.raw("select student_comment.id,users.name,icon,student_comment.updated_at,comment,star from student_class join class on class.id=student_class.class_id join users on student_class.user_id=users.id right join student_comment on student_comment.class_id =student_class.class_id order by student_comment.created_at desc\n limit 10\n")];
+                    case 1: return [2 /*return*/, (_a.sent()).rows];
+                }
+            });
+        });
+    };
     return TeacherService;
 }());
 exports.TeacherService = TeacherService;

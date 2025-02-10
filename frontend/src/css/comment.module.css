@@ -1,0 +1,19 @@
+
+.icon{
+  width: 3rem;
+   height: 3rem 
+}
+.username{
+  font-size: 1rem
+}
+.star {
+    color:  var(--primary-color) !important;
+    display: flex;
+    margin-bottom: 2rem;
+  }
+.createdDate{
+  display: flex;
+   justify-content: end;
+    color: gray;
+    margin-top:2rem
+}

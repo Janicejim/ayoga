@@ -273,4 +273,30 @@ GROUP BY EXTRACT(month FROM created_at) order by month asc`, [user_id])).rows
 
   }
 
+  async getTeachers() {
+
+    return (
+      await this.knex.raw(
+        `select coalesce(score,0) as score,users.id, name,photo from teacher_info left join users on users.id=teacher_info.id left join 
+(select avg(star) as score,class.teacher_id from student_class join class on class.id=student_class.class_id left join student_comment on
+student_comment.class_id =student_class.class_id group by class.teacher_id ) as score_info on score_info.teacher_id=teacher_info.id
+where status='accept' order by score desc limit 10
+`,
+      )
+    ).rows;
+
+  }
+
+  async getHighScoreComment() {
+
+    return (
+      await this.knex.raw(
+        `select student_comment.id,users.name,icon,student_comment.updated_at,comment,star from student_class join class on class.id=student_class.class_id join users on student_class.user_id=users.id right join student_comment on student_comment.class_id =student_class.class_id order by student_comment.created_at desc
+ limit 10
+`,
+      )
+    ).rows;
+
+  }
+
 }

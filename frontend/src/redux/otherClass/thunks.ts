@@ -1,5 +1,5 @@
 import { Dispatch } from "redux";
-import { fetchGetOtherClassInfo } from "../../api/otherClass";
+import { fetchGetOtherClassInfo } from "../../api/class";
 import { gotOtherClassInfo, IOtherClassAction } from "./actions";
 
 export function getOtherClassInfo(teacher_id: number) {

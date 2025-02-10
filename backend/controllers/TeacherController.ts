@@ -353,4 +353,35 @@ export class TeacherController {
       });
     }
   };
+
+
+  getTeachers = async (req: Request, res: Response) => {
+    try {
+
+      let data = await this.teacherService.getTeachers(
+      );
+      res.json({ success: true, data });
+    } catch (error) {
+      console.log(error);
+      res.status(401).json({
+        msg: "system error",
+        success: false,
+      });
+    }
+  };
+
+  getHighScoreComment = async (req: Request, res: Response) => {
+    try {
+
+      let data = await this.teacherService.getHighScoreComment(
+      );
+      res.json({ success: true, data });
+    } catch (error) {
+      console.log(error);
+      res.status(401).json({
+        msg: "system error",
+        success: false,
+      });
+    }
+  };
 }

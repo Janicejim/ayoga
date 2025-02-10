@@ -20,4 +20,6 @@ exports.teacherRoutes.get("/schedule", guard_1.isTeacherAPI, teacherController.g
 exports.teacherRoutes.get("/student/list", guard_1.isTeacherAPI, teacherController.getStudentList);
 exports.teacherRoutes.get("/teacher/revenue", guard_1.isTeacherAPI, teacherController.getRevenueData);
 exports.teacherRoutes.patch("/teacher/info", guard_1.isTeacherAPI, teacherController.editTeacherInfo);
+exports.teacherRoutes.get("/teachers", teacherController.getTeachers);
+exports.teacherRoutes.get("/comments", teacherController.getHighScoreComment);
 //# sourceMappingURL=TeacherRoutes.js.map

@@ -41,3 +41,7 @@ teacherRoutes.patch(
   isTeacherAPI,
   teacherController.editTeacherInfo
 );
+
+
+teacherRoutes.get("/teachers", teacherController.getTeachers);
+teacherRoutes.get("/comments", teacherController.getHighScoreComment);

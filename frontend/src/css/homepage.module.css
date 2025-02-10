@@ -1,0 +1,168 @@
+/* .bg {
+  width: 100%;
+  top: 0;
+  padding: none;
+  z-index: -200;
+} */
+
+html {
+  margin: 0px;
+  padding: 0px;
+}
+
+body {
+  margin: 0px;
+  padding: 0px;
+  line-height: 16px;
+}
+
+.homeBody {
+  max-height: 1000px;
+}
+
+
+.title {
+  font-family: var(--primary-font);
+  color: white;
+  text-align: center;
+  text-shadow: 2px 2px 2px rgba(128, 128, 128, 0.5)
+}
+
+h1 {
+  font-size: 3rem !important;
+}
+
+p {
+  font-size: 1.1rem !important;
+  font-weight: 300;
+  line-height: 1.4rem;
+}
+
+.titleContainer {
+  width: 100%;
+margin:auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('../assets/yoga-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  height: 37rem;
+}
+
+.homeButton {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  text-decoration: none !important;
+  border-color: white !important;
+  padding: 0.6rem 1.7rem !important;
+  border-radius: 0% !important;
+  box-shadow: none !important;
+  font-weight: 500;
+}
+
+.homeButton:hover {
+  border-color: var(--btn-hover-primary-color) !important;
+  background-color: var(--btn-hover-primary-color) !important;
+}
+
+.regButton {
+  border-color: var(--primary-color) !important;
+  background-color: var(--primary-color) !important;
+  text-decoration: none !important;
+  padding: 0.6rem 2.7rem !important;
+  border-radius: 0% !important;
+  box-shadow: none !important;
+  font-weight: 500;
+}
+
+.regButton:hover {
+  border-color: var(--btn-hover-primary-color) !important;
+  background-color: var(--btn-hover-primary-color) !important;
+}
+
+.coachButton {
+  border-color: var(--primary-color) !important;
+  background-color: var(--primary-color) !important;
+  text-decoration: none !important;
+  padding: 0.6rem 1rem !important;
+  border-radius: 0% !important;
+  box-shadow: none !important;
+  font-weight: 500;
+}
+
+.coachButton:hover {
+  border-color: var(--btn-hover-primary-color) !important;
+  background-color: var(--btn-hover-primary-color) !important;
+}
+
+
+@media only screen and (max-width: 850px) {
+  .homeButton {
+    background-color: transparent !important;
+    color: var(--text-color) !important;
+    border-color: var(--text-color) !important;
+  }
+  
+  .homeButton:hover {
+    border-color: transparent !important;
+    background-color: var(--btn-hover-primary-color) !important;
+  }
+
+}
+
+
+
+.sectionImg{
+  width: 15rem;
+  height: 15rem;
+  margin: 5rem;
+}
+
+.iconGroup{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+}
+.subTitle{
+  color:gray;
+  background-color: rgba(255, 255, 255, 0.661);
+}
+
+
+.rowSpace{
+  margin-top:3rem
+}
+.flex{
+  display: flex;
+}
+
+.aiImg{
+  width: 100% !important;
+  height: 30rem;
+
+}
+.aiBtnArea{
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  text-align: center ;
+  margin-top:20%!important
+}
+.titleEnd{
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+  color:rgb(163, 117, 255);
+  background-color: rgba(255, 255, 255, 0.661);
+  margin-top:3rem !important
+}
+.sectionSubTitle{
+  color:rgb(163, 117, 255);
+  background-color: rgba(255, 255, 255, 0.661);
+  margin-top:3rem !important
+}
+.classContainer{
+  border: none !important;
+}

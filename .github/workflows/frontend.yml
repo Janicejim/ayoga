@@ -1,0 +1,64 @@
+name: frontend_cicd
+
+on:
+  push:
+    branches:
+      - "main" #開頭試可以用main,試完ok就轉production
+  workflow_dispatch:
+
+env:
+  BUCKET_NAME: ayoga-frontend # s3 frontend bucket名
+  CLOUDFRONT_DISTRIBUTION: E2DKUERGNJ0IF7 #cloudfront的distribution, 似EXXXXXXXXXXXX
+  AWS_DEFAULT_REGION: ap-southeast-1 # s3 bucket所在區域
+
+jobs:
+  build-react:
+    runs-on: ubuntu-latest
+    container: node:lts-alpine
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install yarn deps
+        working-directory: frontend #frontend folder名
+        run: yarn install
+      - name: Build frontend project
+        working-directory: frontend
+        env: # 原本frontend裡面有set .env就將裡面內容放在下方
+          REACT_APP_API_SERVER: https://ayoga.backend.bonbony.one
+          REACT_APP_GOOGLE_MAP_API_KEY: ${{ secrets.GOOGLE_MAP_API_KEY }}
+          REACT_APP_STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
+          REACT_APP_UPLOAD_IMAGE: https://ayoga.image.bonbony.one
+        run: yarn build
+      - name: Archive react built files
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: frontend/build
+
+  deploy-react-to-aws:
+    needs: build-react
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Restore frontend files
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+          path: frontend/build
+      - name: Check built files in server
+        working-directory: frontend
+        run: |
+          ls build/index.html
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+          cache: "pip"
+      - run: pip install -r requirements.txt
+      - name: Deploy to s3 and cloudfront
+        working-directory: frontend
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }} # aws create IAM user-->get access key id & pw-->去github secrets加入
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
+        run: |
+          aws s3 sync ./build s3://${{env.BUCKET_NAME}} --delete
+          aws cloudfront create-invalidation --distribution-id ${{env.CLOUDFRONT_DISTRIBUTION}} --paths "/*"

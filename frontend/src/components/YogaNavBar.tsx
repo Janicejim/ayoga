@@ -34,7 +34,7 @@ export function YogaNavBar() {
 
 
 
-  // XXXXXXXXXXXXXXXXXXX--Socket Set up End--XXXXXXXXXXXXXXXXXXXX
+
   const AutoCandL = function AutoCloseAndLogout() {
     ToAutoCloseInMd();
     dispatch(logout());
@@ -47,14 +47,16 @@ export function YogaNavBar() {
         className={`d-flex justify-content-between align-items-center ${styles.marginForPage} `}
       >
         <Navbar.Brand>
-          <div className={styles.icon}>
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
             <Link to="/" className="">
               <img
+                className={styles.icon}
                 style={{ width: "4rem", height: "4rem" }}
                 src={require("../assets/logo.png")}
                 alt="AYoga logo"
               />
             </Link>
+            <div>AYOGA</div>
           </div>
         </Navbar.Brand>
         <div className="d-flex">
@@ -78,7 +80,7 @@ export function YogaNavBar() {
                     <>
                       {" "}
                       <Nav>
-                        <Link onClick={ToAutoCloseInMd} to="/findClass">
+                        <Link onClick={ToAutoCloseInMd} to="/classes">
                           <Button className={styles.keyButton}>
                             Find Class
                           </Button>
@@ -86,7 +88,7 @@ export function YogaNavBar() {
                       </Nav>
                       <Nav>
                         <Link onClick={ToAutoCloseInMd} to="/AiGame">
-                          <Button className={styles.secondButton}>
+                          <Button className={styles.navBtn}>
                             AI Yoga Coach
                           </Button>
                         </Link>
@@ -97,7 +99,7 @@ export function YogaNavBar() {
                     <>
                       {isTeacherMode && (
                         <Nav>
-                          <Link onClick={ToAutoCloseInMd} to="/create">
+                          <Link className={styles.navBtn} onClick={ToAutoCloseInMd} to="/create">
                             Create a class
                           </Link>
                         </Nav>
@@ -107,12 +109,12 @@ export function YogaNavBar() {
                   {!isAuthenticated && (
                     <>
                       <Nav>
-                        <Link onClick={ToAutoCloseInMd} to="/login">
+                        <Link className={styles.navBtn} onClick={ToAutoCloseInMd} to="/login">
                           Login
                         </Link>
                       </Nav>
                       <Nav>
-                        <Link onClick={ToAutoCloseInMd} to="/register">
+                        <Link className={styles.navBtn} onClick={ToAutoCloseInMd} to="/register">
                           Register
                         </Link>
                       </Nav>
@@ -122,15 +124,11 @@ export function YogaNavBar() {
                     <>
                       {user.role !== "admin" && (
                         <>
-                          <Nav>
-                            <Link onClick={ToAutoCloseInMd} to="/package">
-                              Buy Credit
-                            </Link>
-                          </Nav>
                           {user.role !== "teacher" && (
                             <Nav>
                               <Link
                                 onClick={ToAutoCloseInMd}
+                                className={styles.navBtn}
                                 to="/teacher/apply"
                               >
                                 Become Teacher
@@ -138,12 +136,18 @@ export function YogaNavBar() {
                             </Nav>
                           )}
                           <Nav>
-                            <Link onClick={ToAutoCloseInMd} to="/withdrawal">
+                            <Link className={styles.navBtn} onClick={ToAutoCloseInMd} to="/package">
+                              Buy Credit
+                            </Link>
+                          </Nav>
+
+                          <Nav>
+                            <Link className={styles.navBtn} onClick={ToAutoCloseInMd} to="/withdrawal">
                               Withdrawal Credit
                             </Link>
                           </Nav>
                           <Nav>
-                            <Link onClick={ToAutoCloseInMd} to="/userInfo">
+                            <Link className={styles.navBtn} onClick={ToAutoCloseInMd} to="/userInfo">
                               User
                             </Link>
                           </Nav>
@@ -151,7 +155,7 @@ export function YogaNavBar() {
                       )}
 
                       <Nav>
-                        <Link onClick={AutoCandL} to="/">
+                        <Link className={styles.navBtn} onClick={AutoCandL} to="/">
                           Logout
                         </Link>
                       </Nav>
