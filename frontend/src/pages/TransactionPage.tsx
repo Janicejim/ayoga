@@ -19,24 +19,6 @@ export default function TransactionPage() {
     result();
   }, [dispatch]);
 
-  // local time zone
-  function convertToLocalDate(timeString: any) {
-    let date = new Date(timeString).toLocaleDateString();
-    // CODE REVIEW: use moment/date-fns!!!
-    if (date.includes("/")) {
-      date = date.split("/").reverse().join("-");
-    }
-    return date;
-  }
-
-  function convertToLocalTime(timeString: any) {
-    let date = new Date(timeString).toLocaleTimeString();
-    if (date.includes("/")) {
-      date = date.split("/").reverse().join("-");
-    }
-    // let time = new Date(timeString).toLocaleTimeString();
-    return date;
-  }
 
   return (
     <div>

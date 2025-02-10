@@ -49,6 +49,7 @@ function WithdrawCreditPage() {
 
   useEffect(() => {
     getCredit();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSubmit = async (data: FormState) => {

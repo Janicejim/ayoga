@@ -34,6 +34,7 @@ export function Map(props: Props) {
       title: "Hello World!",
       icon: svgMarker,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <div ref={ref} id={styles.myDiyMap} />;

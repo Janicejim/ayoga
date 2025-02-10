@@ -14,6 +14,7 @@ export default function PaymentResult() {
   }
   useEffect(() => {
     insertPaymentRecord();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

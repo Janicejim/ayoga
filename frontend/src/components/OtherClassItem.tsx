@@ -29,6 +29,7 @@ function OtherClassItems(props: Props) {
 
   useEffect(() => {
     getTeacherClass();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.teacherId, props.excludeClassId]);
 
   return (

@@ -27,7 +27,9 @@ function StudentListPage() {
     }
   }
 
-  useEffect(() => { getStudentList() }, [])
+  useEffect(() => { getStudentList() },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [])
 
 
 

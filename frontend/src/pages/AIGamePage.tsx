@@ -82,6 +82,7 @@ export default function AIGamePage() {
   useEffect(() => {
     getPoses();
     getPoseRecord();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const POINTS = {
@@ -330,6 +331,7 @@ export default function AIGamePage() {
         detectPose(detector, poseClassifier, currentPose);
       }, 100));
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 

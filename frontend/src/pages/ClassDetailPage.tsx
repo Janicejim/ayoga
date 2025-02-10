@@ -145,6 +145,7 @@ export default function ClassDetailPage() {
 
   useEffect(() => {
     checkClassStatusAndUserType()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
 
