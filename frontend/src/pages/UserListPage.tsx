@@ -5,6 +5,7 @@ import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import { fetchEditUserRole, fetchUserList } from "../api/admin";
 import { showMsgAlert } from "../utils/alert";
 import { InputText } from "primereact/inputtext";
+import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
 
 interface User {
   id: number;
@@ -38,7 +39,7 @@ export default function UserListPage() {
       return (
         <img
           style={{ width: "3.5rem", height: "3rem", borderRadius: "100%" }}
-          src={`${process.env.REACT_APP_UPLOAD_IMAGE}/${user.icon}`}
+          src={`${REACT_APP_UPLOAD_IMAGE}/${user.icon}`}
           alt="user icon"
           className="w-6rem shadow-2 border-round"
         />
@@ -47,7 +48,7 @@ export default function UserListPage() {
       return (
         <img
           style={{ width: "4rem", height: "3rem" }}
-          src={`${process.env.REACT_APP_UPLOAD_IMAGE}/default.jpeg`}
+          src={`${REACT_APP_UPLOAD_IMAGE}/default.jpeg`}
           alt="user icon"
           className="w-6rem shadow-2 border-round"
         />

@@ -1,4 +1,6 @@
-const { REACT_APP_API_SERVER } = process.env;
+import { REACT_APP_API_SERVER } from "../utils/config";
+
+
 
 export async function fetchAllPoses() {
   const res = await fetch(`${REACT_APP_API_SERVER}/api/poses`, {

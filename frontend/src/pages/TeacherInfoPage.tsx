@@ -4,6 +4,7 @@ import { fetchTeacherInfoAndStudentComment } from "../api/teacher";
 import OtherClassItems from "../components/OtherClassItem";
 import Comments from "../components/Comments";
 import { Row } from "react-bootstrap";
+import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
 
 function TeacherInfoPage() {
   const [teacherInfo, setTeacherInfo] = useState<any>({});
@@ -26,7 +27,7 @@ function TeacherInfoPage() {
       <Row>
         <div className="col-md-6 col-s-12 ">
           <img style={{ width: "20rem", height: "25rem" }}
-            src={`${process.env.REACT_APP_UPLOAD_IMAGE}/${teacherInfo.photo}`}
+            src={`${REACT_APP_UPLOAD_IMAGE}/${teacherInfo.photo}`}
             alt="teacher personal pic"
           ></img>
 

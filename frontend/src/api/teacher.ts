@@ -1,3 +1,5 @@
+import { REACT_APP_API_SERVER } from "../utils/config";
+
 export async function fetchApplyTeacherRole(
   sex: string,
   newest_qualification: string,
@@ -15,7 +17,7 @@ export async function fetchApplyTeacherRole(
   formData.append("introduction", introduction);
 
   let res = await fetch(
-    `${process.env.REACT_APP_API_SERVER}/api/teacher/apply`,
+    `${REACT_APP_API_SERVER}/api/teacher/apply`,
     {
       method: "POST",
       headers: {
@@ -30,7 +32,7 @@ export async function fetchApplyTeacherRole(
 
 export async function fetchTeacherInfoAndStudentComment(teacherId: number) {
   let res = await fetch(
-    `${process.env.REACT_APP_API_SERVER}/api/teacher/info?teacher_id=${teacherId}`
+    `${REACT_APP_API_SERVER}/api/teacher/info?teacher_id=${teacherId}`
   );
   let result = await res.json();
   return result;
@@ -38,7 +40,7 @@ export async function fetchTeacherInfoAndStudentComment(teacherId: number) {
 
 export async function fetchTeacherInfo() {
   let res = await fetch(
-    `${process.env.REACT_APP_API_SERVER}/api/teacher/information`,
+    `${REACT_APP_API_SERVER}/api/teacher/information`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -51,7 +53,7 @@ export async function fetchTeacherInfo() {
 
 export async function fetchStudentList(classId: number) {
   let res = await fetch(
-    `${process.env.REACT_APP_API_SERVER}/api/student/list?class_id=${classId}`,
+    `${REACT_APP_API_SERVER}/api/student/list?class_id=${classId}`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -64,7 +66,7 @@ export async function fetchStudentList(classId: number) {
 
 export async function fetchTeacherRevenue() {
   let res = await fetch(
-    `${process.env.REACT_APP_API_SERVER}/api/teacher/revenue`,
+    `${REACT_APP_API_SERVER}/api/teacher/revenue`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -77,7 +79,7 @@ export async function fetchTeacherRevenue() {
 
 export async function editTeacherInfo(data: any) {
   const res = await fetch(
-    `${process.env.REACT_APP_API_SERVER}/api/teacher/info`,
+    `${REACT_APP_API_SERVER}/api/teacher/info`,
     {
       method: "PATCH",
       headers: {
@@ -93,7 +95,7 @@ export async function editTeacherInfo(data: any) {
 
 export async function fetchHighScoreTeachers() {
   let res = await fetch(
-    `${process.env.REACT_APP_API_SERVER}/api/teachers`,
+    `${REACT_APP_API_SERVER}/api/teachers`,
   );
   let result = await res.json();
   return result;
@@ -101,7 +103,7 @@ export async function fetchHighScoreTeachers() {
 
 export async function fetchNewestComments() {
   let res = await fetch(
-    `${process.env.REACT_APP_API_SERVER}/api/comments`,
+    `${REACT_APP_API_SERVER}/api/comments`,
   );
   let result = await res.json();
   return result;

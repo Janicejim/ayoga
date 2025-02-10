@@ -4,6 +4,7 @@ import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import React from "react";
 import { convertToTitleCase } from "../utils/convertTitle";
+import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
 
 interface Record {
   summaryData: any[];
@@ -52,7 +53,7 @@ export function PoseRecord(record: Record) {
   const imageBodyTemplate = (record: any) => {
     return (
       <img
-        src={`${process.env.REACT_APP_UPLOAD_IMAGE}/assets/AiClassification/poses/${record.image}`}
+        src={`${REACT_APP_UPLOAD_IMAGE}/assets/AiClassification/poses/${record.image}`}
         alt={record.image}
         className="w-1rem shadow-2 border-round"
         style={{ width: "5rem", height: "5rem" }}

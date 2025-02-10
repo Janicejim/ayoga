@@ -2,6 +2,7 @@ import moment from "moment";
 import { Link } from "react-router-dom";
 import styles from "../css/class.module.css";
 import { motion } from "framer-motion";
+import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
 
 export default function Class(props: any) {
   const {
@@ -34,7 +35,7 @@ export default function Class(props: any) {
           <div className={styles.imgContainer}>
 
             <img
-              src={`${process.env.REACT_APP_UPLOAD_IMAGE}/${image}`}
+              src={`${REACT_APP_UPLOAD_IMAGE}/${image}`}
               className={`card-img-top ${styles.cardStyle}`}
               alt={image}
             />

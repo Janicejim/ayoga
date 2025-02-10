@@ -14,6 +14,7 @@ import { ImCross } from "react-icons/im";
 import moment from "moment";
 import { useHistory } from "react-router";
 import { FiArrowUpCircle } from "react-icons/fi";
+import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
 
 // Official Google Map Package
 import { Wrapper } from "@googlemaps/react-wrapper";
@@ -250,7 +251,7 @@ export default function ClassDetailPage() {
           ) : (
             <img
               className={`col-lg-6 ${styles.classPic}`}
-              src={`${process.env.REACT_APP_UPLOAD_IMAGE}/${classImage}`}
+              src={`${REACT_APP_UPLOAD_IMAGE}/${classImage}`}
               alt={classImage}
             />
           )}

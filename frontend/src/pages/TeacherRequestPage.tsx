@@ -5,6 +5,8 @@ import moment from "moment";
 import { ReplyTeacherRequestApi, fetchTeacherRequest } from "../api/admin";
 import { InputText } from "primereact/inputtext";
 import { showMsgAlert } from "../utils/alert";
+import { REACT_APP_API_SERVER, REACT_APP_UPLOAD_IMAGE } from "../utils/config";
+
 interface TeacherRequest {
   id: number;
   name: string;
@@ -53,7 +55,7 @@ function TeacherRequestPage() {
               <div className={`card h-100 ${userInfoStyle.productCard}`}>
                 <div>
                   <img
-                    src={`${process.env.REACT_APP_UPLOAD_IMAGE}/${request.photo}`}
+                    src={`${REACT_APP_UPLOAD_IMAGE}/${request.photo}`}
                     className={`card-img-top`}
                     alt="hahaha"
                     style={{ height: "16rem" }}
@@ -65,7 +67,7 @@ function TeacherRequestPage() {
                   <p className={userInfoStyle.cardText}>
                     ID Photo:
                     <a
-                      href={`${process.env.REACT_APP_API_SERVER}/${request.id_photo}`}
+                      href={`${REACT_APP_API_SERVER}/${request.id_photo}`}
                     >
                       Link
                     </a>
@@ -77,7 +79,7 @@ function TeacherRequestPage() {
                   <p className={userInfoStyle.cardText}>
                     Cert Photo:
                     <a
-                      href={`${process.env.REACT_APP_API_SERVER}/${request.cert}`}
+                      href={`${REACT_APP_API_SERVER}/${request.cert}`}
                     >
                       Link
                     </a>

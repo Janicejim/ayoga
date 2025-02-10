@@ -10,6 +10,7 @@ import { Carousel } from "primereact/carousel";
 import Class from "../components/Class";
 import { fetchHighScoreTeachers, fetchNewestComments } from "../api/teacher";
 import { Avatar } from "primereact/avatar";
+import { REACT_APP_API_SERVER } from "../utils/config";
 
 
 export default function Homepage() {
@@ -121,7 +122,7 @@ export default function Homepage() {
               <div className={homeStyles.flex} >
                 {teachers.map((teacher: any) => (
                   <Link style={{ margin: "2rem" }} key={teacher.id} to={`/teacher/${teacher.id}`}>
-                    <Avatar image={`${process.env.REACT_APP_API_SERVER}/${teacher.photo}`} className="mr-2" size="xlarge" shape="circle" />
+                    <Avatar image={`${REACT_APP_API_SERVER}/${teacher.photo}`} className="mr-2" size="xlarge" shape="circle" />
                   </Link>
                 ))
 

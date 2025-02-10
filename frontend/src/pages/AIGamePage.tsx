@@ -17,6 +17,8 @@ import { showMsgAlert } from "../utils/alert";
 import { PoseRecord } from "../components/PoseRecord";
 import { convertToTitleCase } from "../utils/convertTitle";
 import { Dialog } from "primereact/dialog";
+import { REACT_APP_API_SERVER } from "../utils/config";
+
 
 const defaultColor = "rgb(255,255,255)";
 const rightPoseColor = "#FB6855";
@@ -45,7 +47,7 @@ export default function AIGamePage() {
   const isAuthenticated = useSelector(
     (state: IRootState) => state.auth.isAuthenticate
   );
-  const { REACT_APP_API_SERVER } = process.env;
+
 
   async function getPoses() {
     let res = await fetchAllPoses();

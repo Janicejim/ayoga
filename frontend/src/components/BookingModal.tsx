@@ -5,6 +5,7 @@ import { IRootState } from "../redux/store";
 import styles from "../css/classDetails.module.css";
 import { ImCancelCircle } from "react-icons/im";
 import { useState } from "react";
+import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
 
 interface Props {
   closeModal: () => void;
@@ -59,7 +60,7 @@ export function BookingModal(props: Props) {
                   "Loading"
                 ) : (
                   <img
-                    src={`${process.env.REACT_APP_UPLOAD_IMAGE}/${classImage}`}
+                    src={`${REACT_APP_UPLOAD_IMAGE}/${classImage}`}
                     width="250"
                     alt={classImage}
                   />

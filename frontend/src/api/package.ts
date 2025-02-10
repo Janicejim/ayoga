@@ -1,4 +1,5 @@
-const { REACT_APP_API_SERVER } = process.env;
+import { REACT_APP_API_SERVER } from "../utils/config";
+
 
 export async function fetchGetPackageInfo() {
   const res = await fetch(`${REACT_APP_API_SERVER}/api/payment/package`, {

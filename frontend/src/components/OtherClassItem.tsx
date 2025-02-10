@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import { classGetOtherClassInfo } from "../redux/class/thunks";
 import { useEffect } from "react";
+import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
+
 
 interface Props {
   teacherId: number;
@@ -43,7 +45,7 @@ function OtherClassItems(props: Props) {
                   <div className={styles.imgContainer}>
                     <Link onClick={rolling} to={`/class/detail/${item.class_id}`}>
                       <img
-                        src={`${process.env.REACT_APP_UPLOAD_IMAGE}/${item.image}`}
+                        src={`${REACT_APP_UPLOAD_IMAGE}/${item.image}`}
                         className={`card-img-top ${styles.cardImg}`}
                         alt="..."
                       />

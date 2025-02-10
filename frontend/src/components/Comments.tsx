@@ -7,6 +7,8 @@ import defaultIcon from "../assets/avatar-big.png";
 import { Row } from 'react-bootstrap';
 import moment from 'moment';
 import commentStyle from "../css/comment.module.css"
+import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
+
 interface Comment {
     id: number,
     comment: string,
@@ -46,7 +48,7 @@ export default function Comments(props: Props) {
                         ) : (
                             <img
                                 className={commentStyle.icon}
-                                src={`${process.env.REACT_APP_UPLOAD_IMAGE}/${comment.icon}`} alt="icon"
+                                src={`${REACT_APP_UPLOAD_IMAGE}/${comment.icon}`} alt="icon"
                             />
                         )}
                         <div className={commentStyle.username}>{comment.name}</div>

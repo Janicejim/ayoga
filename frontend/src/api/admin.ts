@@ -1,10 +1,12 @@
+import { REACT_APP_API_SERVER } from "../utils/config";
+
 export async function fetchUserList(keyword?: string) {
   let path;
 
   if (keyword) {
-    path = `${process.env.REACT_APP_API_SERVER}/api/admin/users?keyword=${keyword}`;
+    path = `${REACT_APP_API_SERVER}/api/admin/users?keyword=${keyword}`;
   } else {
-    path = `${process.env.REACT_APP_API_SERVER}/api/admin/users`;
+    path = `${REACT_APP_API_SERVER}/api/admin/users`;
   }
   const res = await fetch(path, {
     headers: {
@@ -17,7 +19,7 @@ export async function fetchUserList(keyword?: string) {
 
 export async function fetchEditUserRole(user_id: number, role: string) {
   const res = await fetch(
-    `${process.env.REACT_APP_API_SERVER}/api/admin/user/role?user_id=${user_id}&role=${role}`,
+    `${REACT_APP_API_SERVER}/api/admin/user/role?user_id=${user_id}&role=${role}`,
     {
       method: "PATCH",
       headers: {
@@ -31,7 +33,7 @@ export async function fetchEditUserRole(user_id: number, role: string) {
 
 export async function fetchTeacherRequest() {
   const res = await fetch(
-    `${process.env.REACT_APP_API_SERVER}/api/admin/teacher/request`,
+    `${REACT_APP_API_SERVER}/api/admin/teacher/request`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -48,7 +50,7 @@ export async function ReplyTeacherRequestApi(
   remark: string
 ) {
   const res = await fetch(
-    `${process.env.REACT_APP_API_SERVER}/api/admin/reply/request?requestId=${id}`,
+    `${REACT_APP_API_SERVER}/api/admin/reply/request?requestId=${id}`,
     {
       method: "POST",
       headers: {
@@ -64,7 +66,7 @@ export async function ReplyTeacherRequestApi(
 
 export async function fetchUncommentRecord() {
   const res = await fetch(
-    `${process.env.REACT_APP_API_SERVER}/api/admin/uncomment`,
+    `${REACT_APP_API_SERVER}/api/admin/uncomment`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -77,7 +79,7 @@ export async function fetchUncommentRecord() {
 
 export async function sendEmailToUncommentStudents() {
   const res = await fetch(
-    `${process.env.REACT_APP_API_SERVER}/api/admin/uncomment/email`,
+    `${REACT_APP_API_SERVER}/api/admin/uncomment/email`,
     {
       method: "POST",
       headers: {

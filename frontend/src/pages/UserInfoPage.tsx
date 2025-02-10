@@ -15,6 +15,7 @@ import { Button } from "react-bootstrap";
 import { TabView, TabPanel } from "primereact/tabview";
 import Class from "../components/Class";
 import { AnimatePresence, motion } from "framer-motion";
+import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
 
 export interface ClassItem {
   image: string;
@@ -112,7 +113,7 @@ export default function UserInfoPage() {
             ) : (
               <img
                 className={userInfoStyle.userIcon}
-                src={`${process.env.REACT_APP_UPLOAD_IMAGE}/${icon}`}
+                src={`${REACT_APP_UPLOAD_IMAGE}/${icon}`}
                 alt="lol"
               />
             )}

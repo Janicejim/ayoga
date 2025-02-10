@@ -1,4 +1,5 @@
-const { REACT_APP_API_SERVER } = process.env;
+import { REACT_APP_API_SERVER } from "../utils/config";
+
 
 export async function fetchClassDetails(classId: number) {
   const res = await fetch(
