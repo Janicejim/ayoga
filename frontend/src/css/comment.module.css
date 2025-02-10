@@ -13,7 +13,7 @@
   }
 .createdDate{
   display: flex;
-   justify-content: end;
+   justify-content: flex-end;
     color: gray;
     margin-top:2rem
 }
