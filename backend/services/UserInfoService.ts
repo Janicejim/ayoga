@@ -106,8 +106,19 @@ and type='earn' and date<=CURRENT_DATE`,
   }
 
   async withdrawalCredit(user_id: number, credit: number, full_name: string, bank_id: number, bank_number: number) {
+    let txn = await this.knex.transaction()
+    try {
+      let record = await txn("user_credit_record").insert({ user_id, credit: -credit, full_name, bank_id, bank_number, type: "withdrawal" }).returning("id")
+      let timestamp = Date.now();
+      let transaction_id = `wl${timestamp}-${record[0].id}`.split("-").join("");
+      await txn("user_credit_record").update({ transaction_id }).where("id", record[0].id);
+      await txn.commit()
+    } catch (e) {
+      console.log(e)
+      await txn.rollback()
+      return
+    }
 
-    await this.knex("user_credit_record").insert({ user_id, credit: -credit, full_name, bank_id, bank_number, transaction_id: "wl14343", type: "withdrawal" })
   }
 
   async updateProfilePic(user_id: number, icon: string) {

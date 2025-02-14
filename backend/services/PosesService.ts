@@ -1,7 +1,7 @@
 import { Knex } from "knex";
 
 export class PosesService {
-  constructor(private knex: Knex) {}
+  constructor(private knex: Knex) { }
 
   async getPosesItems() {
     return await this.knex
@@ -9,7 +9,8 @@ export class PosesService {
         "pose.id",
         "pose.name as name",
         "image",
-        "target_area.name as target_name"
+        "target_area.name as target_name",
+        "detect_id"
       )
       .from("pose")
       .innerJoin("target_area", "pose.target_area_id", "target_area.id");

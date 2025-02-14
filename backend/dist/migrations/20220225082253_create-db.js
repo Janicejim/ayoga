@@ -159,6 +159,7 @@ function up(knex) {
                             table.integer("bank_id").references("bank.id");
                             table.string("bank_number");
                             table.string("transaction_id");
+                            table.string("refund_related_id");
                             table.timestamps(false, true);
                         })];
                 case 20:
@@ -183,6 +184,7 @@ function up(knex) {
                             table.string("name");
                             table.string("image");
                             table.integer("target_area_id").references("target_area.id");
+                            table.integer("detect_id");
                             table.enum("level", ["beginner", "intermediate"]);
                             table.timestamps(false, true);
                         })];
@@ -203,22 +205,9 @@ function up(knex) {
                 case 29:
                     _a.sent();
                     _a.label = 30;
-                case 30: return [4 /*yield*/, knex.schema.hasTable("pose_history")];
+                case 30: return [4 /*yield*/, knex.schema.hasTable("teacher_info")];
                 case 31:
                     if (!!(_a.sent())) return [3 /*break*/, 33];
-                    return [4 /*yield*/, knex.schema.createTable("pose_history", function (table) {
-                            table.increments();
-                            table.integer("user_id").references("users.id");
-                            table.integer("pose_id").references("pose.id");
-                            table.integer("accuracy");
-                            table.timestamps(false, true);
-                        })];
-                case 32:
-                    _a.sent();
-                    _a.label = 33;
-                case 33: return [4 /*yield*/, knex.schema.hasTable("teacher_info")];
-                case 34:
-                    if (!!(_a.sent())) return [3 /*break*/, 36];
                     return [4 /*yield*/, knex.schema.createTable("teacher_info", function (table) {
                             table.integer("id").references("users.id");
                             table.text("introduction");
@@ -231,12 +220,12 @@ function up(knex) {
                             table.enum("status", ["accept", "reject", "pending"]);
                             table.timestamps(false, true);
                         })];
-                case 35:
+                case 32:
                     _a.sent();
-                    _a.label = 36;
-                case 36: return [4 /*yield*/, knex.schema.hasTable("student_comment")];
-                case 37:
-                    if (!!(_a.sent())) return [3 /*break*/, 39];
+                    _a.label = 33;
+                case 33: return [4 /*yield*/, knex.schema.hasTable("student_comment")];
+                case 34:
+                    if (!!(_a.sent())) return [3 /*break*/, 36];
                     return [4 /*yield*/, knex.schema.createTable("student_comment", function (table) {
                             table.increments();
                             table.integer("user_id").references("users.id");
@@ -245,10 +234,10 @@ function up(knex) {
                             table.text("comment");
                             table.timestamps(false, true);
                         })];
-                case 38:
+                case 35:
                     _a.sent();
-                    _a.label = 39;
-                case 39: return [2 /*return*/];
+                    _a.label = 36;
+                case 36: return [2 /*return*/];
             }
         });
     });
@@ -264,38 +253,35 @@ function down(knex) {
                     return [4 /*yield*/, knex.schema.dropTableIfExists("teacher_info")];
                 case 2:
                     _a.sent();
-                    return [4 /*yield*/, knex.schema.dropTableIfExists("pose_history")];
+                    return [4 /*yield*/, knex.schema.dropTableIfExists("bookmark")];
                 case 3:
                     _a.sent();
-                    return [4 /*yield*/, knex.schema.dropTableIfExists("bookmark")];
+                    return [4 /*yield*/, knex.schema.dropTableIfExists("pose")];
                 case 4:
                     _a.sent();
-                    return [4 /*yield*/, knex.schema.dropTableIfExists("pose")];
+                    return [4 /*yield*/, knex.schema.dropTableIfExists("target_area")];
                 case 5:
                     _a.sent();
-                    return [4 /*yield*/, knex.schema.dropTableIfExists("target_area")];
+                    return [4 /*yield*/, knex.schema.dropTableIfExists("user_credit_record")];
                 case 6:
                     _a.sent();
-                    return [4 /*yield*/, knex.schema.dropTableIfExists("user_credit_record")];
+                    return [4 /*yield*/, knex.schema.dropTableIfExists("bank")];
                 case 7:
                     _a.sent();
-                    return [4 /*yield*/, knex.schema.dropTableIfExists("bank")];
+                    return [4 /*yield*/, knex.schema.dropTableIfExists("packages")];
                 case 8:
                     _a.sent();
-                    return [4 /*yield*/, knex.schema.dropTableIfExists("packages")];
+                    return [4 /*yield*/, knex.schema.dropTableIfExists("student_class")];
                 case 9:
                     _a.sent();
-                    return [4 /*yield*/, knex.schema.dropTableIfExists("student_class")];
+                    return [4 /*yield*/, knex.schema.dropTableIfExists("class")];
                 case 10:
                     _a.sent();
-                    return [4 /*yield*/, knex.schema.dropTableIfExists("class")];
+                    return [4 /*yield*/, knex.schema.dropTableIfExists("yoga_type")];
                 case 11:
                     _a.sent();
-                    return [4 /*yield*/, knex.schema.dropTableIfExists("yoga_type")];
-                case 12:
-                    _a.sent();
                     return [4 /*yield*/, knex.schema.dropTableIfExists("users")];
-                case 13:
+                case 12:
                     _a.sent();
                     return [2 /*return*/];
             }

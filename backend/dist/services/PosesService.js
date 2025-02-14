@@ -46,7 +46,7 @@ var PosesService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.knex
-                            .select("pose.id", "pose.name as name", "image", "target_area.name as target_name")
+                            .select("pose.id", "pose.name as name", "image", "target_area.name as target_name", "detect_id")
                             .from("pose")
                             .innerJoin("target_area", "pose.target_area_id", "target_area.id")];
                     case 1: return [2 /*return*/, _a.sent()];

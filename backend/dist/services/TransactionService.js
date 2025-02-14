@@ -46,12 +46,25 @@ var TransactionInfoService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.knex
-                            .select("user_credit_record.type", "user_credit_record.created_at as date", "user_credit_record.credit", "class.name as class", "packages.name as package")
+                            .select("user_credit_record.type", "user_credit_record.created_at as date", "user_credit_record.credit", "class.name as class", "packages.name as package", "transaction_id", "refund_related_id")
                             .from("user_credit_record")
                             .leftJoin("packages", "packages.id", "user_credit_record.package_id")
                             .leftJoin("class", "class.id", "user_credit_record.class_id")
                             .where("user_id", user_id)
                             .orderBy("user_credit_record.created_at", "desc")];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    TransactionInfoService.prototype.getBanks = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.knex
+                            .select("*")
+                            .from("bank").where("status", "active")
+                            .orderBy("code", "asc")];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });

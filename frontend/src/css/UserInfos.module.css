@@ -121,3 +121,15 @@
   justify-content: flex-end;
   margin: 20px 0;
 }
+
+.camIcon{
+  /* position:absolute;
+  left:51px;
+  bottom: -2px; */
+  background-color: white;
+  border-radius: 100%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  
+  }

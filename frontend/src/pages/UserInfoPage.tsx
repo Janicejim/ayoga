@@ -5,6 +5,7 @@ import userInfoStyle from "../css/UserInfos.module.css";
 import defaultIcon from "../assets/avatar-big.png";
 import { getBoxInfo } from "../redux/userInfo/thunks";
 import {
+  fetchEditIcon,
   fetchGetBookingInfo,
   fetchGetBookmarkInfo,
   fetchGetHostInfo,
@@ -16,6 +17,9 @@ import { TabView, TabPanel } from "primereact/tabview";
 import Class from "../components/Class";
 import { AnimatePresence, motion } from "framer-motion";
 import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
+import FileInputWithCamera from "../components/FileInputWithCamera";
+import { resize } from "../utils/resize";
+import { showMsgAlert } from "../utils/alert";
 
 export interface ClassItem {
   image: string;
@@ -47,7 +51,7 @@ export default function UserInfoPage() {
   const isTeacherMode = useSelector(
     (state: IRootState) => state.auth.isTeacherMode
   );
-
+  // const [userIcon, setUserIcon] = useState<any>(icon)
   async function getBookingInfo() {
     const res = await fetchGetBookingInfo();
     const bookingResult = await res.json();
@@ -77,6 +81,20 @@ export default function UserInfoPage() {
       setHosIsEndItem(end)
     }
   }
+  const handleIconSelect = async (file: any) => {
+    let formData = new FormData()
+    formData.append("icon", await resize(file))
+
+    let result = await fetchEditIcon(formData)
+    if (!result.success) {
+      showMsgAlert("error", result.msg)
+      return
+    }
+
+    dispatch(getBoxInfo());
+
+
+  };
 
   useEffect(() => {
 
@@ -97,6 +115,9 @@ export default function UserInfoPage() {
     setShowItem(false);
   };
 
+
+
+
   return (
     <div className="container">
       <div className={`row ${userInfoStyle.userInfoTop}`}>
@@ -109,14 +130,19 @@ export default function UserInfoPage() {
                 className={userInfoStyle.userIcon}
                 src={defaultIcon}
                 alt="lol"
+                key={defaultIcon}
               />
             ) : (
               <img
                 className={userInfoStyle.userIcon}
                 src={`${REACT_APP_UPLOAD_IMAGE}/${icon}`}
                 alt="lol"
+                key={icon}
               />
             )}
+
+            <div className={userInfoStyle.camIcon}>     <FileInputWithCamera onFileSelect={handleIconSelect} /></div>
+
           </div>
 
           <div className={userInfoStyle.userText}>
@@ -147,7 +173,7 @@ export default function UserInfoPage() {
               <div className={userInfoStyle.campaignsTitle}>Your Bookings</div>
               <div className="row row-cols-1 row-cols-md-4 g-4 try-container">
                 <TabView style={{ width: "100%" }}>
-                  <TabPanel style={{ textDecoration: 'none', color: 'inherit' }} header="In progress">
+                  <TabPanel header="In progress">
                     <div className="d-flex flex-wrap">
                       {bookingInProgressItem && bookingInProgressItem.length > 0 &&
                         bookingInProgressItem.map(eachClass =>

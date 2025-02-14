@@ -65,6 +65,29 @@ var TransactionInfoController = /** @class */ (function () {
                 }
             });
         }); };
+        this.getBanks = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+            var data, error_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.transactionInfoService.getBanks()];
+                    case 1:
+                        data = _a.sent();
+                        res.json({ success: true, data: data });
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_2 = _a.sent();
+                        console.log(error_2);
+                        res.status(401).json({
+                            msg: "system error",
+                            success: false,
+                        });
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        }); };
     }
     return TransactionInfoController;
 }());

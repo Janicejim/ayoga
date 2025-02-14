@@ -14,3 +14,9 @@ transactionInfoRoutes.get(
   transactionInfoController.getTransactionInfo
 );
 
+transactionInfoRoutes.get(
+  "/banks",
+
+  transactionInfoController.getBanks
+);
+

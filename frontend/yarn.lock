@@ -7960,6 +7960,13 @@ react-big-calendar@^0.39.3:
     react-overlays "^4.1.1"
     uncontrollable "^7.0.0"
 
+react-bootstrap-icons@^1.11.5:
+  version "1.11.5"
+  resolved "https://registry.yarnpkg.com/react-bootstrap-icons/-/react-bootstrap-icons-1.11.5.tgz#9b91a0bf0d5505d92c3574f1f990bb52f36a3ec0"
+  integrity sha512-eOhtFJMUqw98IJcfKJsSMZkFHCeNPTTwXZAe9V9d4mT22ARmbrISxPO9GmtWWuf72zQctLeZMGodX/q6wrbYYg==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-bootstrap@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/react-bootstrap/-/react-bootstrap-2.1.2.tgz#a81161821c351d5e0eaed5bb85d50659736f2aa4"
@@ -9147,6 +9154,11 @@ sweetalert2@^11.10.8:
   version "11.10.8"
   resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-11.10.8.tgz#eea4660d14f567285a410a7f247e7654e0de532c"
   integrity sha512-oAkYROBfXBY+4sVbQEIcN+ZxAx69lsmz5WEBwdEpyS4m59vOBNlRU5/fJpAI1MVfiDwFZiGwVzB/KBpOyfLNtg==
+
+swiper@^11.2.3:
+  version "11.2.3"
+  resolved "https://registry.yarnpkg.com/swiper/-/swiper-11.2.3.tgz#6358e8169dcd78fc1dffb65bb29b5875c7bcedcc"
+  integrity sha512-24m5tqHCd1Wmp9+86aKDoIGMsZGEjIL++3nuB1UjhAhIlvwj4k0Jikxu9PGQ/VswLpoje6JtMDWo12uu4aS2FA==
 
 symbol-tree@^3.2.4:
   version "3.2.4"

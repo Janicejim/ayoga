@@ -143,32 +143,27 @@ WHERE
     let txn = await this.knex.transaction();
     try {
       //Insert student use credit record
-      await txn("user_credit_record").insert({
+      let useRecord = await txn("user_credit_record").insert({
         type: "use",
         user_id: userId,
         class_id: classId,
         credit: -classCredit,
-      });
+      }).returning("id");
       //insert teacher earn credit record:90%
-      await txn("user_credit_record").insert({
+      let earnRecord = await txn("user_credit_record").insert({
         type: "earn",
         user_id: teacherId,
         class_id: classId,
         credit: classCredit
-      });
-      //insert company earn credit record:10%
+      }).returning("id");
 
-      // let adminId = (
-      //   await txn("users").select("id").where("email", "admin@admin.com")
-      // )[0].id;
 
-      // await txn("user_credit_record").insert({
-      //   type: "earn",
-      //   user_id: adminId,
-      //   class_id: classId,
-      //   credit: classCredit * 0.1,
-      //   status: "success"
-      // });
+      let timestamp = Date.now();
+      let earnTransaction_id = `en${timestamp}-${earnRecord[0].id}`.split("-").join("");
+      let useTransaction_id = `ue${timestamp}-${useRecord[0].id}`.split("-").join("");
+
+      await txn("user_credit_record").update({ transaction_id: earnTransaction_id }).where("id", earnRecord[0].id);
+      await txn("user_credit_record").update({ transaction_id: useTransaction_id }).where("id", useRecord[0].id);
 
       // add to student_class
       await txn("student_class").insert({
@@ -205,19 +200,19 @@ WHERE
     let txn = await this.knex.transaction();
     try {
       //amend teacher and student records to refund
+      let timestamp = Date.now();
 
       for (let record of records) {
-
-
-
-        await txn("user_credit_record").insert({
+        let refundRecord = await txn("user_credit_record").insert({
           type: record.type == "earn" ? "student-refund" : "refund",
           credit: -record.credit,
           class_id: record.class_id,
-          user_id: record.user_id
-        })
+          user_id: record.user_id,
+          refund_related_id: record.transaction_id
+        }).returning("id")
 
-
+        let transaction_id = `rf${timestamp}-${refundRecord[0].id}`.split("-").join("");
+        await txn("user_credit_record").update({ transaction_id }).where("id", refundRecord[0].id);
 
 
       }
@@ -259,14 +254,14 @@ WHERE
   public async checkCreditRecords(classId: number, userId: number) {
     const useCreditRecord = (
       await this.knex.raw(
-        `select id,credit,type,class_id,user_id from user_credit_record where class_id=? and user_id=? and type='use'`,
+        `select id,transaction_id,credit,type,class_id,user_id from user_credit_record where class_id=? and user_id=? and type='use'`,
         [classId, userId]
       )
     ).rows;
 
     const earnCreditRecord = (
       await this.knex.raw(
-        `select id,credit,type,class_id,user_id from user_credit_record where class_id=? and type='earn'`,
+        `select id,transaction_id,credit,type,class_id,user_id from user_credit_record where class_id=? and type='earn'`,
         [classId]
       )
     ).rows;

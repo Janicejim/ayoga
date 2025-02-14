@@ -102,12 +102,35 @@ var UserInfoService = /** @class */ (function () {
     };
     UserInfoService.prototype.withdrawalCredit = function (user_id, credit, full_name, bank_id, bank_number) {
         return __awaiter(this, void 0, void 0, function () {
+            var txn, record, timestamp, transaction_id, e_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.knex("user_credit_record").insert({ user_id: user_id, credit: -credit, full_name: full_name, bank_id: bank_id, bank_number: bank_number, transaction_id: "wl14343", type: "withdrawal" })];
+                    case 0: return [4 /*yield*/, this.knex.transaction()];
                     case 1:
+                        txn = _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 6, , 8]);
+                        return [4 /*yield*/, txn("user_credit_record").insert({ user_id: user_id, credit: -credit, full_name: full_name, bank_id: bank_id, bank_number: bank_number, type: "withdrawal" }).returning("id")];
+                    case 3:
+                        record = _a.sent();
+                        timestamp = Date.now();
+                        transaction_id = "wl".concat(timestamp, "-").concat(record[0].id).split("-").join("");
+                        return [4 /*yield*/, txn("user_credit_record").update({ transaction_id: transaction_id }).where("id", record[0].id)];
+                    case 4:
+                        _a.sent();
+                        return [4 /*yield*/, txn.commit()];
+                    case 5:
+                        _a.sent();
+                        return [3 /*break*/, 8];
+                    case 6:
+                        e_1 = _a.sent();
+                        console.log(e_1);
+                        return [4 /*yield*/, txn.rollback()];
+                    case 7:
                         _a.sent();
                         return [2 /*return*/];
+                    case 8: return [2 /*return*/];
                 }
             });
         });

@@ -99,6 +99,7 @@ export async function up(knex: Knex) {
       table.integer("bank_id").references("bank.id");
       table.string("bank_number");
       table.string("transaction_id")
+      table.string("refund_related_id");
       table.timestamps(false, true);
     });
   }
@@ -117,6 +118,7 @@ export async function up(knex: Knex) {
       table.string("name");
       table.string("image");
       table.integer("target_area_id").references("target_area.id");
+      table.integer("detect_id")
       table.enum("level", ["beginner", "intermediate"]);
       table.timestamps(false, true);
     });
@@ -129,16 +131,6 @@ export async function up(knex: Knex) {
       table.integer("user_id").references("users.id");
       table.integer("teacher_id").references("users.id");
       table.integer("class_id").references("class.id");
-      table.timestamps(false, true);
-    });
-  }
-
-  if (!(await knex.schema.hasTable("pose_history"))) {
-    await knex.schema.createTable("pose_history", (table) => {
-      table.increments();
-      table.integer("user_id").references("users.id");
-      table.integer("pose_id").references("pose.id");
-      table.integer("accuracy");
       table.timestamps(false, true);
     });
   }
@@ -177,7 +169,6 @@ export async function up(knex: Knex) {
 export async function down(knex: Knex) {
   await knex.schema.dropTableIfExists("student_comment");
   await knex.schema.dropTableIfExists("teacher_info");
-  await knex.schema.dropTableIfExists("pose_history");
   await knex.schema.dropTableIfExists("bookmark");
   await knex.schema.dropTableIfExists("pose");
   await knex.schema.dropTableIfExists("target_area");

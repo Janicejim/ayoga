@@ -12,4 +12,5 @@ exports.transactionInfoService = new TransactionService_1.TransactionInfoService
 var transactionInfoController = new TransactionController_1.TransactionInfoController(exports.transactionInfoService);
 exports.transactionInfoRoutes = express_1.default.Router();
 exports.transactionInfoRoutes.get("/", transactionInfoController.getTransactionInfo);
+exports.transactionInfoRoutes.get("/banks", transactionInfoController.getBanks);
 //# sourceMappingURL=TransactionRoutes.js.map

@@ -59,6 +59,7 @@ var PackageService = /** @class */ (function () {
     };
     PackageService.prototype.addCreditRecord = function (user_id, package_id, price) {
         return __awaiter(this, void 0, void 0, function () {
+            var record, timestamp, transaction_id;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.knex("user_credit_record").insert({
@@ -66,8 +67,15 @@ var PackageService = /** @class */ (function () {
                             package_id: package_id,
                             credit: price,
                             type: "top-up",
-                        })];
-                    case 1: return [2 /*return*/, _a.sent()];
+                        }).returning("id")];
+                    case 1:
+                        record = _a.sent();
+                        timestamp = Date.now();
+                        transaction_id = "tp".concat(timestamp, "-").concat(record[0].id).split("-").join("");
+                        return [4 /*yield*/, this.knex("user_credit_record").update({ transaction_id: transaction_id }).where("id", record[0].id)];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/];
                 }
             });
         });

@@ -225,7 +225,20 @@ export class TeacherService {
 
     let comments = (
       await this.knex.raw(
-        `select student_comment.id,users.name,icon,class.name as class_name,student_comment.updated_at,comment,star from student_class join class on class.id=student_class.class_id join users on student_class.user_id=users.id right join student_comment on student_comment.class_id =student_class.class_id where teacher_id =? order by student_comment.created_at desc`,
+        `SELECT distinct(student_comment.id), 
+       users.name, 
+       users.icon, 
+       student_comment.updated_at, 
+       student_comment.comment, 
+       student_comment.star
+FROM student_comment 
+LEFT JOIN student_class ON student_comment.class_id = student_class.class_id 
+LEFT JOIN users ON student_comment.user_id = users.id 
+left join class on student_comment.class_id =class.id
+where class.teacher_id =?
+group by student_comment.id,users.name,users.icon
+ORDER BY student_comment.updated_at DESC
+`,
         [teacher_id]
       )
     ).rows;
@@ -291,8 +304,18 @@ where status='accept' order by score desc limit 10
 
     return (
       await this.knex.raw(
-        `select student_comment.id,users.name,icon,student_comment.updated_at,comment,star from student_class join class on class.id=student_class.class_id join users on student_class.user_id=users.id right join student_comment on student_comment.class_id =student_class.class_id order by student_comment.created_at desc
- limit 10
+        `SELECT distinct(student_comment.id), 
+       users.name, 
+       users.icon, 
+       student_comment.updated_at, 
+       student_comment.comment, 
+       student_comment.star
+FROM student_comment 
+LEFT JOIN student_class ON student_comment.class_id = student_class.class_id 
+LEFT JOIN users ON student_comment.user_id = users.id 
+left join class on student_comment.class_id =class.id
+group by student_comment.id,users.name,users.icon
+ORDER BY student_comment.updated_at desc  limit 10
 `,
       )
     ).rows;

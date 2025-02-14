@@ -184,7 +184,7 @@ var ClassService = /** @class */ (function () {
     };
     ClassService.prototype.toReserveClassSeat = function (teacherId, classId, userId, classCredit) {
         return __awaiter(this, void 0, void 0, function () {
-            var txn, e_1;
+            var txn, useRecord, earnRecord, timestamp, earnTransaction_id, useTransaction_id, e_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.knex.transaction()];
@@ -192,70 +192,53 @@ var ClassService = /** @class */ (function () {
                         txn = _a.sent();
                         _a.label = 2;
                     case 2:
-                        _a.trys.push([2, 7, , 9]);
-                        //Insert student use credit record
+                        _a.trys.push([2, 9, , 11]);
                         return [4 /*yield*/, txn("user_credit_record").insert({
                                 type: "use",
                                 user_id: userId,
                                 class_id: classId,
                                 credit: -classCredit,
-                            })];
+                            }).returning("id")];
                     case 3:
-                        //Insert student use credit record
-                        _a.sent();
-                        //insert teacher earn credit record:90%
+                        useRecord = _a.sent();
                         return [4 /*yield*/, txn("user_credit_record").insert({
                                 type: "earn",
                                 user_id: teacherId,
                                 class_id: classId,
                                 credit: classCredit
-                            })];
+                            }).returning("id")];
                     case 4:
-                        //insert teacher earn credit record:90%
+                        earnRecord = _a.sent();
+                        timestamp = Date.now();
+                        earnTransaction_id = "en".concat(timestamp, "-").concat(earnRecord[0].id).split("-").join("");
+                        useTransaction_id = "ue".concat(timestamp, "-").concat(useRecord[0].id).split("-").join("");
+                        return [4 /*yield*/, txn("user_credit_record").update({ transaction_id: earnTransaction_id }).where("id", earnRecord[0].id)];
+                    case 5:
                         _a.sent();
-                        //insert company earn credit record:10%
-                        // let adminId = (
-                        //   await txn("users").select("id").where("email", "admin@admin.com")
-                        // )[0].id;
-                        // await txn("user_credit_record").insert({
-                        //   type: "earn",
-                        //   user_id: adminId,
-                        //   class_id: classId,
-                        //   credit: classCredit * 0.1,
-                        //   status: "success"
-                        // });
+                        return [4 /*yield*/, txn("user_credit_record").update({ transaction_id: useTransaction_id }).where("id", useRecord[0].id)];
+                    case 6:
+                        _a.sent();
                         // add to student_class
                         return [4 /*yield*/, txn("student_class").insert({
                                 class_id: classId,
                                 user_id: userId,
                                 status: 'active'
                             })];
-                    case 5:
-                        //insert company earn credit record:10%
-                        // let adminId = (
-                        //   await txn("users").select("id").where("email", "admin@admin.com")
-                        // )[0].id;
-                        // await txn("user_credit_record").insert({
-                        //   type: "earn",
-                        //   user_id: adminId,
-                        //   class_id: classId,
-                        //   credit: classCredit * 0.1,
-                        //   status: "success"
-                        // });
+                    case 7:
                         // add to student_class
                         _a.sent();
                         return [4 /*yield*/, txn.commit()];
-                    case 6:
+                    case 8:
                         _a.sent();
                         return [2 /*return*/, { success: true }];
-                    case 7:
+                    case 9:
                         e_1 = _a.sent();
                         console.log(e_1);
                         return [4 /*yield*/, txn.rollback()];
-                    case 8:
+                    case 10:
                         _a.sent();
                         return [2 /*return*/, { success: false }];
-                    case 9: return [2 /*return*/];
+                    case 11: return [2 /*return*/];
                 }
             });
         });
@@ -272,7 +255,7 @@ var ClassService = /** @class */ (function () {
     };
     ClassService.prototype.toCancelClassSeat = function (records, classId, userId) {
         return __awaiter(this, void 0, void 0, function () {
-            var txn, _i, records_1, record, e_2;
+            var txn, timestamp, _i, records_1, record, refundRecord, transaction_id, e_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.knex.transaction()];
@@ -280,44 +263,50 @@ var ClassService = /** @class */ (function () {
                         txn = _a.sent();
                         _a.label = 2;
                     case 2:
-                        _a.trys.push([2, 9, , 11]);
+                        _a.trys.push([2, 10, , 12]);
+                        timestamp = Date.now();
                         _i = 0, records_1 = records;
                         _a.label = 3;
                     case 3:
-                        if (!(_i < records_1.length)) return [3 /*break*/, 6];
+                        if (!(_i < records_1.length)) return [3 /*break*/, 7];
                         record = records_1[_i];
                         return [4 /*yield*/, txn("user_credit_record").insert({
                                 type: record.type == "earn" ? "student-refund" : "refund",
                                 credit: -record.credit,
                                 class_id: record.class_id,
-                                user_id: record.user_id
-                            })];
+                                user_id: record.user_id,
+                                refund_related_id: record.transaction_id
+                            }).returning("id")];
                     case 4:
-                        _a.sent();
-                        _a.label = 5;
+                        refundRecord = _a.sent();
+                        transaction_id = "rf".concat(timestamp, "-").concat(refundRecord[0].id).split("-").join("");
+                        return [4 /*yield*/, txn("user_credit_record").update({ transaction_id: transaction_id }).where("id", refundRecord[0].id)];
                     case 5:
+                        _a.sent();
+                        _a.label = 6;
+                    case 6:
                         _i++;
                         return [3 /*break*/, 3];
-                    case 6: 
+                    case 7: 
                     // update student_class record to inactive
                     return [4 /*yield*/, txn("student_class").update({ status: "inactive" })
                             .where("class_id", classId)
                             .andWhere("user_id", userId)];
-                    case 7:
+                    case 8:
                         // update student_class record to inactive
                         _a.sent();
                         return [4 /*yield*/, txn.commit()];
-                    case 8:
-                        _a.sent();
-                        return [3 /*break*/, 11];
                     case 9:
+                        _a.sent();
+                        return [3 /*break*/, 12];
+                    case 10:
                         e_2 = _a.sent();
                         console.log(e_2);
                         return [4 /*yield*/, txn.rollback()];
-                    case 10:
+                    case 11:
                         _a.sent();
-                        return [3 /*break*/, 11];
-                    case 11: return [2 /*return*/];
+                        return [3 /*break*/, 12];
+                    case 12: return [2 /*return*/];
                 }
             });
         });
@@ -351,10 +340,10 @@ var ClassService = /** @class */ (function () {
             var useCreditRecord, earnCreditRecord;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.knex.raw("select id,credit,type,class_id,user_id from user_credit_record where class_id=? and user_id=? and type='use'", [classId, userId])];
+                    case 0: return [4 /*yield*/, this.knex.raw("select id,transaction_id,credit,type,class_id,user_id from user_credit_record where class_id=? and user_id=? and type='use'", [classId, userId])];
                     case 1:
                         useCreditRecord = (_a.sent()).rows;
-                        return [4 /*yield*/, this.knex.raw("select id,credit,type,class_id,user_id from user_credit_record where class_id=? and type='earn'", [classId])];
+                        return [4 /*yield*/, this.knex.raw("select id,transaction_id,credit,type,class_id,user_id from user_credit_record where class_id=? and type='earn'", [classId])];
                     case 2:
                         earnCreditRecord = (_a.sent()).rows;
                         return [2 /*return*/, { useCreditRecord: useCreditRecord[0], earnCreditRecord: earnCreditRecord[0] }];

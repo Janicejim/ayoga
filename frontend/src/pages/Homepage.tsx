@@ -6,13 +6,15 @@ import { useSelector } from "react-redux";
 import Comments from "../components/Comments";
 import { fetchAllClasses } from "../api/class";
 import { useEffect, useState } from "react";
-import { Carousel } from "primereact/carousel";
 import Class from "../components/Class";
 import { fetchHighScoreTeachers, fetchNewestComments } from "../api/teacher";
 import { Avatar } from "primereact/avatar";
 import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
-
-
+import { Swiper, SwiperSlide } from 'swiper/react';
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
+import { Pagination } from 'swiper/modules';
 export default function Homepage() {
   const [classes, setClasses] = useState<any[]>([])
   const [teachers, setTeachers] = useState<any[]>([])
@@ -21,7 +23,7 @@ export default function Homepage() {
     (state: IRootState) => state.auth.isAuthenticate
   );
 
-
+  const [slidesPerView, setSlidesPerView] = useState(getSlidesPerView());
   async function getClasses() {
     const res = await fetchAllClasses();
     const allClassesResult = await res.json();
@@ -46,12 +48,24 @@ export default function Homepage() {
   }, [])
 
 
-  const classTemplate = (eachClass: any) => {
-    return (
-      <Class  {...eachClass}
-        key={eachClass.id} />
-    )
+
+  function getSlidesPerView() {
+    if (window.innerWidth < 480) return 1;
+    if (window.innerWidth < 850) return 2;
+    return 3;
   }
+
+  useEffect(() => {
+    const handleResize = () => {
+      setSlidesPerView(getSlidesPerView());
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
 
   return (
@@ -95,8 +109,26 @@ export default function Homepage() {
             <h3 > Class @ AYoga</h3>
             <Link to="/classes"><div>More</div></Link>
           </div>
-          {classes.length > 0 && <div className={`card ${homeStyles.classContainer}`}>
-            <Carousel value={classes.slice(0, 11)} numVisible={3} numScroll={3} itemTemplate={classTemplate} />
+          {classes.length > 0 && <div className={` ${homeStyles.classContainer}`}>
+
+            <Swiper
+              slidesPerView={slidesPerView}
+              spaceBetween={1}
+              pagination={{
+                clickable: true,
+              }}
+              modules={[Pagination]}
+              className="mySwiper"
+            >
+              {classes.slice(0, 11).map((eachClass: any) => {
+                return (<SwiperSlide key={eachClass.id}>  <Class  {...eachClass}
+                /></SwiperSlide>)
+
+              })}
+
+
+            </Swiper>
+
           </div>}
         </Row>
 
@@ -119,14 +151,31 @@ export default function Homepage() {
 
             <Row className={homeStyles.rowSpace} >
               <h3 className={homeStyles.sectionSubTitle}>Teacher @ AYoga</h3>
-              <div className={homeStyles.flex} >
-                {teachers.map((teacher: any) => (
-                  <Link style={{ margin: "2rem" }} key={teacher.id} to={`/teacher/${teacher.id}`}>
-                    <Avatar image={`${REACT_APP_UPLOAD_IMAGE}/${teacher.photo}`} className="mr-2" size="xlarge" shape="circle" />
-                  </Link>
-                ))
+              <div style={{ marginBottom: "2rem", marginTop: "1rem" }}>
+                <Swiper
+                  slidesPerView={5}
+                  spaceBetween={2}
+                  pagination={{
+                    clickable: true,
+                  }}
+                  modules={[Pagination]}
+                  className="mySwiper"
+                >
+                  {teachers.map((teacher: any) => {
+                    return (<SwiperSlide key={teacher.id}>
+                      <Link key={teacher.id} to={`/teacher/${teacher.id}`}>
+                        <Avatar image={`${REACT_APP_UPLOAD_IMAGE}/${teacher.photo}`} className="mr-2" size="xlarge" shape="circle" />
+                      </Link>
+                    </SwiperSlide>)
 
-                } </div>
+                  })}
+
+
+                </Swiper>
+
+
+
+              </div>
             </Row>
             <Row className={homeStyles.rowSpace} >
               <Comments data={comments} />

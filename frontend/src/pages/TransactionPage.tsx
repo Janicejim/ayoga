@@ -38,6 +38,7 @@ export default function TransactionPage() {
             <Table className={styles.myTable} responsive="md">
               <thead>
                 <tr>
+                  <th className={styles.tableTitle}>Transaction id</th>
                   <th className={styles.tableTitle}>Date & Time</th>
                   <th className={styles.tableTitle}>Class</th>
                   <th className={styles.tableTitle}>Package</th>
@@ -50,6 +51,7 @@ export default function TransactionPage() {
                   transactionItems.map((item, itemIndex) => {
                     return (
                       <tr key={itemIndex}>
+                        <td className={styles.tableItem}>{item.transaction_id}</td>
                         <td className={styles.tableItem}>
                           {/* {convertToLocalDate(item.date)} */}
                           {moment(`${item.date}`).format("LLL")}

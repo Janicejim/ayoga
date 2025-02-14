@@ -95,3 +95,29 @@ export async function changePassword(data: any) {
   const result = await res.json();
   return result;
 }
+
+export async function fetchBanks() {
+  const res = await fetch(`${REACT_APP_API_SERVER}/api/transaction/banks`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  const result = await res.json();
+  return result;
+}
+
+export async function fetchEditIcon(formData: any) {
+  const res = await fetch(`${REACT_APP_API_SERVER}/api/user/profile/pic`, {
+    method: "PATCH",
+    headers: {
+
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+
+    }, body: formData
+  })
+
+  const result = await res.json();
+
+  return result
+
+}

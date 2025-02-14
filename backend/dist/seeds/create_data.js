@@ -45,7 +45,7 @@ var hash_1 = require("../utils/hash");
 var path_1 = __importDefault(require("path"));
 function seed(knex) {
     return __awaiter(this, void 0, void 0, function () {
-        var txn, tables, _i, tables_1, table, dataWorkbook, userData, yogaTypeData, classData, studentClassData, packages, user_credit_record, targetAreaData, poseData, bookmarkData, poseHistoryData, bank, teacherInfoData, studentCommentData, _a, userData_1, user, _b, _c, e_1;
+        var txn, tables, _i, tables_1, table, dataWorkbook, userData, yogaTypeData, classData, studentClassData, packages, user_credit_record, targetAreaData, poseData, bookmarkData, bank, teacherInfoData, studentCommentData, _a, userData_1, user, _b, _c, e_1;
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0: return [4 /*yield*/, knex.transaction()];
@@ -53,11 +53,10 @@ function seed(knex) {
                     txn = _d.sent();
                     _d.label = 2;
                 case 2:
-                    _d.trys.push([2, 25, , 27]);
+                    _d.trys.push([2, 24, , 26]);
                     tables = [
                         "student_comment",
                         "teacher_info",
-                        "pose_history",
                         "bookmark",
                         "pose",
                         "target_area",
@@ -92,7 +91,6 @@ function seed(knex) {
                     targetAreaData = xlsx_1.default.utils.sheet_to_json(dataWorkbook.Sheets["target_area"]);
                     poseData = xlsx_1.default.utils.sheet_to_json(dataWorkbook.Sheets["pose"]);
                     bookmarkData = xlsx_1.default.utils.sheet_to_json(dataWorkbook.Sheets["bookmark"]);
-                    poseHistoryData = xlsx_1.default.utils.sheet_to_json(dataWorkbook.Sheets["pose_history"]);
                     bank = xlsx_1.default.utils.sheet_to_json(dataWorkbook.Sheets["bank"]);
                     teacherInfoData = xlsx_1.default.utils.sheet_to_json(dataWorkbook.Sheets["teacher_info"]);
                     studentCommentData = xlsx_1.default.utils.sheet_to_json(dataWorkbook.Sheets["student_comment"]);
@@ -160,33 +158,28 @@ function seed(knex) {
                 case 20:
                     // Inserts bookmark
                     _d.sent();
-                    // Inserts history
-                    return [4 /*yield*/, txn("pose_history").insert(poseHistoryData)];
-                case 21:
-                    // Inserts history
-                    _d.sent();
                     // Inserts teacher_info
                     return [4 /*yield*/, txn("teacher_info").insert(teacherInfoData)];
-                case 22:
+                case 21:
                     // Inserts teacher_info
                     _d.sent();
                     // Inserts student_comment
                     return [4 /*yield*/, txn("student_comment").insert(studentCommentData)];
-                case 23:
+                case 22:
                     // Inserts student_comment
                     _d.sent();
                     return [4 /*yield*/, txn.commit()];
-                case 24:
+                case 23:
                     _d.sent();
-                    return [3 /*break*/, 27];
-                case 25:
+                    return [3 /*break*/, 26];
+                case 24:
                     e_1 = _d.sent();
                     console.log(e_1);
                     return [4 /*yield*/, txn.rollback()];
-                case 26:
+                case 25:
                     _d.sent();
-                    return [3 /*break*/, 27];
-                case 27: return [2 /*return*/];
+                    return [3 /*break*/, 26];
+                case 26: return [2 /*return*/];
             }
         });
     });

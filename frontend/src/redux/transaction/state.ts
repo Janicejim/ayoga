@@ -4,6 +4,7 @@ export interface TransactionInfoState {
   package: string;
   credit: number;
   type: string;
+  transaction_id: string
 }
 
 export interface ITransactionInfoState {

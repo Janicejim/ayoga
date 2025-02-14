@@ -1,18 +1,11 @@
-.webCamAndCanvas{
-    position:absolute;
-    left:1rem;
-    top:4rem;
-    padding:0;
 
+.msg{
+    font-size: 2rem;
+    display: flex;
+    justify-content: center;
+    margin: auto;
 }
 
-.canvasOnly{
-    position:absolute;
-    left:1rem;
-    top:4rem;
-    padding:0;
-    z-index: 1;
-}
 
 .dropdownMenu{
     font-family: var(--primary-font);
@@ -31,8 +24,11 @@
     margin: 0.5rem 0
 }
 
-.steps, .poseToDo, .stopPoseBtn, .dropDownItem, .startPosing{
+.steps, .poseToDo, .dropDownItem, .startPosing{
     font-family: var(--primary-font);
+}
+.stopPoseBtn{
+    font-family: red !important;
 }
 
 .posePerformance{

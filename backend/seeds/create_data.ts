@@ -21,7 +21,6 @@ export async function seed(knex: Knex): Promise<void> {
     let tables = [
       "student_comment",
       "teacher_info",
-      "pose_history",
       "bookmark",
       "pose",
       "target_area",
@@ -62,9 +61,7 @@ export async function seed(knex: Knex): Promise<void> {
     let bookmarkData = xlsx.utils.sheet_to_json(
       dataWorkbook.Sheets["bookmark"]
     );
-    let poseHistoryData = xlsx.utils.sheet_to_json(
-      dataWorkbook.Sheets["pose_history"]
-    );
+
     let bank = xlsx.utils.sheet_to_json(
       dataWorkbook.Sheets["bank"]
     );
@@ -113,10 +110,6 @@ export async function seed(knex: Knex): Promise<void> {
     // Inserts bookmark
 
     await txn("bookmark").insert(bookmarkData);
-
-    // Inserts history
-    await txn("pose_history").insert(poseHistoryData);
-
 
 
     // Inserts teacher_info

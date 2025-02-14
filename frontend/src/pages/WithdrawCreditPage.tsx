@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IRootState } from "../redux/store";
-import { fetchUserCredit, requestWithdrawal } from "../api/userInfo";
+import { fetchBanks, fetchUserCredit, requestWithdrawal } from "../api/userInfo";
 import loginStyles from "../css/Login.module.css";
 import { Container, Row, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import { showMsgAlert } from "../utils/alert";
 import { updateCredit } from "../redux/userInfo/actions";
+import { DropDown } from "../components/DropDown";
 
 interface FormState {
   withdrawalAmount: number;
@@ -21,8 +22,9 @@ function WithdrawCreditPage() {
   const [heldCredit, setHeldCredit] = useState<number>(0);
   const [unHoldCredit, setUnHoldCredit] = useState<number>(0);
   const [withdrawMaxCredit, setWithdrawMaxCredit] = useState<number>(0);
-
   const { user } = useSelector((state: IRootState) => state.auth);
+  const [banks, setBanks] = useState<any[]>([])
+  const [selectedBankId, setSelectedBankId] = useState<any>(0)
   const dispatch = useDispatch();
   const {
     register,
@@ -47,12 +49,26 @@ function WithdrawCreditPage() {
     dispatch(updateCredit(result.data.allCredit));
   }
 
+  async function getBanks() {
+    let result = await fetchBanks()
+    if (result.success) {
+      setBanks(result.data)
+    }
+
+  }
+
   useEffect(() => {
     getCredit();
+    getBanks()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSubmit = async (data: FormState) => {
+    if (!selectedBankId) {
+      showMsgAlert("error", "please select bank");
+      return
+    }
+    data.bank_id = selectedBankId
     let result = await requestWithdrawal(data);
     reset();
 
@@ -136,16 +152,9 @@ function WithdrawCreditPage() {
             <Row>
               <Form.Group className={` ${loginStyles.spaceBetween}`}>
                 <Form.Label>Bank Name:</Form.Label>
-                <Form.Control
-                  size="lg"
-                  type="text"
-                  {...register("bank_id", {
-                    required: "This is required"
-                  })}
-                />
-                <div className={loginStyles.error}>
-                  <ErrorMessage errors={errors} name="bank_id" />
-                </div>
+                <DropDown type="bank" data={banks} onChangeCurrentItem={(value: any) => setSelectedBankId(value.id)} />
+
+
               </Form.Group>
             </Row>
             <Row>

@@ -17,6 +17,17 @@ export class TransactionInfoController {
       });
     }
   };
+  getBanks = async (req: Request, res: Response) => {
+    try {
+      let data = await this.transactionInfoService.getBanks()
 
-
+      res.json({ success: true, data });
+    } catch (error) {
+      console.log(error);
+      res.status(401).json({
+        msg: "system error",
+        success: false,
+      });
+    }
+  };
 }

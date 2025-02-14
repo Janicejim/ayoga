@@ -218,6 +218,7 @@ var UserInfoController = /** @class */ (function () {
                                 _a.sent();
                                 res.json({
                                     success: true,
+                                    data: icon,
                                     msg: "update profile picture successfully"
                                 });
                                 return [3 /*break*/, 3];

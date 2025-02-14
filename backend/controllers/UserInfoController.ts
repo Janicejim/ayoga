@@ -123,6 +123,7 @@ export class UserInfoController {
 
         res.json({
           success: true,
+          data: icon,
           msg: "update profile picture successfully"
         });
       } catch (e) {
