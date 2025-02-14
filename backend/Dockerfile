@@ -3,7 +3,7 @@ WORKDIR /usr/src/app
 COPY  dist .                       
 COPY  package.json .
 COPY  init_data.xlsx .
-COPY  model .
+COPY  model ./model
 EXPOSE 8080   
 RUN ls -al                    
 CMD yarn install && \             
