@@ -1,6 +1,6 @@
 import { Button, Modal } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
-import styles from "../css/paymentSuccess.module.css";
+import styles from "../css/payment.module.css";
 import { useEffect } from "react";
 import { postPatchOrDeleteWithQueryOnly } from "../api/api";
 
