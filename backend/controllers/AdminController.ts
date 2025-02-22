@@ -3,7 +3,7 @@ import { AdminService } from "../services/AdminService";
 import sendEmail from "../utils/nodemailer";
 
 export class AdminController {
-  constructor(private adminService: AdminService) {}
+  constructor(private adminService: AdminService) { }
 
   getUser = async (req: Request, res: Response) => {
     try {
@@ -58,7 +58,7 @@ export class AdminController {
         await this.adminService.updateUserRole(+requestId, "teacher");
         await sendEmail(
           user[0].email,
-          "Apply Teacher Role Success",
+          "Ayoga: Apply Teacher Role Success",
           `You request for apply teacher role is success. Please logout and login again to reload the new role setting: ${process.env.FRONTEND_URL}. Thanks!`
         );
         res.json({
@@ -109,45 +109,17 @@ export class AdminController {
     }
   };
 
-  getUnCommentStudentSummary = async (req: Request, res: Response) => {
+  getTransactions = async (req: Request, res: Response) => {
     try {
-      let data = await this.adminService.getUnCommentStudentSummary();
-      res.json({ success: true, data });
-    } catch (error) {
-      console.log(error);
-      res.status(401).json({
-        msg: "system error",
-        success: false,
-      });
-    }
-  };
+      let data;
 
-  sendEmailToUnCommentStudent = async (req: Request, res: Response) => {
-    try {
-      let data = await this.adminService.getUnCommentStudentSummary();
-      if (data.length > 0) {
-        for (let record of data) {
-          sendEmail(
-            record.email,
-            "Give Comment",
-            `Please give your teacher a comment and score.Link:${process.env.FRONTEND_URL}/class/detail/${record.class_id}`
-          );
-        }
+      if (req.query.hasOwnProperty("keyword")) {
+        data = await this.adminService.getTransactionByKeyword(
+          req.query.keyword!.toString()
+        );
+      } else {
+        data = await this.adminService.getTransactions();
       }
-
-      res.json({ success: true, msg: "Send alert email successfully" });
-    } catch (error) {
-      console.log(error);
-      res.status(401).json({
-        msg: "system error",
-        success: false,
-      });
-    }
-  };
-  //to do:
-  getCompanyFinancialData = async (req: Request, res: Response) => {
-    try {
-      let data = await this.adminService.getCompanyFinancialData();
       res.json({ success: true, data });
     } catch (error) {
       console.log(error);
@@ -157,4 +129,29 @@ export class AdminController {
       });
     }
   };
+  //To do:
+  refundCaseHandle = async (req: Request, res: Response) => {
+    try {
+      const { user_id, class_id } = req.body
+      const creditRecordsRelated = await this.adminService.checkCreditRecords(
+        class_id,
+        user_id
+      );
+      await this.adminService.refundCaseHandle(
+        [creditRecordsRelated.useCreditRecord, creditRecordsRelated.earnCreditRecord],
+        class_id, user_id
+      );
+      res.status(200).json({
+        matchesGlob: `Refund success`,
+        success: true,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(401).json({
+        msg: "system error",
+        success: false,
+      });
+    }
+  };
+
 }

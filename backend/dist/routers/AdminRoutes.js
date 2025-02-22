@@ -15,8 +15,6 @@ exports.adminRoutes.get("/users", adminController.getUser);
 exports.adminRoutes.patch("/user/role", adminController.updateUserRole);
 exports.adminRoutes.get("/teacher/request", adminController.getTeacherRequests);
 exports.adminRoutes.post("/reply/request", adminController.replyTeacherRequests);
-exports.adminRoutes.get("/uncomment", adminController.getUnCommentStudentSummary);
-exports.adminRoutes.post("/uncomment/email", adminController.sendEmailToUnCommentStudent);
-//to do:
-exports.adminRoutes.get("/company/financial", adminController.getCompanyFinancialData);
+exports.adminRoutes.get("/transactions", adminController.getTransactions);
+exports.adminRoutes.put("/transactions", adminController.refundCaseHandle);
 //# sourceMappingURL=AdminRoutes.js.map

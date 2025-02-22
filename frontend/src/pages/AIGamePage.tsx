@@ -4,12 +4,11 @@ import * as poseDetection from "@tensorflow-models/pose-detection";
 import * as tf from "@tensorflow/tfjs";
 import { Button } from "react-bootstrap";
 import { DropDown } from "../components/DropDown";
-import AI_gameStyles from "../css/AI_game.module.css";
-import {
-  fetchAllPoses,
-} from "../api/poses";
+import AI_gameStyles from "../css/aiGame.module.css";
 import { convertToTitleCase } from "../utils/convertTitle";
 import { REACT_APP_API_SERVER, REACT_APP_UPLOAD_IMAGE } from "../utils/config";
+import { getData } from "../api/api";
+import { Pose } from "../utils/models";
 
 
 const defaultColor = "rgb(255,255,255)";
@@ -19,24 +18,22 @@ let skeletonColor = defaultColor;
 
 let interval: NodeJS.Timer;
 
-// flag variable is used to help capture the time when AI just detect
-// the pose as correct(probability more than threshold)
+
 let flag = false;
 
 export default function AIGamePage() {
-  const webcamRef = useRef(null);
-  const canvasRef = useRef(null);
+  const webcamRef = useRef<Webcam | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [color, setColor] = useState("red");
-  const [currentPose, setCurrentPose] = useState({ id: 1, name: "Bow pose", image: "bow.jpg", detect_id: 2 });
+  const [currentPose, setCurrentPose] = useState<Pose>({ id: 1, name: "Bow pose", image: "bow.jpg", detect_id: 2 });
   const [isStartPose, setIsStartPose] = useState(false);
-  const [poses, setPoses] = useState<any[]>([]);
-  const [msg, setMsg] = useState<string>("");
+  const [poses, setPoses] = useState<Pose[]>([]);
+  const [msg, setMsg] = useState<string>("Loading Model, please wait...");
 
 
 
   async function getPoses() {
-    let res = await fetchAllPoses();
-    let posesResult = await res.json();
+    let posesResult = await getData(`api/user/poses`);
     if (posesResult.success) {
       setPoses(posesResult.data);
     }
@@ -88,7 +85,7 @@ export default function AIGamePage() {
 
   // Draw between the detected 17 key-points
   function drawSegment(
-    ctx: any,
+    ctx: CanvasRenderingContext2D,
     [mx, my]: number[],
     [tx, ty]: number[],
     color: string
@@ -101,7 +98,7 @@ export default function AIGamePage() {
     ctx.stroke();
   }
   // Display 17 key-points on detected human body
-  function drawPoint(ctx: any, x: number, y: number, r: number, color: string) {
+  function drawPoint(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, color: string) {
     ctx.beginPath();
     ctx.arc(x, y, r, 0, 2 * Math.PI);
     ctx.fillStyle = color;
@@ -138,9 +135,7 @@ export default function AIGamePage() {
       POINTS.RIGHT_HIP
     );
     pose_center_new = tf.expandDims(pose_center_new, 1);
-
     pose_center_new = tf.broadcastTo(pose_center_new, [1, 17, 2]);
-    // return: shape(17,2)
     let d = tf.gather(tf.sub(landmarks, pose_center_new), 0, 0);
     let max_dist = tf.max(tf.norm(d, "euclidean", 0));
 
@@ -173,73 +168,68 @@ export default function AIGamePage() {
     let embedding = tf.reshape(landmarks, [1, 34]);
     return embedding;
   }
-  // Pro-Processing arrays of images function ends
 
   // To run self-trained poses classification Model
   const detectPose = async (
-    detector: any,
+    detector: poseDetection.PoseDetector,
     poseClassifier: any,
-    currentPose: any
+    currentPose: Pose
   ) => {
     try {
       if (
         typeof webcamRef.current !== "undefined" &&
         webcamRef.current !== null &&
-        //@ts-ignore
-        webcamRef.current.video.readyState === 4
+        webcamRef.current.video!.readyState === 4
       ) {
         let notDetected = 0;
 
 
         // Get Video Properties
-        //@ts-ignore
+
         const video = webcamRef.current.video;
-        //@ts-ignore
-        const videoWidth = webcamRef.current.video.videoWidth;
-        //@ts-ignore
-        const videoHeight = webcamRef.current.video.videoHeight;
+
+        const videoWidth = webcamRef.current.video!.videoWidth;
+
+        const videoHeight = webcamRef.current.video!.videoHeight;
 
         // Set video width
-        //@ts-ignore
-        webcamRef.current.video.width = videoWidth;
-        //@ts-ignore
-        webcamRef.current.video.height = videoHeight;
+
+        webcamRef.current.video!.width = videoWidth;
+
+        webcamRef.current.video!.height = videoHeight;
 
 
 
 
-        const pose = await detector.estimatePoses(video);
-        //@ts-ignore
-        const ctx = canvasRef.current.getContext("2d");
-        //@ts-ignore
-        canvasRef.current.width = videoWidth;
-        //@ts-ignore
-        canvasRef.current.height = videoHeight;
-        //@ts-ignore
-        ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        // console.log("pose[0]:", pose[0])
+        const pose = await detector.estimatePoses(video!);
+
+        const ctx = canvasRef.current!.getContext("2d");
+
+        canvasRef.current!.width = videoWidth;
+
+        canvasRef.current!.height = videoHeight;
+
+        ctx!.clearRect(0, 0, canvasRef.current!.width, canvasRef.current!.height);
         const keyPoints = pose[0].keypoints;
 
-        //@ts-ignore
-        let input = keyPoints.map((keyPoint) => {
-          if (keyPoint.score > 0.4) {
+        let input = keyPoints.map((keyPoint: poseDetection.Keypoint) => {
+          if (keyPoint.score! > 0.4) {
             if (
               !(keyPoint.name === "left_eye" || keyPoint.name === "right_eye")
             ) {
 
-              drawPoint(ctx, keyPoint.x, keyPoint.y, 8, defaultColor);
-              //@ts-ignore
-              let connections = keyPointConnections[keyPoint.name];
-              // console.log({ connections, keyPoint }, keyPoint.name)
-              //@ts-ignore
-              connections.forEach((connection) => {
+              drawPoint(ctx!, keyPoint.x, keyPoint.y, 8, defaultColor);
+
+              let connections = keyPointConnections[keyPoint.name as keyof typeof keyPointConnections];
+
+              connections.forEach((connection: any) => {
                 let conName: string = connection.toUpperCase();
                 //@ts-ignore
                 let pointX = keyPoints[POINTS[conName]].x;
                 //@ts-ignore
                 let pointY = keyPoints[POINTS[conName]].y;
                 drawSegment(
-                  ctx,
+                  ctx!,
                   [keyPoint.x, keyPoint.y],
 
                   [pointX, pointY],
@@ -254,9 +244,8 @@ export default function AIGamePage() {
           }
           return [keyPoint.x, keyPoint.y];
         });
-        // console.log({ input })
+
         if (notDetected > 4) {
-          // console.log("not detect >4")
           setColor("red")
           setMsg("Pose not match")
           skeletonColor = defaultColor;
@@ -266,7 +255,7 @@ export default function AIGamePage() {
         const classification = poseClassifier.predict(processedInput);
 
         classification.array().then((data: any) => {
-          const classNo = +currentPose.detect_id;
+          const classNo = +currentPose.detect_id!;
 
           if (data[0][classNo] > 0.9) {
 
@@ -277,7 +266,6 @@ export default function AIGamePage() {
             setMsg("Perfect")
             skeletonColor = rightPoseColor;
           } else {
-            // console.log("<0.9")
             setColor("red")
             setMsg("Pose not match")
 
@@ -313,7 +301,6 @@ export default function AIGamePage() {
         `${REACT_APP_API_SERVER}/modelV3.json`
       );
 
-      // CODE REVIEW: Take Lifecycle into consideration. If the user left the page without "stop pose", the interval will keep running.
 
       return (interval = setInterval(() => {
         detectPose(detector, poseClassifier, currentPose);
@@ -323,15 +310,6 @@ export default function AIGamePage() {
     []
   );
 
-  // CODE REVIEW: Recommend do this way
-  // useEffect(() => {
-  //   if (isStartPose === true) {
-  //     let interval = runMoveNet();
-  //     return () => {
-  //       clearInterval(interval)
-  //     }
-  //   }
-  // }, [isStartPose, runMoveNet])
 
   function startYoga() {
     setIsStartPose(true);
@@ -367,10 +345,9 @@ export default function AIGamePage() {
               </h5>
               {poses.length > 0 && !isStartPose && (
                 <DropDown
-                  className={AI_gameStyles.dropdownMenu}
-                  // poseList={poseList}
+                  // className={AI_gameStyles.dropdownMenu}
                   data={poses}
-                  onChangeCurrentItem={(pose: any) => {
+                  onChangeCurrentItem={(pose: Pose) => {
                     setCurrentPose(pose);
                   }}
                   type="ai"
@@ -392,7 +369,6 @@ export default function AIGamePage() {
                   camera, and wait for the webcam to load. Finish loading you will see the white landmark.
                 </div>
                 <br />
-                {/* <img src="../admin/useYourCam.png" alt="use Your Cam" height="120" width="auto"> */}
                 <div id="step2">
                   3. Perform the same pose as the image on the right, making sure
                   to face the same direction.

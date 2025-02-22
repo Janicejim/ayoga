@@ -108,28 +108,6 @@ input {
   border-radius: 0px !important;
 }
 
-.displayflex {
-  display: flex;
-  justify-content: center;
-}
-
-.imageboxgoogle {
-  display: flex;
-  justify-content: center;
-  border-radius: 10px;
-  border: none;
-  background: none;
-  outline: none;
-  margin-bottom: 30px;
-  border-radius: 10px;
-  max-width: 390px !important;
-  max-height: 390px !important;
-}
-.imageboxgoogle img {
-  width: 60%;
-  height: auto;
-}
-
 .acRelatedBtn + button {
   border: none;
   outline: none;
@@ -143,7 +121,7 @@ input {
   margin: 0 -70px !important;
 }
 
-.signinlink {
+.signInLink {
   text-decoration: none;
   color: black;
   font-size: medium;
@@ -152,11 +130,11 @@ input {
   text-transform: capitalize;
 }
 
-.signinlink:hover {
+.signInLink:hover {
   color: var(--primary-color);
 }
 
-.forgotbutton {
+.forgotButton {
   border: none;
   background: none;
   text-decoration: none;
@@ -164,7 +142,7 @@ input {
   font-size: 17px;
 }
 
-.forgotbutton:hover {
+.forgotButton:hover {
   color: var(--primary-color);
 }
 

@@ -1,10 +1,19 @@
 import { Dropdown, DropdownButton } from "react-bootstrap";
-import AI_gameStyles from "../css/AI_game.module.css";
+import AI_gameStyles from "../css/aiGame.module.css";
 import { convertToTitleCase } from "../utils/convertTitle";
 import { useState } from "react";
+import { DropDownInfo } from "../utils/models";
 
-export function DropDown({ data, onChangeCurrentItem, type }: any) {
-  function toSetTargetItem(item: any) {
+interface Props {
+  data: DropDownInfo[];
+  onChangeCurrentItem: (item: any) => void,
+  type: string
+}
+
+
+export function DropDown(props: Props) {
+  const { data, onChangeCurrentItem, type } = props
+  function toSetTargetItem(item: DropDownInfo) {
     onChangeCurrentItem(item);
     if (type === "bank") {
       setTitle(`(${item.code}) ${item.eng_name}`)
@@ -21,8 +30,7 @@ export function DropDown({ data, onChangeCurrentItem, type }: any) {
       className={AI_gameStyles.dropdownMenu}
     >
       {
-        //@ts-ignore
-        data.map((item) => (
+        data.map((item: any) => (
           <Dropdown.Item
             key={item.id}
             onClick={() => toSetTargetItem(item)}

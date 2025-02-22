@@ -3,7 +3,7 @@ import { User } from "../utils/models";
 import { hashPassword } from "../utils/hash";
 
 export class AuthService {
-  constructor(private knex: Knex) {}
+  constructor(private knex: Knex) { }
 
   public async register(
     name: string,
@@ -14,14 +14,14 @@ export class AuthService {
   ) {
     let hashedPassword = await hashPassword(password);
 
-    const userResult = await this.knex("users").returning("id").insert({
+    const userResult: { id: number }[] = await this.knex("users").returning("id").insert({
       name,
       email,
       password: hashedPassword,
       icon,
       phone,
     });
-    const user_id = userResult[0]["id"];
+    const user_id = userResult[0].id;
     return user_id;
   }
   async getUserById(id: number) {

@@ -9,20 +9,12 @@
 .bg {
   margin: 0;
   padding: 0;
-  /* background-image: url("../assets/bg-login-01.jpg"); */
   height: 100%;
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
   z-index: -100;
 }
-
-/* body {
-    width: 100%;
-    min-height: 100vh;
-    overflow-x: hidden;
-    
-  } */
 
 .logo {
   padding-left: 37px;
@@ -52,16 +44,6 @@
   overflow-y: hidden;
 }
 
-/* .register-right-page {
-    background-image: url("../assets/signin-page.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    height: 100%;
-  } */
-/*  
-  .registerRightPage{
-      height:100%;
-  } */
 
 .inputContainer {
   margin: 0 0 20px 0;

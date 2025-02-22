@@ -39,27 +39,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteImageInS3 = exports.form = exports.formLocal = void 0;
+exports.deleteImageInS3 = exports.createFormidableS3Form = exports.createFormidableLocalForm = void 0;
 var formidable_1 = __importDefault(require("formidable"));
 var fs_1 = __importDefault(require("fs"));
 var uploadDir = "uploads";
 fs_1.default.mkdirSync(uploadDir, { recursive: true });
 var counter = 0;
-exports.formLocal = (0, formidable_1.default)({
-    uploadDir: uploadDir,
-    keepExtensions: true,
-    maxFiles: 1,
-    maxFileSize: 200 * 1024,
-    filter: function (part) { var _a; return ((_a = part.mimetype) === null || _a === void 0 ? void 0 : _a.startsWith("image/")) || false; },
-    filename: function (originalName, originalExt, part, form) {
-        var _a;
-        var fieldName = part.name;
-        var timestamp = Date.now();
-        var ext = (_a = part.mimetype) === null || _a === void 0 ? void 0 : _a.split("/").pop();
-        counter++;
-        return "".concat(fieldName, "-").concat(timestamp, "-").concat(counter, ".").concat(ext);
-    },
-});
+function createFormidableLocalForm() {
+    return (0, formidable_1.default)({
+        uploadDir: uploadDir,
+        keepExtensions: true,
+        maxFiles: 1,
+        maxFileSize: 200 * 1024,
+        filter: function (part) { var _a; return ((_a = part.mimetype) === null || _a === void 0 ? void 0 : _a.startsWith("image/")) || false; },
+        filename: function (originalName, originalExt, part, form) {
+            var _a;
+            var fieldName = part.name;
+            var timestamp = Date.now();
+            var ext = (_a = part.mimetype) === null || _a === void 0 ? void 0 : _a.split("/").pop();
+            counter++;
+            return "".concat(fieldName, "-").concat(timestamp, "-").concat(counter, ".").concat(ext);
+        },
+    });
+}
+exports.createFormidableLocalForm = createFormidableLocalForm;
 var aws_sdk_1 = __importDefault(require("aws-sdk"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var stream_1 = __importDefault(require("stream"));
@@ -73,31 +76,31 @@ var s3 = new aws_sdk_1.default.S3({
     region: process.env.S3_REGION,
 });
 var filename = "";
-fs_1.default.mkdirSync(uploadDir, { recursive: true });
-exports.form = (0, formidable_1.default)({
-    /////new add/////////////////
-    fileWriteStreamHandler: function () {
-        var passThroughStream = new stream_1.default.PassThrough();
-        var upload = s3.upload({
-            Body: passThroughStream,
-            Bucket: process.env.S3_BUCKET_NAME,
-            Key: filename,
-            ContentType: "image/jpg, image/png, image/jpeg",
-        }, {});
-        upload.send();
-        return passThroughStream;
-    },
-    ///////////////////////////////////////////
-    filename: function (originalName, originalExt, part, form) {
-        var _a;
-        counter++;
-        var fieldName = part.name;
-        var timestamp = Date.now();
-        var ext = (_a = part.mimetype) === null || _a === void 0 ? void 0 : _a.split("/").pop();
-        filename = "".concat(fieldName, "-").concat(timestamp, "-").concat(counter, ".").concat(ext);
-        return filename;
-    },
-});
+function createFormidableS3Form() {
+    return (0, formidable_1.default)({
+        fileWriteStreamHandler: function () {
+            var passThroughStream = new stream_1.default.PassThrough();
+            var upload = s3.upload({
+                Body: passThroughStream,
+                Bucket: process.env.S3_BUCKET_NAME,
+                Key: filename,
+                ContentType: "image/jpg, image/png, image/jpeg",
+            }, {});
+            upload.send();
+            return passThroughStream;
+        },
+        filename: function (originalName, originalExt, part, form) {
+            var _a;
+            counter++;
+            var fieldName = part.name;
+            var timestamp = Date.now();
+            var ext = (_a = part.mimetype) === null || _a === void 0 ? void 0 : _a.split("/").pop();
+            filename = "".concat(fieldName, "-").concat(timestamp, "-").concat(counter, ".").concat(ext);
+            return filename;
+        },
+    });
+}
+exports.createFormidableS3Form = createFormidableS3Form;
 function deleteImageInS3(filename) {
     return __awaiter(this, void 0, void 0, function () {
         var params, err_1;

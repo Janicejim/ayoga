@@ -1,15 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
 import { IRootState } from "../redux/store";
 import { useEffect, useState } from "react";
-import userInfoStyle from "../css/UserInfos.module.css";
+import userInfoStyle from "../css/info.module.css";
 import defaultIcon from "../assets/avatar-big.png";
 import { getBoxInfo } from "../redux/userInfo/thunks";
-import {
-  fetchEditIcon,
-  fetchGetBookingInfo,
-  fetchGetBookmarkInfo,
-  fetchGetHostInfo,
-} from "../api/userInfo";
 import { Link } from "react-router-dom";
 import MyCalendar from "../components/Calender";
 import { Button } from "react-bootstrap";
@@ -20,20 +14,10 @@ import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
 import FileInputWithCamera from "../components/FileInputWithCamera";
 import { resize } from "../utils/resize";
 import { showMsgAlert } from "../utils/alert";
+import { getData, postOrPatchWithMedia } from "../api/api";
+import { ClassItem } from "../utils/models";
 
-export interface ClassItem {
-  image: string;
-  name: string;
-  date: string;
-  time: string;
-  instructor: string;
-  venue: string;
-  max_capacity: number;
-  capacity: number;
-  id: number;
-  end_time: string;
-  is_end: boolean
-}
+
 
 
 export default function UserInfoPage() {
@@ -44,6 +28,8 @@ export default function UserInfoPage() {
   );
   const [bookingInProgressItem, setBookingInProgressItem] = useState<ClassItem[]>();
   const [bookingIsEndItem, setBookingIsEndItem] = useState<ClassItem[]>();
+  const [bookingIsRated, setBookingIsRated] = useState<ClassItem[]>();
+  const [bookingUnrated, setBookingUnrated] = useState<ClassItem[]>();
   const [bookmarkItem, setBookmarkItem] = useState<ClassItem[]>();
   const [hostInProcessItem, setHostInProcessItem] = useState<ClassItem[]>();
   const [hostIsEndItem, setHosIsEndItem] = useState<ClassItem[]>();
@@ -51,49 +37,49 @@ export default function UserInfoPage() {
   const isTeacherMode = useSelector(
     (state: IRootState) => state.auth.isTeacherMode
   );
-  // const [userIcon, setUserIcon] = useState<any>(icon)
   async function getBookingInfo() {
-    const res = await fetchGetBookingInfo();
-    const bookingResult = await res.json();
+    const bookingResult = await getData(`api/user/booked`);
     if (bookingResult.success) {
-      let inProgress = bookingResult.data.filter((classItem: any) => !classItem.is_end)
-      let end = bookingResult.data.filter((classItem: any) => classItem.is_end)
+      let inProgress = bookingResult.data.filter((classItem: ClassItem) => !classItem.is_end)
+      let end = bookingResult.data.filter((classItem: ClassItem) => classItem.is_end)
+      let rated = bookingResult.data.filter((classItem: ClassItem) => classItem.is_end && classItem.comment)
+      let unrated = bookingResult.data.filter((classItem: ClassItem) => classItem.is_end && !classItem.comment)
       setBookingInProgressItem(inProgress);
       setBookingIsEndItem(end)
+      setBookingIsRated(rated)
+      setBookingUnrated(unrated)
     }
   }
 
   async function getBookmarkInfo() {
-    const res = await fetchGetBookmarkInfo();
-    const bookmarkResult = await res.json();
+    const bookmarkResult = await getData(`api/user/bookmark`);;
     if (bookmarkResult.success) {
       setBookmarkItem(bookmarkResult.data);
     }
   }
 
   async function userHostData() {
-    const res = await fetchGetHostInfo();
-    const hostResult = await res.json();
+    const hostResult = await getData(`api/user/host`);
     if (hostResult.success) {
-      let inProgress = hostResult.data.filter((classItem: any) => !classItem.is_end)
-      let end = hostResult.data.filter((classItem: any) => classItem.is_end)
+      let inProgress = hostResult.data.filter((classItem: ClassItem) => !classItem.is_end)
+      let end = hostResult.data.filter((classItem: ClassItem) => classItem.is_end)
       setHostInProcessItem(inProgress);
       setHosIsEndItem(end)
     }
   }
-  const handleIconSelect = async (file: any) => {
+  const handleIconSelect = async (file: File) => {
     let formData = new FormData()
     formData.append("icon", await resize(file))
 
-    let result = await fetchEditIcon(formData)
+    let result = await postOrPatchWithMedia("PATCH", `api/user/profile/pic`, formData)
     if (!result.success) {
       showMsgAlert("error", result.msg)
       return
     }
-
-    dispatch(getBoxInfo());
-
-
+    showMsgAlert("success", "Updated icon success ")
+    setTimeout(() => {
+      dispatch(getBoxInfo());
+    }, 1000);
   };
 
   useEffect(() => {
@@ -129,14 +115,14 @@ export default function UserInfoPage() {
               <img
                 className={userInfoStyle.userIcon}
                 src={defaultIcon}
-                alt="lol"
+                alt="user profile pic"
                 key={defaultIcon}
               />
             ) : (
               <img
                 className={userInfoStyle.userIcon}
                 src={`${REACT_APP_UPLOAD_IMAGE}/${icon}`}
-                alt="lol"
+                alt="user profile pic"
                 key={icon}
               />
             )}
@@ -193,7 +179,7 @@ export default function UserInfoPage() {
 
 
                       }
-                      {bookingInProgressItem && bookingInProgressItem.length < 1 && <a className={userInfoStyle.linkText} href="/classes">
+                      {bookingInProgressItem && bookingInProgressItem.length < 1 && <a className={userInfoStyle.linkText} href="/class/find">
                         Browse classes near you
                       </a>}
                     </div>
@@ -217,6 +203,50 @@ export default function UserInfoPage() {
 
                     </div>
                   </TabPanel>
+                  {(bookingIsRated && bookingIsRated.length > 0) && (
+                    <TabPanel header="Rated">
+                      <div className="d-flex flex-wrap">
+                        {bookingIsRated.map(eachClass =>
+                          <motion.div
+                            key={eachClass.id}
+                            layout
+                            className="col-md-4 position-relative"
+                          >
+                            <AnimatePresence>
+                              <Class
+                                {...eachClass}
+                                key={eachClass.id}
+                              />
+                            </AnimatePresence>
+                          </motion.div>)}
+
+
+                      </div>
+                    </TabPanel>
+                  )}
+
+                  {(bookingUnrated && bookingUnrated.length > 0) && (
+                    <TabPanel header="Unrated">
+                      <div className="d-flex flex-wrap">
+                        {bookingUnrated.map(eachClass =>
+                          <motion.div
+                            key={eachClass.id}
+                            layout
+                            className="col-md-4 position-relative"
+                          >
+                            <AnimatePresence>
+                              <Class
+                                {...eachClass}
+                                key={eachClass.id}
+                              />
+                            </AnimatePresence>
+                          </motion.div>)}
+
+
+                      </div>
+                    </TabPanel>
+                  )}
+
                 </TabView >
 
               </div>
@@ -243,7 +273,7 @@ export default function UserInfoPage() {
                   </motion.div>
 
                 ))}
-                {bookmarkItem && bookmarkItem.length < 1 && <a className={userInfoStyle.linkText} href="/classes">
+                {bookmarkItem && bookmarkItem.length < 1 && <a className={userInfoStyle.linkText} href="/class/find">
                   Browse classes near you
                 </a>}
               </div>

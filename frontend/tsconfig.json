@@ -22,5 +22,5 @@
   },
   "include": [
     "src"
-, "../auth", "GoogleMap.js", "src/service-worker.js", "un_src/serviceWorkerRegistration.js]
+, "../auth"  ]
 }

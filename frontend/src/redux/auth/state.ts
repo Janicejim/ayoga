@@ -1,4 +1,4 @@
-// 1. Definition of the Data
+// definition of the data
 export interface IAuthState {
   isAuthenticate: boolean;
   isTeacherMode: boolean;
@@ -6,7 +6,7 @@ export interface IAuthState {
   name: string;
   icon: string;
 }
-// 2. Define the State
+// define the state
 export interface JWTPayload {
   userId: number | undefined;
   email: string | undefined;

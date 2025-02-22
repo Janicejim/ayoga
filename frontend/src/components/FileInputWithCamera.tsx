@@ -1,18 +1,17 @@
 import React, { useRef } from 'react';
 import { CameraFill } from "react-bootstrap-icons"
-const FileInputWithCamera = ({ onFileSelect }: any) => {
-    const fileInputRef = useRef(null);
+const FileInputWithCamera = ({ onFileSelect }: { onFileSelect: (file: File) => void }) => {
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleButtonClick = () => {
         if (fileInputRef) {
-            //@ts-ignore
-            fileInputRef.current.click();
+            fileInputRef.current!.click();
         }
 
     };
 
-    const handleFileChange = (event: any) => {
-        const file = event.target.files[0];
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files![0];
         onFileSelect(file)
 
     };

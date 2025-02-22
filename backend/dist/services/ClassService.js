@@ -45,7 +45,7 @@ var ClassService = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.knex.raw(" select class.id as class_id,venue_point,image,venue,class.name as name,users.name as teacher_name,class.type,uuid as class_number,link,introduction,credit,language,date,end_time,start_time,class.id,class.capacity,users.id as teacher_id,coalesce((class.capacity-booked),class.capacity)as available from class \n        join users on users.id = class.teacher_id \n        left join (select count(class_id) as booked,class_id from student_class where status='active' group by class_id) as \n       class_info on class_info.class_id = class.id\n       where class.id = ?", [classId])];
+                    case 0: return [4 /*yield*/, this.knex.raw(" select class.id as class_id,venue_point,image,venue,class.name as name,users.name as teacher_name,class.type,uuid as class_number,link,introduction,credit,language,date,end_time,start_time,class.id,class.capacity,class.teacher_id  as teacher_id,coalesce((class.capacity-booked),class.capacity)as available from class \n        join users on users.id = class.teacher_id \n        left join (select count(class_id) as booked,class_id from student_class where status='active' group by class_id) as \n       class_info on class_info.class_id = class.id\n       where class.id = ?", [classId])];
                     case 1: return [2 /*return*/, (_a.sent()).rows];
                 }
             });
@@ -115,7 +115,7 @@ var ClassService = /** @class */ (function () {
             var classAttendeeNumber, classCap, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.knex("student_class").where("student_class.class_id", classId)];
+                    case 0: return [4 /*yield*/, this.knex("student_class").where("student_class.class_id", classId).andWhere("status", "active")];
                     case 1:
                         classAttendeeNumber = _a.sent();
                         return [4 /*yield*/, this.knex("class")
@@ -164,10 +164,9 @@ var ClassService = /** @class */ (function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.knex.raw("SELECT \n    student_class.id,\n    student_comment.comment,\n    class.date,\n    class.end_time\nFROM \n    student_class\nLEFT JOIN \n    student_comment ON student_comment.user_id = student_class.user_id AND student_comment.class_id = student_class.class_id\nLEFT JOIN \n    class ON class.id = student_class.class_id\nWHERE \n    student_class.class_id = ?\n    AND student_class.user_id = ? \n    AND student_class.status = 'active'", [classId, userId])];
+                    case 0: return [4 /*yield*/, this.knex.raw("SELECT \n    student_class.id,\n    student_comment.comment,\n    student_comment.star,\n    class.date,\n    class.end_time,\n    student_comment.created_at\nFROM \n    student_class\nLEFT JOIN \n    student_comment ON student_comment.user_id = student_class.user_id AND student_comment.class_id = student_class.class_id\nLEFT JOIN \n    class ON class.id = student_class.class_id\nWHERE \n    student_class.class_id = ?\n    AND student_class.user_id = ? \n    AND student_class.status = 'active'", [classId, userId])];
                     case 1:
                         result = (_a.sent()).rows;
-                        // console.log({ result })
                         if (result.length < 1) {
                             return [2 /*return*/, { isJoiner: false }];
                         }
@@ -175,7 +174,7 @@ var ClassService = /** @class */ (function () {
                             return [2 /*return*/, { isJoiner: true, haveComment: false }];
                         }
                         else {
-                            return [2 /*return*/, { isJoiner: true, haveComment: true, comment: result[0].comment }];
+                            return [2 /*return*/, { isJoiner: true, haveComment: true, comment: result[0].comment, star: result[0].star, created_at: result[0].created_at }];
                         }
                         return [2 /*return*/];
                 }
@@ -326,7 +325,7 @@ var ClassService = /** @class */ (function () {
                     case 2:
                         classCredit = _a.sent();
                         result = {
-                            userCreditLeft: creditRes[0]["credit"],
+                            userCreditLeft: creditRes.length > 0 ? creditRes[0]["credit"] : 0,
                             classCreditRequired: classCredit[0]["credit"],
                             teacher_id: classCredit[0]["teacher_id"],
                         };
@@ -375,7 +374,7 @@ var ClassService = /** @class */ (function () {
                         if (classId) {
                             classQuery = "and class.id !=".concat(classId);
                         }
-                        return [4 /*yield*/, this.knex.raw("   select image,venue,class.name as name,users.name as instructor,class.type,uuid as class_number,link,introduction,credit,language,date,end_time,start_time as time,\n      class.capacity as max_capacity,class.id as class_id,\n       coalesce((class.capacity-booked),class.capacity)as capacity from class \n          inner join users on users.id = class.teacher_id\n                  left join (select count(class_id) as booked,class_id from student_class where status='active' group by class_id) as \n             class_info on class_info.class_id = class.id\n          where class.teacher_id = ?\n".concat(classQuery, "\n          order by class.date desc"), [teacher_id])];
+                        return [4 /*yield*/, this.knex.raw("   select image,venue,class.name as name,users.name as instructor,class.type,uuid as class_number,link,introduction,credit,language,date,end_time,start_time as time,\n      class.capacity as max_capacity,class.id as class_id,\n       coalesce((class.capacity-booked),class.capacity)as capacity from class \n          inner join users on users.id = class.teacher_id\n                  left join (select count(class_id) as booked,class_id from student_class where status='active' group by class_id) as \n             class_info on class_info.class_id = class.id\n          where class.teacher_id = ?\n          and class.date>CURRENT_DATE\n".concat(classQuery, "\n          order by class.date desc"), [teacher_id])];
                     case 1: return [2 /*return*/, (_a.sent()).rows];
                 }
             });
@@ -411,6 +410,77 @@ var ClassService = /** @class */ (function () {
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ClassService.prototype.getClassMySearch = function (date, start_time, instructor, venue, title, type, yogaType, credit, language, userId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var query;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        query = this.knex
+                            .select("class.id", "image", "venue", "class.name", "users.name as instructor", "class.type", "uuid as class_number", "credit", "language", "date", "end_time", "start_time", "class.capacity as capacity", this.knex.raw("coalesce((class.capacity - booked), class.capacity) as available"), "yoga.name as yoga_type")
+                            .from("class")
+                            .join("users", "users.id", "class.teacher_id")
+                            .leftJoin(this.knex
+                            .select(this.knex.raw("count(class_id) as booked"), "class_id")
+                            .from("student_class")
+                            .groupBy("class_id")
+                            .as("class_info"), "class_info.class_id", "class.id")
+                            .join(this.knex.select("id", "name").from("yoga_type").as("yoga"), "yoga.id", "class.yoga_type_id")
+                            .where("class.date", ">", this.knex.raw("CURRENT_DATE"))
+                            .andWhere(this.knex.raw("coalesce((class.capacity - booked), class.capacity) != 0"))
+                            .andWhere("teacher_id", "!=", userId);
+                        if (date && date !== "undefined") {
+                            query.where("class.date", date);
+                        }
+                        if (start_time && start_time !== "undefined") {
+                            query.where("class.start_time", start_time);
+                        }
+                        if (instructor && instructor !== "undefined") {
+                            query.whereILike("users.name", "%".concat(instructor, "%"));
+                        }
+                        if (venue && venue !== "undefined") {
+                            query.whereILike("class.venue", "%".concat(venue, "%"));
+                        }
+                        if (title && title !== "undefined") {
+                            query.whereILike("class.name", "%".concat(title, "%"));
+                        }
+                        if (type && type !== "undefined" && type !== "all") {
+                            query.where("type", type);
+                        }
+                        if (yogaType && yogaType !== "undefined" && yogaType !== "all") {
+                            query.where("yoga.name", yogaType);
+                        }
+                        if (credit && credit !== 0) {
+                            query.where("credit", "<", credit);
+                        }
+                        if (language && language !== "undefined" && language !== "all") {
+                            query.where("language", language);
+                        }
+                        if (userId) {
+                            query.whereNotIn("class.id", function () {
+                                this.select("class_id as id")
+                                    .from("student_class")
+                                    .where("user_id", userId);
+                            });
+                        }
+                        return [4 /*yield*/, query.orderBy("class.date", "desc")];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    ClassService.prototype.getYogaType = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.knex("yoga_type")
+                            .select("id", "name")
+                            .where("status", "active")];
+                    case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });

@@ -4,40 +4,38 @@ import { Link } from "react-router-dom";
 import { IRootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import Comments from "../components/Comments";
-import { fetchAllClasses } from "../api/class";
 import { useEffect, useState } from "react";
 import Class from "../components/Class";
-import { fetchHighScoreTeachers, fetchNewestComments } from "../api/teacher";
 import { Avatar } from "primereact/avatar";
 import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
 import { Swiper, SwiperSlide } from 'swiper/react';
-// Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
+import { getData, getDataNotLogin } from "../api/api";
+import { ClassItem, CommentItem, Teacher } from "../utils/models";
 export default function Homepage() {
-  const [classes, setClasses] = useState<any[]>([])
-  const [teachers, setTeachers] = useState<any[]>([])
-  const [comments, setComments] = useState<any[]>([])
+  const [classes, setClasses] = useState<ClassItem[]>([])
+  const [teachers, setTeachers] = useState<Teacher[]>([])
+  const [comments, setComments] = useState<CommentItem[]>([])
   const isAuthenticated = useSelector(
     (state: IRootState) => state.auth.isAuthenticate
   );
 
   const [slidesPerView, setSlidesPerView] = useState(getSlidesPerView());
   async function getClasses() {
-    const res = await fetchAllClasses();
-    const allClassesResult = await res.json();
+    const allClassesResult = await getData(`api/class`);
     setClasses(allClassesResult.data);
   }
 
   async function getHighScoreTeachers() {
-    const teachers = await fetchHighScoreTeachers();
+    const teachers = await getDataNotLogin(`api/teachers`);
 
     setTeachers(teachers.data);
   }
 
   async function getNewestComments() {
-    const comments = await fetchNewestComments();
+    const comments = await getDataNotLogin(`api/comments`);
     setComments(comments.data);
   }
 
@@ -46,6 +44,7 @@ export default function Homepage() {
     getHighScoreTeachers()
     getNewestComments()
   }, [])
+
 
 
 
@@ -89,7 +88,7 @@ export default function Homepage() {
                   </Link>
                 )}
                 {isAuthenticated && (
-                  <Link to="/aiGame">
+                  <Link to="/ai">
                     <Button className={homeStyles.coachButton}>
                       Practise with AI Coach
                     </Button>
@@ -107,20 +106,20 @@ export default function Homepage() {
 
           <div className={homeStyles.titleEnd}>
             <h3 > Class @ AYoga</h3>
-            <Link to="/classes"><div>More</div></Link>
+            <Link to="/class/find"><div>More</div></Link>
           </div>
           {classes.length > 0 && <div className={` ${homeStyles.classContainer}`}>
 
             <Swiper
               slidesPerView={slidesPerView}
-              spaceBetween={1}
+              spaceBetween={10}
               pagination={{
                 clickable: true,
               }}
               modules={[Pagination]}
               className="mySwiper"
             >
-              {classes.slice(0, 11).map((eachClass: any) => {
+              {classes.slice(0, 11).map((eachClass) => {
                 return (<SwiperSlide key={eachClass.id}>  <Class  {...eachClass}
                 /></SwiperSlide>)
 
@@ -141,7 +140,7 @@ export default function Homepage() {
             />
           </div>
           <div className={`col-md-4 col-s-12 ${homeStyles.aiBtnArea}`}>
-            <Link to="/aiGame">
+            <Link to="/ai">
               <Button className={homeStyles.coachButton}>
                 Practise with AI Coach
               </Button>
@@ -161,7 +160,7 @@ export default function Homepage() {
                   modules={[Pagination]}
                   className="mySwiper"
                 >
-                  {teachers.map((teacher: any) => {
+                  {teachers.map((teacher) => {
                     return (<SwiperSlide key={teacher.id}>
                       <Link key={teacher.id} to={`/teacher/${teacher.id}`}>
                         <Avatar image={`${REACT_APP_UPLOAD_IMAGE}/${teacher.photo}`} className="mr-2" size="xlarge" shape="circle" />
@@ -185,9 +184,6 @@ export default function Homepage() {
 
 
       </div>
-
-
-
 
     </>
 

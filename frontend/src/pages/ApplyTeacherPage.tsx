@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
 import { Container, Form, Row } from "react-bootstrap";
 import { ErrorMessage } from "@hookform/error-message";
-import loginStyles from "../css/Login.module.css";
-import { fetchApplyTeacherRole } from "../api/teacher";
+import loginStyles from "../css/login.module.css";
 import { showMsgAlert } from "../utils/alert";
+import { postOrPatchWithMedia } from "../api/api";
 
 interface FormState {
   sex: string;
@@ -28,14 +28,16 @@ function ApplyTeacherPage() {
     let photo = data.photo[0];
     let id_photo = data.id_photo[0];
     let cert = data.cert[0];
-    let result = await fetchApplyTeacherRole(
-      data.sex,
-      data.newest_qualification,
-      photo,
-      id_photo,
-      cert,
-      data.introduction
-    );
+
+    const formData = new FormData();
+    formData.append("sex", data.sex);
+    formData.append("newest_qualification", data.newest_qualification);
+    formData.append("photo", photo);
+    formData.append("id_photo", id_photo);
+    formData.append("cert", cert);
+    formData.append("introduction", data.introduction);
+
+    let result = await postOrPatchWithMedia("POST", `api/teacher/apply`, formData)
     if (result.success) {
       reset();
       showMsgAlert("success", result.msg);

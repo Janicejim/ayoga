@@ -1,11 +1,10 @@
-import { useDispatch, useSelector } from "react-redux";
-import { IRootState } from "../redux/store";
 import styles from "../css/classDetails.module.css";
 import { Link } from "react-router-dom";
 import moment from "moment";
-import { classGetOtherClassInfo } from "../redux/class/thunks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
+import { getDataNotLogin } from "../api/api";
+import { ClassItem } from "../utils/models";
 
 
 interface Props {
@@ -13,37 +12,39 @@ interface Props {
   excludeClassId?: number;
 }
 function OtherClassItems(props: Props) {
-  const { otherClassItems } = useSelector(
-    (state: IRootState) => state.classOtherClass
-  );
-  const dispatch = useDispatch();
+  const [otherClassItems, setOtherClassItems] = useState<ClassItem[]>([])
+
   const rolling = () => {
     window.scrollTo(0, 0);
   };
 
-  const getTeacherClass = async () => {
-    if (props.excludeClassId && props.teacherId) {
-      dispatch(classGetOtherClassInfo(props.teacherId, props.excludeClassId));
-    } else if (props.teacherId) {
-      dispatch(classGetOtherClassInfo(props.teacherId));
+  const getOtherClass = async () => {
+    let path = ""
+    props.excludeClassId ? path = `api/class/teacher/${props.teacherId}?classId=${props.excludeClassId}` : path = `api/class/teacher/${props.teacherId}`
+    const result = await getDataNotLogin(path)
+    if (result.success) {
+      setOtherClassItems(result.data)
     }
-  };
+  }
 
   useEffect(() => {
-    getTeacherClass();
+
+    getOtherClass()
+
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.teacherId, props.excludeClassId]);
 
   return (
     <div>
       <div className="row row-cols-1 row-cols-md-4">
-        {otherClassItems.length > 0 &&
-          otherClassItems.map((item: any, itemIndex: number) => {
+        {otherClassItems.length > 0 ?
+          otherClassItems.map((item, itemIndex: number) => {
             return (
               <div className="col" key={itemIndex}>
                 <div className={`card ${styles.productCard}`}>
                   <div className={styles.imgContainer}>
-                    <Link onClick={rolling} to={`/class/detail/${item.class_id}`}>
+                    <Link onClick={rolling} to={`/class/detail/${item.id}`}>
                       <img
                         src={`${REACT_APP_UPLOAD_IMAGE}/${item.image}`}
                         className={`card-img-top ${styles.cardImg}`}
@@ -57,7 +58,7 @@ function OtherClassItems(props: Props) {
                       {item.date !== "Loading" &&
                         moment(`${item.date}`).format("ddd, Do MMM YYYY") +
                         ", " +
-                        item.time}
+                        item.start_time}
                     </p>
                     <p className={styles.cardText}>
                       Instructor: {item.instructor}
@@ -71,7 +72,10 @@ function OtherClassItems(props: Props) {
                 </div>
               </div>
             );
-          })}
+          }) : <div className={styles.otherTitle}>
+            You may also try these from this instructor
+          </div>
+        }
       </div>
 
       { }

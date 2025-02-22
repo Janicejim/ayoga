@@ -35,8 +35,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ClassController = void 0;
+var permit_1 = require("permit");
+var jwt_1 = __importDefault(require("../utils/jwt"));
+var jwt_simple_1 = __importDefault(require("jwt-simple"));
 var ClassController = /** @class */ (function () {
     function ClassController(classService) {
         var _this = this;
@@ -276,7 +282,7 @@ var ClassController = /** @class */ (function () {
                             });
                             return [2 /*return*/];
                         }
-                        return [4 /*yield*/, this.classService.toReserveClassSeat(checkCreditLeft.teacher_id, targetClassId, userId, parseInt(checkCreditLeft.classCreditRequired))];
+                        return [4 /*yield*/, this.classService.toReserveClassSeat(checkCreditLeft.teacher_id, targetClassId, userId, +(checkCreditLeft.classCreditRequired))];
                     case 5:
                         reserveResult = _a.sent();
                         if (reserveResult.success) {
@@ -325,10 +331,10 @@ var ClassController = /** @class */ (function () {
                             });
                             return [2 /*return*/];
                         }
-                        // Cancel req passes all checks
+                        // cancel booking:
                         return [4 /*yield*/, this.classService.toCancelClassSeat([creditRecordsRelated.useCreditRecord, creditRecordsRelated.earnCreditRecord], targetClassId, userId)];
                     case 3:
-                        // Cancel req passes all checks
+                        // cancel booking:
                         _a.sent();
                         res.status(200).json({
                             message: "Your booking has successfully been canceled.",
@@ -443,23 +449,24 @@ var ClassController = /** @class */ (function () {
             });
         }); };
         this.studentGiveCommentByClassId = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-            var classId, userId, _a, comment, star, comments, error_11;
+            var classId, userId, _a, comment, rating, comments, error_11;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
                         classId = req.params.classId;
                         userId = req.user.id;
-                        _a = req.body, comment = _a.comment, star = _a.star;
-                        if (!comment || !star) {
+                        _a = req.body, comment = _a.comment, rating = _a.rating;
+                        if (!comment || !rating) {
                             res.json({ success: false, msg: "missing comment of star" });
                             return [2 /*return*/];
                         }
-                        return [4 /*yield*/, this.classService.studentGiveCommentByClassId(+classId, comment, star, userId)];
+                        return [4 /*yield*/, this.classService.studentGiveCommentByClassId(+classId, comment, rating, userId)];
                     case 1:
                         comments = _b.sent();
                         res.json({
                             data: comments,
+                            msg: "Give feedback success",
                             success: true,
                         });
                         return [3 /*break*/, 3];
@@ -498,6 +505,73 @@ var ClassController = /** @class */ (function () {
                     case 2:
                         error_12 = _b.sent();
                         console.log(error_12);
+                        res.status(401).json({
+                            msg: "system error",
+                            success: false,
+                        });
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        }); };
+        this.getClassMySearch = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+            var _a, _b, date, _c, start_time, _d, instructor, _e, venue, _f, title, _g, type, _h, yogaType, _j, credit, _k, language, permit, token, payload, user_id, classesData, error_13;
+            return __generator(this, function (_l) {
+                switch (_l.label) {
+                    case 0:
+                        _l.trys.push([0, 2, , 3]);
+                        _a = req.query || {}, _b = _a.date, date = _b === void 0 ? "" : _b, _c = _a.start_time, start_time = _c === void 0 ? "" : _c, _d = _a.instructor, instructor = _d === void 0 ? "" : _d, _e = _a.venue, venue = _e === void 0 ? "" : _e, _f = _a.title, title = _f === void 0 ? "" : _f, _g = _a.type, type = _g === void 0 ? "" : _g, _h = _a.yogaType, yogaType = _h === void 0 ? "" : _h, _j = _a.credit, credit = _j === void 0 ? "" : _j, _k = _a.language, language = _k === void 0 ? "" : _k;
+                        ;
+                        permit = new permit_1.Bearer({
+                            query: "access_token",
+                        });
+                        token = permit.check(req);
+                        payload = void 0;
+                        user_id = void 0;
+                        if (token !== "null") {
+                            payload = jwt_simple_1.default.decode(token, jwt_1.default.jwtSecret);
+                            user_id = payload.userId;
+                        }
+                        else {
+                            user_id = 0;
+                        }
+                        return [4 /*yield*/, this.classService.getClassMySearch(date, start_time, instructor, venue, title, type, yogaType, +credit, language, +user_id)];
+                    case 1:
+                        classesData = _l.sent();
+                        res.json({
+                            data: classesData,
+                            success: true,
+                        });
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_13 = _l.sent();
+                        console.log(error_13);
+                        res.status(401).json({
+                            msg: "system error",
+                            success: false,
+                        });
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        }); };
+        this.getYogaType = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+            var yogaTypeData, error_14;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.classService.getYogaType()];
+                    case 1:
+                        yogaTypeData = _a.sent();
+                        res.json({
+                            data: yogaTypeData,
+                            success: true,
+                        });
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_14 = _a.sent();
+                        console.log(error_14);
                         res.status(401).json({
                             msg: "system error",
                             success: false,

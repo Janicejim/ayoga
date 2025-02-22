@@ -39,13 +39,10 @@
   text-transform: capitalize;
 }
 
-.myImg {
-  width: 300px;
-  height: 300px;
-}
 
 .productCard {
   margin: 10px;
+  width:98%
 }
 
 .cardTitle {
@@ -79,9 +76,6 @@
   color: var(--secondary-color-dark);
 }
 
-/* body {
-  margin: 30px !important;
-} */
 
 .moreDetails {
   position: absolute;
@@ -107,17 +101,15 @@
   text-decoration: none;
 }
 
-@media only screen and (min-width: 650px) {
-  .imgContainer {
-    max-width: 19rem;
-    max-height: 19rem;
-    overflow: hidden !important;
-  }
-}
+
 
 .cardStyle{
-  height:200px;
+  height:250px;
+  width: 100% !important;
 }
 .cardBodyStyle{
   height:300px;
+}
+.imgContainer{
+  width: 100%;
 }

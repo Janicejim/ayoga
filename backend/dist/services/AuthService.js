@@ -59,7 +59,7 @@ var AuthService = /** @class */ (function () {
                             })];
                     case 2:
                         userResult = _a.sent();
-                        user_id = userResult[0]["id"];
+                        user_id = userResult[0].id;
                         return [2 /*return*/, user_id];
                 }
             });

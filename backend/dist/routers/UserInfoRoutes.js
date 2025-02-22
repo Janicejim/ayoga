@@ -12,7 +12,7 @@ exports.userInfoService = new UserInfoService_1.UserInfoService(db_1.default);
 var userInfoController = new UserInfoController_1.UserInfoController(exports.userInfoService);
 exports.userInfoRoutes = express_1.default.Router();
 exports.userInfoRoutes.get("/profile", userInfoController.getUserInfoBox);
-exports.userInfoRoutes.get("/booking", userInfoController.getBookingInfo);
+exports.userInfoRoutes.get("/booked", userInfoController.getBookedInfo);
 exports.userInfoRoutes.get("/bookmark", userInfoController.getBookmarkInfo);
 exports.userInfoRoutes.get("/host", userInfoController.getClassByTeacher);
 exports.userInfoRoutes.get("/credit", userInfoController.getCreditForWithdrawal);
@@ -20,4 +20,5 @@ exports.userInfoRoutes.post("/withdrawal", userInfoController.WithdrawalCredit);
 exports.userInfoRoutes.patch("/profile/pic", userInfoController.changeProfilePic);
 exports.userInfoRoutes.patch("/profile", userInfoController.editUser);
 exports.userInfoRoutes.patch("/password", userInfoController.changePassword);
+exports.userInfoRoutes.get("/poses", userInfoController.getPosesItem);
 //# sourceMappingURL=UserInfoRoutes.js.map

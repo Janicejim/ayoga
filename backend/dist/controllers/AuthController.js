@@ -41,23 +41,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 var hash_1 = require("../utils/hash");
-var google_auth_library_1 = require("google-auth-library");
 var jwt_simple_1 = __importDefault(require("jwt-simple"));
 var jwt_1 = __importDefault(require("../utils/jwt"));
-var logger_1 = require("../utils/logger");
-var formidable_1 = require("../utils/formidable");
 var dotenv_1 = __importDefault(require("dotenv"));
+var formidable_1 = require("../utils/formidable");
 dotenv_1.default.config();
-var client = new google_auth_library_1.OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
 var AuthController = /** @class */ (function () {
     function AuthController(authService) {
         var _this = this;
         this.authService = authService;
         this.register = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+            var form;
             var _this = this;
             return __generator(this, function (_a) {
-                formidable_1.form.parse(req, function (err, fields, files) { return __awaiter(_this, void 0, void 0, function () {
-                    var name_1, email, password, confirmPw, phone, icon, foundEmail, foundPhone, userId, payload, token, e_1;
+                form = (0, formidable_1.createFormidableS3Form)();
+                form.parse(req, function (err, fields, files) { return __awaiter(_this, void 0, void 0, function () {
+                    var name_1, email, password, confirmPw, phone, icon, iconFile, foundEmail, foundPhone, userId, payload, token, e_1;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
@@ -65,8 +64,13 @@ var AuthController = /** @class */ (function () {
                                 name_1 = fields.name, email = fields.email, password = fields.password, confirmPw = fields.confirmPw, phone = fields.phone;
                                 icon = "";
                                 if (files.hasOwnProperty("icon")) {
-                                    //@ts-ignore
-                                    icon = files.icon.newFilename;
+                                    iconFile = files.icon;
+                                    if (Array.isArray(iconFile)) {
+                                        icon = iconFile[0].newFilename;
+                                    }
+                                    else {
+                                        icon = iconFile.newFilename;
+                                    }
                                 }
                                 if (!name_1) {
                                     res.json({ success: false, msg: "Please fill in name" });
@@ -168,114 +172,6 @@ var AuthController = /** @class */ (function () {
                         res.status(500).json("System error");
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/];
-                }
-            });
-        }); };
-        this.loginFacebook = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-            var accessToken, url, fetchRes, fetchResult, email, user, foundEmail, payload, jwttoken, e_3;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 8, , 9]);
-                        accessToken = req.body.accessToken;
-                        if (!accessToken) {
-                            res.status(401).json({ message: "Wrong Access Token!" });
-                            return [2 /*return*/];
-                        }
-                        url = "https://graph.facebook.com/me?access_token=".concat(accessToken, "&fields=id,name,email,picture");
-                        return [4 /*yield*/, fetch(url)];
-                    case 1:
-                        fetchRes = _a.sent();
-                        return [4 /*yield*/, fetchRes.json()];
-                    case 2:
-                        fetchResult = _a.sent();
-                        email = fetchResult.email;
-                        return [4 /*yield*/, this.authService.getUserByEmail(email)];
-                    case 3:
-                        user = _a.sent();
-                        foundEmail = user ? user : "";
-                        if (!!foundEmail) return [3 /*break*/, 7];
-                        return [4 /*yield*/, this.authService.register(fetchResult.name, email, "22334", fetchResult.picture.data.url, "")];
-                    case 4:
-                        _a.sent();
-                        return [4 /*yield*/, this.authService.getUserByEmail(email)];
-                    case 5: return [4 /*yield*/, _a.sent()];
-                    case 6:
-                        user = _a.sent();
-                        _a.label = 7;
-                    case 7:
-                        payload = { userId: user.id, email: user.email };
-                        jwttoken = jwt_simple_1.default.encode(payload, jwt_1.default.jwtSecret);
-                        // console.log(`jwttoken`, jwttoken);
-                        res.json({
-                            message: "Facebook Login success",
-                            accessToken: accessToken,
-                            jwttoken: jwttoken,
-                        });
-                        return [2 /*return*/];
-                    case 8:
-                        e_3 = _a.sent();
-                        console.log(e_3);
-                        logger_1.logger.error("".concat(e_3.message));
-                        res.status(500).json({ message: e_3 });
-                        return [2 /*return*/];
-                    case 9: return [2 /*return*/];
-                }
-            });
-        }); };
-        this.loginGoogle = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-            var token, ticket, payloadResult, email, name_2, image, user, payload, jwttoken, e_4;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 8, , 9]);
-                        token = req.body.token;
-                        return [4 /*yield*/, client.verifyIdToken({
-                                idToken: token,
-                                audience: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-                            })];
-                    case 1:
-                        ticket = _a.sent();
-                        payloadResult = ticket.getPayload();
-                        if (!payloadResult) return [3 /*break*/, 7];
-                        email = payloadResult ? payloadResult["email"] : "";
-                        name_2 = payloadResult ? payloadResult["name"] : "";
-                        image = payloadResult ? payloadResult["picture"] : "";
-                        return [4 /*yield*/, this.authService.getUserByEmail(email)];
-                    case 2:
-                        user = _a.sent();
-                        if (!!user) return [3 /*break*/, 6];
-                        return [4 /*yield*/, this.authService.register(name_2, email, "1234", image, "")];
-                    case 3:
-                        _a.sent();
-                        return [4 /*yield*/, this.authService.getUserByEmail(email)];
-                    case 4: return [4 /*yield*/, _a.sent()];
-                    case 5:
-                        user = _a.sent();
-                        _a.label = 6;
-                    case 6:
-                        payload = { userId: user.id, email: user.email };
-                        console.log("payload", payload);
-                        jwttoken = jwt_simple_1.default.encode(payload, jwt_1.default.jwtSecret);
-                        // console.log(`jwttoken`, jwttoken);
-                        res.json({
-                            message: "Google Login success",
-                            jwttoken: jwttoken,
-                            token: token,
-                        });
-                        if (!token) {
-                            res.status(401).json({ message: "NO Google Access Token!" });
-                            return [2 /*return*/];
-                        }
-                        _a.label = 7;
-                    case 7: return [2 /*return*/];
-                    case 8:
-                        e_4 = _a.sent();
-                        console.log(e_4);
-                        logger_1.logger.error("".concat(e_4.message));
-                        res.status(500).json({ message: e_4 });
-                        return [2 /*return*/];
-                    case 9: return [2 /*return*/];
                 }
             });
         }); };

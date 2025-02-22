@@ -1,10 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { fetchAllClasses, fetchYogaType } from "../api/class";
-import styles from "../css/CatalogOfClasses.module.css";
+import styles from "../css/findClasses.module.css";
 import Class from "../components/Class";
+import { getData, getDataNotLogin } from "../api/api";
+import { ClassItem } from "../utils/models";
 
 type FormState = {
   dateOfClass: string;
@@ -17,22 +18,7 @@ type FormState = {
   language: string;
   credit: number;
 };
-export interface ClassesRes {
-  id: number;
-  image: string;
-  venue: string;
-  name: string;
-  capacity: number;
-  credit: number;
-  date: string;
-  start_time: string;
-  end_time: string;
-  instructor: string;
-  language: string;
-  type: string;
-  class_number: string;
-  yoga_type: string;
-}
+
 
 interface YogaType {
   id: number;
@@ -54,19 +40,17 @@ export default function FindClassPage() {
   });
 
   const [allClassFetchResults, setAllClassFetchResults] = useState<
-    ClassesRes[]
+    ClassItem[]
   >([]);
 
   const [yogaType, setYogaType] = useState<YogaType[] | []>([]);
 
   async function getClasses() {
-    const response = await fetchAllClasses();
-    const allClassesResult = await response.json();
+    const allClassesResult = await getData(`api/class`)
     setAllClassFetchResults(allClassesResult.data);
   }
   async function getYogaType() {
-    const response = await fetchYogaType();
-    const yogaTypeData = await response.json();
+    const yogaTypeData = await getDataNotLogin(`api/class/yoga/type`);
     setYogaType(yogaTypeData.data);
   }
 
@@ -88,18 +72,7 @@ export default function FindClassPage() {
   }
 
   async function submit(data: FormState) {
-    const response = await fetchAllClasses(
-      data.dateOfClass,
-      data.timeFrom,
-      data.instructor,
-      data.classVenue,
-      data.classTitle,
-      data.type,
-      data.yogaType,
-      data.credit,
-      data.language
-    );
-    const allClassesResult = await response.json();
+    const allClassesResult = await getData(`api/class?date=${data.dateOfClass}&start_time=${data.timeFrom}&instructor=${data.instructor}&venue=${data.classVenue}&title=${data.classTitle}&type=${data.type}&yogaType=${data.yogaType}&credit=${data.credit}&language=${data.language}`)
 
     setAllClassFetchResults(allClassesResult.data);
   }
@@ -109,11 +82,9 @@ export default function FindClassPage() {
       <div className="container">
         <Form onSubmit={handleSubmit(submit)}>
           <h1 className={styles.bigTitle}>Find Classes</h1>
-          <div
-            className="d-flex justify-content-between flex-wrap"
-            id={styles.formFormat}
-          >
-            <Form.Group>
+
+          <Row>
+            <Form.Group className="col-md-4">
               <Form.Label>Date</Form.Label>
               <Form.Control
                 placeholder="Date picker"
@@ -121,7 +92,7 @@ export default function FindClassPage() {
                 {...register("dateOfClass")}
               />
             </Form.Group>
-            <Form.Group className={styles.catForm}>
+            <Form.Group className={`${styles.catForm} col-md-4 `}>
               <Form.Label>Time From</Form.Label>
               <Form.Control
                 placeholder="Classes start at"
@@ -130,7 +101,7 @@ export default function FindClassPage() {
                 className="d-inline"
               />
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="col-md-4">
               <Form.Label>Instructor</Form.Label>
               <Form.Control
                 placeholder="Input keyword"
@@ -139,15 +110,20 @@ export default function FindClassPage() {
                 className="d-inline"
               />
             </Form.Group>
-            <Form.Group>
+          </Row>
+          <Row>
+            <Form.Group className="col-md-6">
               <Form.Label>Venue</Form.Label>
               <Form.Control
                 placeholder="Input keyword"
                 type="text"
                 {...register("classVenue")}
               />
+
             </Form.Group>
-            <Form.Group>
+
+
+            <Form.Group className="col-md-6">
               <Form.Label>Title</Form.Label>
               <Form.Control
                 placeholder="Title"
@@ -155,7 +131,9 @@ export default function FindClassPage() {
                 {...register("classTitle")}
               />
             </Form.Group>
-            <Form.Group>
+          </Row>
+          <Row>
+            <Form.Group className="col-md-3">
               <Form.Label>Class Mode</Form.Label>
               <Form.Control as="select" size="lg" {...register("type")}>
                 <option value="all">All</option>
@@ -163,7 +141,7 @@ export default function FindClassPage() {
                 <option value="online">Online</option>
               </Form.Control>
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="col-md-3">
               <Form.Label>Language</Form.Label>
               <Form.Control as="select" size="lg" {...register("language")}>
                 <option value="all">All</option>
@@ -171,14 +149,15 @@ export default function FindClassPage() {
                 <option value="Cantonese">Cantonese</option>
               </Form.Control>
             </Form.Group>
-            <Form.Group>
+
+            <Form.Group className="col-md-3">
               <Form.Label>Credit Less Than</Form.Label>
               <Form.Control type="number" {...register("credit")} />
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="col-md-3">
               <Form.Label>Yoga Type</Form.Label>
               <Form.Control as="select" size="lg" {...register("yogaType")}>
-                <option value="all" selected>
+                <option value="all">
                   All
                 </option>
                 {yogaType.length > 0 &&
@@ -189,7 +168,8 @@ export default function FindClassPage() {
                   ))}
               </Form.Control>
             </Form.Group>
-          </div>
+          </Row>
+
           <div className={styles.catBtn}>
             <Button
               variant="primary"
@@ -218,7 +198,7 @@ export default function FindClassPage() {
         <br />
 
         <div className="d-flex flex-wrap">
-          {allClassFetchResults.length > 0 &&
+          {allClassFetchResults.length > 0 ?
             allClassFetchResults.map((eachClass) => (
               <motion.div
                 key={eachClass.id}
@@ -232,7 +212,7 @@ export default function FindClassPage() {
                   />
                 </AnimatePresence>
               </motion.div>
-            ))}
+            )) : <div>No result</div>}
         </div>
       </div>
     </>

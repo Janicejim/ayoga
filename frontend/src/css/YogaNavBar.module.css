@@ -41,7 +41,7 @@
 #findClassBtnContainer a {
   padding-right: 0 !important;
 }
-.keyButton {
+.activeButton {
   background-color: var(--primary-color) !important;
   color: white !important;
   text-decoration: none !important;
@@ -82,9 +82,7 @@
 }
 
 .navBtn:hover {
-  /* border-color: var(--btn-hover-primary-color) !important; */
-  background-color: rgba(101, 27, 229, 0.54) !important;
-  color: white !important;
+color: rgba(101, 27, 229, 0.54) !important;
   border-color: var(--text-color) !important;
 }
 
@@ -92,12 +90,7 @@
   border: none !important;
 }
 
-/* .navIndex{
-  margin: 20px 0 !important;
-  display: none;
-} */
-
-/* .navbar-nav{
-  display: flex !important;
-  flex-direction: row-reverse !important;
-} */
+.switch{
+  display: flex;
+  align-items: center;
+}

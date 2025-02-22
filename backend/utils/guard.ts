@@ -4,7 +4,7 @@ import jwtSimple from "jwt-simple";
 import jwt from "./jwt";
 import { authService } from "../routers/AuthRoutes";
 const permit = new Bearer({
-  // query:"access_token"
+  query: "access_token"
 });
 
 export async function isLoggedInAPI(
@@ -20,12 +20,12 @@ export async function isLoggedInAPI(
       return;
     }
 
-    const payload = jwtSimple.decode(token, jwt.jwtSecret);
+    const payload = jwtSimple.decode(token, jwt.jwtSecret!);
 
     const userId = payload.userId;
 
     const user = await authService.getUserById(userId);
-    // console.log({ user })
+
 
     if (!user) {
       res
@@ -33,7 +33,7 @@ export async function isLoggedInAPI(
         .json({ message: "Permission Denied:Can't find the user" });
       return;
     }
-    req.user = user; //declare global in model.ts
+    req.user = user;
     next();
   } catch (e) {
     console.log(e);
@@ -54,7 +54,7 @@ export async function isAdminAPI(
       return;
     }
 
-    const payload = jwtSimple.decode(token, jwt.jwtSecret);
+    const payload = jwtSimple.decode(token, jwt.jwtSecret!);
 
     const userId = payload.userId;
 
@@ -70,7 +70,7 @@ export async function isAdminAPI(
       res.status(401).json({ success: false, msg: "Admin only" });
       return;
     }
-    req.user = user; //declare global in model.ts
+    req.user = user;
     next();
   } catch (e) {
     console.log(e);
@@ -91,7 +91,7 @@ export async function isTeacherAPI(
       return;
     }
 
-    const payload = jwtSimple.decode(token, jwt.jwtSecret);
+    const payload = jwtSimple.decode(token, jwt.jwtSecret!);
 
     const userId = payload.userId;
 

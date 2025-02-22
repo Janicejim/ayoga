@@ -12,7 +12,5 @@ exports.authService = new AuthService_1.AuthService(db_1.default);
 var authController = new AuthController_1.AuthController(exports.authService);
 exports.authRoutes = express_1.default.Router();
 exports.authRoutes.post("/register", authController.register);
-exports.authRoutes.post("/login", authController.login); //localhost:8080/api/users/login [POST]
-exports.authRoutes.post("/loginFacebook", authController.loginFacebook); //localhost:8080/api/users/loginFacebook [POST]
-exports.authRoutes.post("/loginGoogle", authController.loginGoogle); //localhost:8080/api/users/loginGoogle [GET]
+exports.authRoutes.post("/login", authController.login);
 //# sourceMappingURL=AuthRoutes.js.map

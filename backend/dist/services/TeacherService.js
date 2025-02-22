@@ -247,7 +247,7 @@ var TeacherService = /** @class */ (function () {
                         else {
                             teacherInfo[0]["score"] = "No score";
                         }
-                        return [4 /*yield*/, this.knex.raw("select student_comment.id,users.name,icon,class.name as class_name,student_comment.updated_at,comment,star from student_class join class on class.id=student_class.class_id join users on student_class.user_id=users.id right join student_comment on student_comment.class_id =student_class.class_id where teacher_id =? order by student_comment.created_at desc", [teacher_id])];
+                        return [4 /*yield*/, this.knex.raw("SELECT distinct(student_comment.id), \n       users.name, \n       users.icon, \n       student_comment.updated_at, \n       student_comment.comment, \n       student_comment.star\nFROM student_comment \nLEFT JOIN student_class ON student_comment.class_id = student_class.class_id \nLEFT JOIN users ON student_comment.user_id = users.id \nleft join class on student_comment.class_id =class.id\nwhere class.teacher_id =?\ngroup by student_comment.id,users.name,users.icon\nORDER BY student_comment.updated_at DESC\n", [teacher_id])];
                     case 3:
                         comments = (_a.sent()).rows;
                         return [2 /*return*/, { teacherInfo: teacherInfo, comments: comments }];
@@ -270,10 +270,10 @@ var TeacherService = /** @class */ (function () {
             var yearData, monthData;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.knex.raw("SELECT TO_CHAR(created_at, 'YYYY') AS year, COALESCE(SUM(credit), 0) AS credit\nFROM user_credit_record\nWHERE (type = 'earn' OR (type = 'refund' AND credit < 0)) AND user_id = ?\nGROUP BY TO_CHAR(created_at, 'YYYY') order by year asc", [user_id])];
+                    case 0: return [4 /*yield*/, this.knex.raw("SELECT TO_CHAR(created_at, 'YYYY') AS year, COALESCE(SUM(credit), 0) AS credit\nFROM user_credit_record\nWHERE (type = 'earn' OR (type = 'student-refund')) AND user_id = ?\nGROUP BY TO_CHAR(created_at, 'YYYY') order by year asc", [user_id])];
                     case 1:
                         yearData = (_a.sent()).rows;
-                        return [4 /*yield*/, this.knex.raw("SELECT EXTRACT(month FROM created_at) AS month, COALESCE(SUM(credit), 0) AS credit\nFROM user_credit_record\nWHERE (type = 'earn' OR (type = 'refund' AND credit < 0)) AND user_id = ?\nAND EXTRACT(year FROM created_at) = EXTRACT(year FROM CURRENT_DATE)\nGROUP BY EXTRACT(month FROM created_at) order by month asc", [user_id])];
+                        return [4 /*yield*/, this.knex.raw("SELECT EXTRACT(month FROM created_at) AS month, COALESCE(SUM(credit), 0) AS credit\nFROM user_credit_record\nWHERE (type = 'earn' OR (type = 'student-refund')) AND user_id = ?\nAND EXTRACT(year FROM created_at) = EXTRACT(year FROM CURRENT_DATE)\nGROUP BY EXTRACT(month FROM created_at) order by month asc", [user_id])];
                     case 2:
                         monthData = (_a.sent()).rows;
                         return [2 /*return*/, { yearData: yearData, monthData: monthData }];
@@ -307,7 +307,7 @@ var TeacherService = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.knex.raw("select student_comment.id,users.name,icon,student_comment.updated_at,comment,star from student_class join class on class.id=student_class.class_id join users on student_class.user_id=users.id right join student_comment on student_comment.class_id =student_class.class_id order by student_comment.created_at desc\n limit 10\n")];
+                    case 0: return [4 /*yield*/, this.knex.raw("SELECT distinct(student_comment.id), \n       users.name, \n       users.icon, \n       student_comment.updated_at, \n       student_comment.comment, \n       student_comment.star\nFROM student_comment \nLEFT JOIN student_class ON student_comment.class_id = student_class.class_id \nLEFT JOIN users ON student_comment.user_id = users.id \nleft join class on student_comment.class_id =class.id\ngroup by student_comment.id,users.name,users.icon\nORDER BY student_comment.updated_at desc  limit 10\n")];
                     case 1: return [2 /*return*/, (_a.sent()).rows];
                 }
             });

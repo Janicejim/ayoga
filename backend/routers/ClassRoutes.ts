@@ -10,58 +10,15 @@ export const classRoutes = express.Router();
 
 classRoutes.get("/details/:classId", classController.getClassDetailsById);
 classRoutes.get("/status/:classId", isLoggedInAPI, classController.getUserTypeOfClass)
-classRoutes.get(
-  "/bookmark/:classId",
-  isLoggedInAPI,
-  classController.checkBookmarked
-);
-classRoutes.get(
-  "/booking/:classId",
-  isLoggedInAPI,
-  classController.checkIsBooked
-);
-classRoutes.get(
-  "/teacher/:teacherId",
-  classController.getInstructorOtherClasses
-);
-classRoutes.post(
-  "/bookmark/:classId",
-  isLoggedInAPI,
-  classController.addBookmarked
-);
-
-classRoutes.delete(
-  "/bookmark/:classId",
-  isLoggedInAPI,
-  classController.deleteBookmarked
-);
-
-classRoutes.post(
-  "/reserve/:classId",
-  isLoggedInAPI,
-  classController.reserveSeat
-);
-
-classRoutes.put(
-  "/booking/:classId",
-  isLoggedInAPI,
-  classController.cancelReserveSeat
-);
-
-classRoutes.get(
-  "/comment/:classId",
-  isLoggedInAPI,
-  classController.getStudentCommentByClassId
-);
-
-classRoutes.post(
-  "/comment/:classId",
-  isLoggedInAPI,
-  classController.studentGiveCommentByClassId
-);
-
-classRoutes.put(
-  "/comment/:id",
-  isLoggedInAPI,
-  classController.studentEditCommentByCommentId
-);
+classRoutes.get("/bookmark/:classId", isLoggedInAPI, classController.checkBookmarked);
+classRoutes.get("/booking/:classId", isLoggedInAPI, classController.checkIsBooked);
+classRoutes.get("/teacher/:teacherId", classController.getInstructorOtherClasses);
+classRoutes.post("/bookmark/:classId", isLoggedInAPI, classController.addBookmarked);
+classRoutes.delete("/bookmark/:classId", isLoggedInAPI, classController.deleteBookmarked);
+classRoutes.post("/reserve/:classId", isLoggedInAPI, classController.reserveSeat);
+classRoutes.put("/booking/:classId", isLoggedInAPI, classController.cancelReserveSeat);
+classRoutes.get("/comment/:classId", isLoggedInAPI, classController.getStudentCommentByClassId);
+classRoutes.post("/comment/:classId", isLoggedInAPI, classController.studentGiveCommentByClassId);
+classRoutes.put("/comment/:id", isLoggedInAPI, classController.studentEditCommentByCommentId);
+classRoutes.get("/", classController.getClassMySearch);
+classRoutes.get("/yoga/type", classController.getYogaType);

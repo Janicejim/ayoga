@@ -10,7 +10,7 @@ env:
   BUCKET_NAME: ayoga-frontend # s3 frontend bucket名
   CLOUDFRONT_DISTRIBUTION: E2DKUERGNJ0IF7 #cloudfront的distribution, 似EXXXXXXXXXXXX
   AWS_DEFAULT_REGION: ap-southeast-1 # s3 bucket所在區域
-
+  REACT_APP_GOOGLE_MAP_API_KEY: AIzaSyDx_KywoJ3TbIkl5VuZuUhj0-PA1WYft-I
 jobs:
   build-react:
     runs-on: ubuntu-latest

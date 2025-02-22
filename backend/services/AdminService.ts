@@ -1,4 +1,5 @@
 import { Knex } from "knex";
+import { UserRecord } from "../utils/models";
 
 export class AdminService {
   constructor(private knex: Knex) { }
@@ -44,17 +45,80 @@ export class AdminService {
     await this.knex("users").update({ role }).where("id", user_id);
   }
 
-  async getUnCommentStudentSummary() {
+  async getTransactions() {
     return (
-      await this.knex.raw(`
-        select student_class.class_id,class.name as class_name,users_info.name as student_name,email,class.date from student_class join users on users.id=student_class.user_id join class on student_class.class_id=class.id left join student_comment on student_comment.class_id =student_class.class_id join (select id,name from users) as users_info on users_info.id=student_class.user_id  where date<current_date
-        and comment isnull order by date asc
-        
-    `)
+      await this.knex.raw(
+        `select type,id,user_id,class_id,credit,transaction_id,refund_related_id ,updated_at from user_credit_record where type !='top-up' and type !='withdrawal' order by created_at desc`
+      )
     ).rows;
   }
 
-  async getCompanyFinancialData() {
-    return;
+  async getTransactionByKeyword(keyword: string) {
+    return (
+      await this.knex.raw(
+        `  select type,id,user_id,class_id,credit,transaction_id,refund_related_id ,updated_at from user_credit_record where type !='top-up' and type !='withdrawal'  and transaction_id=? or refund_related_id =? order by created_at desc`,
+        [keyword, keyword]
+      )
+    ).rows;
   }
+
+
+  public async checkCreditRecords(classId: number, userId: number) {
+    const useCreditRecord = (
+      await this.knex.raw(
+        `select id,transaction_id,credit,type,class_id,user_id from user_credit_record where class_id=? and user_id=? and type='use'`,
+        [classId, userId]
+      )
+    ).rows;
+
+    const earnCreditRecord = (
+      await this.knex.raw(
+        `select id,transaction_id,credit,type,class_id,user_id from user_credit_record where class_id=? and type='earn'`,
+        [classId]
+      )
+    ).rows;
+
+
+    return { useCreditRecord: useCreditRecord[0], earnCreditRecord: earnCreditRecord[0] }
+
+  }
+
+
+  public async refundCaseHandle(
+    records: UserRecord[],
+    classId: number,
+    userId: number,
+  ) {
+    let txn = await this.knex.transaction();
+    try {
+      let timestamp = Date.now();
+
+      for (let record of records) {
+        let refundRecord = await txn("user_credit_record").insert({
+          type: record.type == "earn" ? "student-refund" : "refund",
+          credit: -record.credit,
+          class_id: record.class_id,
+          user_id: record.user_id,
+          refund_related_id: record.transaction_id
+        }).returning("id")
+
+        let transaction_id = `rf${timestamp}-${refundRecord[0].id}`.split("-").join("");
+        await txn("user_credit_record").update({ transaction_id }).where("id", refundRecord[0].id);
+
+
+      }
+
+      // update student_class record to inactive
+      await txn("student_class").update({ status: "inactive" })
+        .where("class_id", classId)
+        .andWhere("user_id", userId)
+
+      await txn.commit();
+    } catch (e) {
+      console.log(e);
+      await txn.rollback();
+    }
+  }
+
+
 }

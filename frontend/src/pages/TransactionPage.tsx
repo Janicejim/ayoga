@@ -1,23 +1,47 @@
-import { useSelector, useDispatch } from "react-redux";
-import { IRootState } from "../redux/store";
-import { useEffect } from "react";
-import styles from "../css/Transaction.module.css";
-import { Table } from "react-bootstrap";
-import { getTransactionInfo } from "../redux/transaction/thunks";
+
+import { useEffect, useState } from "react";
+import styles from "../css/transaction.module.css";
 import moment from "moment";
+import { getData } from "../api/api";
+import { TransactionPageItem } from "../utils/models";
+import { Column } from "primereact/column";
+import { DataTable } from "primereact/datatable";
+
+
+
 
 export default function TransactionPage() {
-  const dispatch = useDispatch();
-  const { transactionItems } = useSelector(
-    (state: IRootState) => state.transaction
-  );
-  // console.log("transactionItems", transactionItems);
+  const [transactionItems, setTransactionItems] = useState<any[]>([])
+
+
+
+
+
+  async function getTransactionInfo() {
+    const result = await getData(`api/credit/transaction`);
+
+    if (result.success) {
+
+      let mappedData = result.data.map((item: TransactionPageItem) => {
+        return {
+          transaction_id: item.transaction_id,
+          date: moment(`${item.date}`).format("LLL"),
+          package: item.package,
+          type: item.type,
+          credit: item.credit,
+          class: item.class
+
+        }
+      })
+
+      setTransactionItems(mappedData)
+    }
+  }
+
   useEffect(() => {
-    const result = async () => {
-      dispatch(getTransactionInfo());
-    };
-    result();
-  }, [dispatch]);
+    getTransactionInfo()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
   return (
@@ -35,36 +59,16 @@ export default function TransactionPage() {
       <div className="container">
         <div className="row">
           <div className="col">
-            <Table className={styles.myTable} responsive="md">
-              <thead>
-                <tr>
-                  <th className={styles.tableTitle}>Transaction id</th>
-                  <th className={styles.tableTitle}>Date & Time</th>
-                  <th className={styles.tableTitle}>Class</th>
-                  <th className={styles.tableTitle}>Package</th>
-                  <th className={styles.tableTitle}>Type</th>
-                  <th className={styles.tableTitle}>Credits</th>
-                </tr>
-              </thead>
-              <tbody>
-                {transactionItems &&
-                  transactionItems.map((item, itemIndex) => {
-                    return (
-                      <tr key={itemIndex}>
-                        <td className={styles.tableItem}>{item.transaction_id}</td>
-                        <td className={styles.tableItem}>
-                          {/* {convertToLocalDate(item.date)} */}
-                          {moment(`${item.date}`).format("LLL")}
-                        </td>
-                        <td className={styles.tableItem}>{item.class}</td>
-                        <td className={styles.tableItem}>{item.package}</td>
-                        <td className={styles.tableItem}>{item.type}</td>
-                        <td className={styles.tableItem}>{item.credit}</td>
-                      </tr>
-                    );
-                  })}
-              </tbody>
-            </Table>
+            <div className="card">
+              <DataTable value={transactionItems} paginator rows={20} rowsPerPageOptions={[20, 50, 100]} tableStyle={{ minWidth: '50rem' }}>
+                <Column field="transaction_id" header="Transaction id" sortable style={{ width: '25%' }}></Column>
+                <Column field="date" header="Date & Time" sortable style={{ width: '25%' }}></Column>
+                <Column field="class" header="Class" sortable style={{ width: '25%' }}></Column>
+                <Column field="package" header="Package" sortable style={{ width: '10%' }}></Column>
+                <Column field="type" header="Type" sortable style={{ width: '30%' }}></Column>
+                <Column field="credit" header="Credits" sortable style={{ width: '25%' }}></Column>
+              </DataTable>
+            </div>
           </div>
         </div>
       </div>

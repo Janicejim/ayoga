@@ -65,7 +65,6 @@ function sendEmail(toEmail, subject, content) {
                         })];
                 case 2:
                     _a.sent();
-                    console.log("finish");
                     return [3 /*break*/, 4];
                 case 3:
                     e_1 = _a.sent();

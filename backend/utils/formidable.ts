@@ -5,20 +5,30 @@ fs.mkdirSync(uploadDir, { recursive: true });
 
 let counter = 0;
 
-export const formLocal = formidable({
-  uploadDir,
-  keepExtensions: true,
-  maxFiles: 1,
-  maxFileSize: 200 * 1024,
-  filter: (part) => part.mimetype?.startsWith("image/") || false,
-  filename: (originalName, originalExt, part, form) => {
-    let fieldName = part.name;
-    let timestamp = Date.now();
-    let ext = part.mimetype?.split("/").pop();
-    counter++;
-    return `${fieldName}-${timestamp}-${counter}.${ext}`;
-  },
-});
+
+export function createFormidableLocalForm() {
+  return formidable({
+    uploadDir,
+    keepExtensions: true,
+    maxFiles: 1,
+    maxFileSize: 200 * 1024,
+    filter: (part) => part.mimetype?.startsWith("image/") || false,
+    filename: (originalName, originalExt, part, form) => {
+      let fieldName = part.name;
+      let timestamp = Date.now();
+      let ext = part.mimetype?.split("/").pop();
+      counter++;
+      return `${fieldName}-${timestamp}-${counter}.${ext}`;
+    },
+  });
+
+}
+
+
+
+
+
+
 
 
 
@@ -38,34 +48,34 @@ let s3 = new aws.S3({
 
 let filename = "";
 
-fs.mkdirSync(uploadDir, { recursive: true });
-export const form = formidable({
-  /////new add/////////////////
-  fileWriteStreamHandler() {
-    let passThroughStream = new stream.PassThrough();
-    let upload = s3.upload(
-      {
-        Body: passThroughStream,
-        Bucket: process.env.S3_BUCKET_NAME!,
-        Key: filename,
-        ContentType: "image/jpg, image/png, image/jpeg",
-      },
-      {}
-    );
+export function createFormidableS3Form() {
+  return formidable({
+    fileWriteStreamHandler() {
+      let passThroughStream = new stream.PassThrough();
+      let upload = s3.upload(
+        {
+          Body: passThroughStream,
+          Bucket: process.env.S3_BUCKET_NAME!,
+          Key: filename,
+          ContentType: "image/jpg, image/png, image/jpeg",
+        },
+        {}
+      );
 
-    upload.send();
-    return passThroughStream;
-  },
-  ///////////////////////////////////////////
-  filename: (originalName, originalExt, part, form) => {
-    counter++;
-    let fieldName = part.name;
-    let timestamp = Date.now();
-    let ext = part.mimetype?.split("/").pop();
-    filename = `${fieldName}-${timestamp}-${counter}.${ext}`;
-    return filename;
-  },
-});
+      upload.send();
+      return passThroughStream;
+    },
+    filename: (originalName, originalExt, part, form) => {
+      counter++;
+      let fieldName = part.name;
+      let timestamp = Date.now();
+      let ext = part.mimetype?.split("/").pop();
+      filename = `${fieldName}-${timestamp}-${counter}.${ext}`;
+      return filename;
+    },
+  })
+}
+
 
 export async function deleteImageInS3(filename: string) {
   const params = {

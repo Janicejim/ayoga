@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Menu } from "primereact/menu";
 import { MenuItem } from "primereact/menuitem";
 import UserListPage from "../pages/UserListPage";
 import TeacherRequestPage from "./TeacherRequestPage";
-import UncommentRecordPage from "../pages/UncommentRecordPage";
-
+import { Sidebar } from 'primereact/sidebar';
+import { Button } from "primereact/button";
+import AdminRefundPage from "./AdminRefundPage";
 export default function AdminPage() {
-  // const toast = useRef<Toast>(null);
   const [currentPage, setCurrentPage] = useState<string>("teacher_request");
+  const [visible, setVisible] = useState(true);
+  const [smallSizeMode, setSmallSizeMode] = useState(window.innerWidth > 800 ? false : true);
+
   const items: MenuItem[] = [
     {
       label: "User",
@@ -30,12 +33,12 @@ export default function AdminPage() {
       ],
     },
     {
-      label: "Comment",
+      label: "Complaint",
       items: [
         {
-          label: "Uncomment Record",
+          label: "Transaction & Refund",
           icon: "pi pi-comments",
-          command: () => changePageComponent("uncomment_record"),
+          command: () => changePageComponent("transaction_refund"),
         },
       ],
     },
@@ -44,14 +47,36 @@ export default function AdminPage() {
   function changePageComponent(page: string) {
     setCurrentPage(page);
   }
+  const handleResize = () => {
+    if (window.innerWidth <= 800) {
+      setVisible(false);
+      setSmallSizeMode(true)
+    } else {
+      setVisible(true);
+      setSmallSizeMode(false)
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
     <div className="row">
+      {smallSizeMode && <Button icon="pi pi-bars" onClick={() => setVisible(true)} />}
       <div className="d-flex">
-        <Menu model={items} style={{ width: "300px", height: "100vh" }} />
+        {smallSizeMode ? <>
+          <Sidebar visible={visible} onHide={() => setVisible(false)}>
+            <Menu model={items} style={{ width: "100%", height: "100vh" }} />
+          </Sidebar></> : <Menu model={items} style={{ width: "300px", height: "100vh" }} />}
         {currentPage === "user_list" && <UserListPage />}
         {currentPage === "teacher_request" && <TeacherRequestPage />}
-        {currentPage === "uncomment_record" && <UncommentRecordPage />}
+        {currentPage === "transaction_refund" && < AdminRefundPage />}
       </div>
     </div>
   );

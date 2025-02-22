@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { UserInfoService } from "../services/UserInfoService";
-import { form } from "../utils/formidable";
-import { checkPassword } from "../utils/hash";
+import { checkPassword, hashPassword } from "../utils/hash";
+import { createFormidableS3Form } from "../utils/formidable";
 
 export class UserInfoController {
   constructor(private userInfoService: UserInfoService) { }
@@ -22,10 +22,10 @@ export class UserInfoController {
     }
   };
 
-  getBookingInfo = async (req: Request, res: Response) => {
+  getBookedInfo = async (req: Request, res: Response) => {
     try {
       let user_id = req.user.id;
-      let bookingResult = await this.userInfoService.getBooking(user_id);
+      let bookingResult = await this.userInfoService.getBookedRecord(user_id);
       res.json({ success: true, data: bookingResult });
     } catch (error) {
       console.log(error);
@@ -106,12 +106,12 @@ export class UserInfoController {
 
 
   changeProfilePic = async (req: Request, res: Response) => {
+    const form = createFormidableS3Form()
     form.parse(req, async (err, fields, files) => {
       try {
-        const icon = "";
+        let icon = "";
         if (files.hasOwnProperty("icon")) {
-          //@ts-ignore
-          icon = files.icon.newFilename;
+          icon = Array.isArray(files.icon) ? files.icon[0].newFilename : files.icon.newFilename;
         } else {
           res.json({ success: false, msg: "missing file" })
         }
@@ -181,9 +181,10 @@ export class UserInfoController {
         res.json({ success: false, msg: "confirm password not match" });
         return;
       }
+      let hashedPassword = await hashPassword(new_password)
 
       await this.userInfoService.changePassword(
-        user_id, new_password
+        user_id, hashedPassword
       );
 
       res.json({
@@ -196,6 +197,19 @@ export class UserInfoController {
       res.json({ success: false, msg: "system error" });
     }
 
+  };
+
+  getPosesItem = async (req: Request, res: Response) => {
+    try {
+      let poseResult = await this.userInfoService.getPosesItems();
+      res.json({ success: true, data: poseResult });
+    } catch (error) {
+      console.log(error);
+      res.status(401).json({
+        msg: "system error",
+        success: false,
+      });
+    }
   };
 
 }

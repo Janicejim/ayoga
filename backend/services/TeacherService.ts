@@ -42,7 +42,7 @@ export class TeacherService {
     yoga_type_id: number,
     introduction: string
   ) {
-    let classResult;
+    let classResult: any[];
     if (type == "offline") {
       classResult = await this.knex("class")
         .returning("id")
@@ -83,7 +83,6 @@ export class TeacherService {
         end_time,
       });
     }
-    //@ts-ignore
     const class_id = classResult[0]["id"];
 
     let uuid = `${date}${start_time}-${class_id}`.split("-").join("");
@@ -266,13 +265,13 @@ ORDER BY student_comment.updated_at DESC
 
     let yearData = (await this.knex.raw(`SELECT TO_CHAR(created_at, 'YYYY') AS year, COALESCE(SUM(credit), 0) AS credit
 FROM user_credit_record
-WHERE (type = 'earn' OR (type = 'refund' AND credit < 0)) AND user_id = ?
+WHERE (type = 'earn' OR (type = 'student-refund')) AND user_id = ?
 GROUP BY TO_CHAR(created_at, 'YYYY') order by year asc`, [user_id])).rows
 
 
     let monthData = (await this.knex.raw(`SELECT EXTRACT(month FROM created_at) AS month, COALESCE(SUM(credit), 0) AS credit
 FROM user_credit_record
-WHERE (type = 'earn' OR (type = 'refund' AND credit < 0)) AND user_id = ?
+WHERE (type = 'earn' OR (type = 'student-refund')) AND user_id = ?
 AND EXTRACT(year FROM created_at) = EXTRACT(year FROM CURRENT_DATE)
 GROUP BY EXTRACT(month FROM created_at) order by month asc`, [user_id])).rows
 

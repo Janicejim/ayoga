@@ -12,14 +12,15 @@ export class UserInfoService {
     ).rows;
   }
 
-  async getBooking(user_id: number) {
+  async getBookedRecord(user_id: number) {
     return (
       await this.knex.raw(
-        `select uuid as class_number, yoga_type.name as yoga_type,class.id as id,image,venue,type,class.name,users.name as instructor,uuid,link,introduction,credit,language,capacity,date,end_time,start_time,
+        `select comment,uuid as class_number, yoga_type.name as yoga_type,class.id as id,image,venue,type,class.name,users.name as instructor,uuid,link,introduction,credit,language,capacity,date,end_time,start_time,
     (class.date + class.end_time::time) < NOW() AS is_end from class join users on class.teacher_id=users.id join student_class on class.id=student_class.class_id 
      left join yoga_type on yoga_type.id=class.yoga_type_id
+     LEFT JOIN student_comment student_comment ON student_class.class_id = student_comment.class_id AND student_comment.user_id = ?
     where student_class.user_id=? and student_class.status='active' order by class.date asc`,
-        [user_id]
+        [user_id, user_id]
       )
     ).rows;
   }
@@ -27,7 +28,7 @@ export class UserInfoService {
   async getBookmark(user_id: number) {
     return (
       await this.knex.raw(
-        ` select yoga_type.name as yoga_type,image,venue,class.name as name,users.name as instructor,class.type,uuid as class_number,link,introduction,credit,language,date,end_time,start_time,bookmark.user_id,class.id as class_id,class.capacity as max_capacity,coalesce((class.capacity-booked),class.capacity)as capacity from class 
+        ` select yoga_type.name as yoga_type,image,venue,class.name as name,users.name as instructor,class.type,uuid as class_number,link,introduction,credit,language,date,end_time,start_time,bookmark.user_id,class.id as id,class.capacity as max_capacity,coalesce((class.capacity-booked),class.capacity)as capacity from class 
       join users on users.id = class.teacher_id 
       left join (select count(class_id) as booked,class_id from student_class group by class_id) as 
      class_info on class_info.class_id = class.id
@@ -87,8 +88,8 @@ WHERE class.teacher_id = ? order by date asc;`,
 
     let unHoldCredit = (
       await this.knex.raw(
-        `select coalesce (sum(credit),0) as credit from user_credit_record  full join (select id,date from class where teacher_id=2) as class_info on class_info.id=user_credit_record.class_id where user_credit_record.user_id =? 
-and type='earn' and date<=CURRENT_DATE`,
+        ` select coalesce (sum(credit),0) as credit from user_credit_record  full join (select id,date from class where teacher_id=2) as class_info on class_info.id=user_credit_record.class_id where user_credit_record.user_id =?
+and (date<CURRENT_DATE or date isnull)`,
         [user_id]
       )
     ).rows;
@@ -96,7 +97,7 @@ and type='earn' and date<=CURRENT_DATE`,
 
     let heldCredit = (
       await this.knex.raw(
-        `select coalesce (sum(credit),0) as credit from user_credit_record full join (select id,date from class where teacher_id=2) as class_info on class_info.id=user_credit_record.class_id where user_credit_record.user_id =? and type='earn' and date>CURRENT_DATE`,
+        `select coalesce (sum(credit),0) as credit from user_credit_record full join (select id,date from class where teacher_id=2) as class_info on class_info.id=user_credit_record.class_id where user_credit_record.user_id =? and date>CURRENT_DATE`,
         [user_id]
       )
     ).rows;
@@ -139,4 +140,18 @@ and type='earn' and date<=CURRENT_DATE`,
 
     await this.knex("users").update({ password }).where("id", user_id)
   }
+
+  async getPosesItems() {
+    return await this.knex
+      .select(
+        "pose.id",
+        "pose.name as name",
+        "image",
+        "target_area.name as target_name",
+        "detect_id"
+      )
+      .from("pose")
+      .innerJoin("target_area", "pose.target_area_id", "target_area.id");
+  }
+
 }

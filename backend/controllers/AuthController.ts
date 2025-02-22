@@ -1,25 +1,28 @@
 import { AuthService } from "../services/AuthService";
 import { Request, Response } from "express";
 import { checkPassword } from "../utils/hash";
-import { OAuth2Client } from "google-auth-library";
 import jwtSimple from "jwt-simple";
 import jwt from "../utils/jwt";
-import { logger } from "../utils/logger";
-import { form } from "../utils/formidable";
 import dotenv from "dotenv";
+import { createFormidableS3Form } from "../utils/formidable";
 dotenv.config();
-const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
+
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   register = async (req: Request, res: Response) => {
+    const form = createFormidableS3Form()
     form.parse(req, async (err, fields, files) => {
       try {
         const { name, email, password, confirmPw, phone } = fields;
-        const icon = "";
+        let icon = "";
         if (files.hasOwnProperty("icon")) {
-          //@ts-ignore
-          icon = files.icon.newFilename;
+          const iconFile = files.icon;
+          if (Array.isArray(iconFile)) {
+            icon = iconFile[0].newFilename;
+          } else {
+            icon = iconFile.newFilename;
+          }
         }
 
         if (!name) {
@@ -67,7 +70,7 @@ export class AuthController {
         );
 
         const payload = { userId, email, role: "user" };
-        const token = jwtSimple.encode(payload, jwt.jwtSecret);
+        const token = jwtSimple.encode(payload, jwt.jwtSecret!);
         res.json({
           success: true,
           msg: "register success",
@@ -102,7 +105,7 @@ export class AuthController {
         return;
       }
       let payload = { userId: user.id, email: user.email, role: user.role };
-      let token = jwtSimple.encode(payload, jwt.jwtSecret);
+      let token = jwtSimple.encode(payload, jwt.jwtSecret!);
       res.json({
         success: true,
         msg: "Login success",
@@ -117,107 +120,5 @@ export class AuthController {
     }
   };
 
-  public loginFacebook = async (req: Request, res: Response) => {
-    try {
-      let accessToken = req.body.accessToken;
-      if (!accessToken) {
-        res.status(401).json({ message: "Wrong Access Token!" });
-        return;
-      }
-      let url = `https://graph.facebook.com/me?access_token=${accessToken}&fields=id,name,email,picture`;
-      let fetchRes = await fetch(url);
 
-      let fetchResult = await fetchRes.json();
-      // console.log(`fetchResult`, fetchResult);
-
-      let email = fetchResult.email;
-
-      let user = await this.authService.getUserByEmail(email);
-      // console.log(`found fb user`, user);
-
-      let foundEmail = user ? user : "";
-      if (!foundEmail) {
-        await this.authService.register(
-          fetchResult.name,
-          email,
-          "22334",
-          fetchResult.picture.data.url,
-          ""
-        );
-
-        user = await await this.authService.getUserByEmail(email!);
-        // console.log(`found fb user`, user);
-      }
-
-      let payload = { userId: user.id, email: user.email };
-      // console.log(`payload`, payload);
-      let jwttoken = jwtSimple.encode(payload, jwt.jwtSecret);
-      // console.log(`jwttoken`, jwttoken);
-
-      res.json({
-        message: "Facebook Login success",
-        accessToken: accessToken,
-        jwttoken: jwttoken,
-      });
-      return;
-    } catch (e) {
-      console.log(e);
-      logger.error(`${e.message}`);
-      res.status(500).json({ message: e });
-      return;
-    }
-  };
-
-  public loginGoogle = async (req: Request, res: Response) => {
-    try {
-      let { token } = req.body;
-      // console.log(`token in controller`, token);
-
-      let ticket = await client.verifyIdToken({
-        idToken: token,
-        audience: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-      });
-
-      let payloadResult = ticket.getPayload();
-      // console.log(`payloadResult`, payloadResult);
-
-      if (payloadResult) {
-        let email = payloadResult ? payloadResult["email"] : "";
-        let name = payloadResult ? payloadResult["name"] : "";
-        let image = payloadResult ? payloadResult["picture"] : "";
-
-        let user = await this.authService.getUserByEmail(email!);
-        // console.log(`Found google user`, user);
-
-        if (!user) {
-          await this.authService.register(name!, email!, "1234", image!, "");
-          user = await await this.authService.getUserByEmail(email!);
-          // console.log(`Found google user`, user);
-        }
-
-        let payload = { userId: user.id, email: user.email };
-        console.log(`payload`, payload);
-
-        let jwttoken = jwtSimple.encode(payload, jwt.jwtSecret);
-        // console.log(`jwttoken`, jwttoken);
-
-        res.json({
-          message: "Google Login success",
-          jwttoken: jwttoken,
-          token: token,
-        });
-
-        if (!token) {
-          res.status(401).json({ message: "NO Google Access Token!" });
-          return;
-        }
-      }
-      return;
-    } catch (e) {
-      console.log(e);
-      logger.error(`${e.message}`);
-      res.status(500).json({ message: e });
-      return;
-    }
-  };
 }

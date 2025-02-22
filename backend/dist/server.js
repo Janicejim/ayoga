@@ -13,11 +13,13 @@ app.use(express_1.default.urlencoded({ extended: true }));
 app.use(express_1.default.json({ limit: "50mb" }));
 var API_VERSION = "/api";
 var routes_1 = require("./routes");
-app.use(API_VERSION, routes_1.routes); // localhost:8080/api
-app.use(express_1.default.static("uploads"));
-app.use(express_1.default.static("image"));
-app.use(express_1.default.static("poses"));
+app.use(API_VERSION, routes_1.routes);
 app.use(express_1.default.static("model"));
+/* local use:
+ app.use(express.static("uploads"));
+ app.use(express.static("image"));
+ app.use(express.static("poses"));
+ */
 var PORT = process.env.PORT || 8080;
 app.listen(PORT, function () {
     console.log("Listening at http://localhost:".concat(PORT, "/"));

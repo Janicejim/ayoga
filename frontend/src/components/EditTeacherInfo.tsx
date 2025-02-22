@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { Form } from "react-bootstrap"; //
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
-import loginStyles from "../css/Login.module.css";
-import { editTeacherInfo, fetchTeacherInfo } from "../api/teacher";
+import loginStyles from "../css/login.module.css";
+import { showMsgAlert } from "../utils/alert";
+import { getData, postOrPatchTextForm } from "../api/api";
 
 
 interface FormState {
@@ -24,7 +25,7 @@ export default function EditTeacherInfo() {
   const [newest_qualification, setNewestQualification] = useState("")
 
   const getTeacherInfo = async () => {
-    let result = await fetchTeacherInfo()
+    let result = await getData(`api/teacher/information`)
     setIntroduction(result.data[0].introduction)
     setNewestQualification(result.data[0].newest_qualification)
   }
@@ -33,16 +34,11 @@ export default function EditTeacherInfo() {
 
 
   const onSubmit = async (data: FormState) => {
-    // console.log({ data })
-    let result = await editTeacherInfo(data)
-
-
-    //@ts-ignore
+    let result = await postOrPatchTextForm("PATCH", `api/teacher/info`, data)
     if (result.success) {
-      alert("success")
+      showMsgAlert("success", result.msg)
     } else {
       reset()
-      //@ts-ignore
       setError(result.msg.toUpperCase());
       setTimeout(() => { setError("") }, 2000)
 

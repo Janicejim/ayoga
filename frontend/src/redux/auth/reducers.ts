@@ -37,10 +37,7 @@ export const authReducers = (
       };
     case "@@Auth/LOAD_TOKEN":
       const payload: JWTPayload = jwt(action.token);
-      // console.log("payload check in reducers: ",payload)
       const { userId, email, role } = payload;
-      // console.log("payload content check in reducers: ",userId)
-      // console.log("payload content check in reducers: ",email)
       return {
         ...state,
         user: {

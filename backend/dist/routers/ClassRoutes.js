@@ -24,4 +24,6 @@ exports.classRoutes.put("/booking/:classId", guard_1.isLoggedInAPI, exports.clas
 exports.classRoutes.get("/comment/:classId", guard_1.isLoggedInAPI, exports.classController.getStudentCommentByClassId);
 exports.classRoutes.post("/comment/:classId", guard_1.isLoggedInAPI, exports.classController.studentGiveCommentByClassId);
 exports.classRoutes.put("/comment/:id", guard_1.isLoggedInAPI, exports.classController.studentEditCommentByCommentId);
+exports.classRoutes.get("/", exports.classController.getClassMySearch);
+exports.classRoutes.get("/yoga/type", exports.classController.getYogaType);
 //# sourceMappingURL=ClassRoutes.js.map

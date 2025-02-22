@@ -12,16 +12,14 @@ import Transaction from "./pages/TransactionPage";
 import CreateClassPage from "./pages/CreateClassPage";
 import RegisterPage from "./pages/RegisterPage";
 import PrivateRoute from "./components/PrivateRoute";
-import OtherClasses from "./components/OtherClass";
 import AiGamePage from "./pages/AIGamePage";
-import CreditEarnedPage from "./pages/CreditEarnedPage";
 import PaymentResult from "./components/PaymentResult";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useSelector } from "react-redux";
 import AdminPage from "./pages/AdminPage";
 import ApplyTeacherPage from "./pages/ApplyTeacherPage";
-import WithdrawCreditPage from "../src/pages//WithdrawCreditPage";
+import WithdrawalCreditPage from "../src/pages/WithdrawalCreditPage";
 import StudentListPage from "./pages/StudentListPage";
 import TeacherInfoPage from "./pages/TeacherInfoPage";
 import FindClassPage from "./pages/FindClassPage";
@@ -35,39 +33,39 @@ function App() {
     <div className="App">
       <ConnectedRouter history={history}>
         <YogaNavBar />
+        <div className="app-container">
+          <Switch>
+            <Route path="/login" component={LoginPage} />
+            <Route path="/register" component={RegisterPage} />
+            <PrivateRoute path="/class/create" component={CreateClassPage} />
+            {user.role === "admin" ? (
+              <Route path="/" exact={true} component={AdminPage}></Route>
+            ) : (
+              <Route path="/" exact={true} component={Homepage}></Route>
+            )}
 
-        <Switch>
-          <Route path="/login" component={LoginPage} />
-          <Route path="/register" component={RegisterPage} />
-          <PrivateRoute path="/create" component={CreateClassPage} />
-          {user.role === "admin" ? (
-            <Route path="/" exact={true} component={AdminPage}></Route>
-          ) : (
-            <Route path="/" exact={true} component={Homepage}></Route>
-          )}
+            <PrivateRoute path="/info" component={UserInfoPage}></PrivateRoute>
+            <PrivateRoute
+              path="/class/detail/:id"
+              component={ClassDetailPage}
+            ></PrivateRoute>
 
-          <PrivateRoute path="/userInfo" component={UserInfoPage}></PrivateRoute>
-          <PrivateRoute
-            path="/class/detail/:id"
-            component={ClassDetailPage}
-          ></PrivateRoute>
+            <PrivateRoute path="/package" component={PackagesPage} />
+            <PrivateRoute path="/transaction" component={Transaction} />
+            <PrivateRoute path="/ai" component={AiGamePage} />
+            <Route path="/class/find" component={FindClassPage} />
+            <PrivateRoute path="/payment/:result/:id" component={PaymentResult} />
+            <PrivateRoute path="/teacher/apply" component={ApplyTeacherPage} />
+            <PrivateRoute path="/credit/withdrawal" component={WithdrawalCreditPage} />
+            <PrivateRoute path="/class/student/:id" component={StudentListPage} />
+            <Route path="/teacher/:id" component={TeacherInfoPage} />
+            <PrivateRoute path="/revenue" component={TeacherRevenuePage} />
+            <PrivateRoute path="/edit/info" component={EditUserInfoPage} />
+            <Route component={NotFindPage} />
+          </Switch>
+        </div>
+        <div>  <Footer /></div>
 
-          <PrivateRoute path="/package" component={PackagesPage} />
-          <PrivateRoute path="/transaction" component={Transaction} />
-          <PrivateRoute path="/creditsEarned" component={CreditEarnedPage} />
-          <PrivateRoute path="/aigame" component={AiGamePage} />
-          <Route path="/classes" component={FindClassPage} />
-          <PrivateRoute path="/teacherClass/:id" component={OtherClasses} />
-          <PrivateRoute path="/payment/:result/:id" component={PaymentResult} />
-          <PrivateRoute path="/teacher/apply" component={ApplyTeacherPage} />
-          <PrivateRoute path="/withdrawal" component={WithdrawCreditPage} />
-          <PrivateRoute path="/class/student/:id" component={StudentListPage} />
-          <Route path="/teacher/:id" component={TeacherInfoPage} />
-          <PrivateRoute path="/revenue" component={TeacherRevenuePage} />
-          <PrivateRoute path="/edit/info" component={EditUserInfoPage} />
-          <Route component={NotFindPage} />
-        </Switch>
-        <Footer />
       </ConnectedRouter>
     </div>
   );

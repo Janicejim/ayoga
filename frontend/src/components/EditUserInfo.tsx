@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { Form } from "react-bootstrap"; //
+import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
-import loginStyles from "../css/Login.module.css";
+import loginStyles from "../css/login.module.css";
 import { IRootState } from "../redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { editUserInfo } from "../api/userInfo";
 import { getBoxInfo } from "../redux/userInfo/thunks";
+import { showMsgAlert } from "../utils/alert";
+import { postOrPatchTextForm } from "../api/api";
 
 interface FormState {
   name: string;
@@ -27,14 +28,12 @@ export default function EditUserInfo() {
   const [error, setError] = useState("");
 
   const onSubmit = async (data: FormState) => {
-    let result = await editUserInfo(data)
-    //@ts-ignore
+    let result = await postOrPatchTextForm("PATCH", `api/user/profile`, data)
     if (result.success) {
-      alert(result.msg)
+      showMsgAlert("success", result.msg)
       dispatch(getBoxInfo());
     } else {
       reset()
-      //@ts-ignore
       setError(result.msg.toUpperCase());
       setTimeout(() => { setError("") }, 2000)
 

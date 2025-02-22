@@ -1,8 +1,9 @@
 import { Button, Table } from "react-bootstrap";
-import styles from "../css/Transaction.module.css";
+import styles from "../css/transaction.module.css";
 import { useParams } from "react-router";
-import { fetchStudentList } from "../api/teacher";
 import { useEffect, useState } from "react";
+import { showMsgAlert } from "../utils/alert";
+import { getData } from "../api/api";
 
 interface Student {
   email: string,
@@ -20,7 +21,7 @@ function StudentListPage() {
   const [inactiveStudent, setInactiveStudent] = useState<Student[]>([])
 
   const getStudentList = async () => {
-    let result = await fetchStudentList(classId)
+    let result = await getData(`api/student/list?class_id=${classId}`)
     if (result.success) {
       setActiveStudent(result.data.activeStudent)
       setInactiveStudent(result.data.inactiveStudent)
@@ -36,9 +37,9 @@ function StudentListPage() {
   const copyToClipboard = async (textToCopy: string) => {
     try {
       await navigator.clipboard.writeText(textToCopy);
-      alert("copy success")
+      showMsgAlert("success", 'copy success')
     } catch (err) {
-      alert("fail to copy")
+      showMsgAlert("success", "fail to copy")
     }
   }
 
@@ -75,7 +76,7 @@ function StudentListPage() {
     }
   }
 
-  return <div>
+  return <div style={{ height: "100vh" }}>
     <div className="container">
       <div className="row">
         <div className="col">
@@ -85,16 +86,13 @@ function StudentListPage() {
     </div>
     <h4 style={{
       marginLeft: "1rem"
-
     }}>Active Student</h4>
-    <Button style={{
-      margin: "1rem"
-    }} onClick={copyAllPhone
-    }>Copy All Phone</Button>
-    <Button style={{
-      margin: "1rem"
-
-    }} onClick={copyAllEmail}>Copy All Email</Button>
+    <div className={styles.flex}>
+      <Button className={styles.btnColor} onClick={copyAllPhone
+      }>Copy All Phone</Button>
+      <Button className={styles.btnColor}
+        onClick={copyAllEmail}>Copy All Email</Button>
+    </div>
     <div className="container">
       <div className="row">
         <div className="col">
@@ -127,7 +125,8 @@ function StudentListPage() {
       </div>
     </div>
     {inactiveStudent.length > 0 && <div>   <h4 style={{
-      marginLeft: "1rem"
+      marginLeft: "1rem",
+      marginTop: "2rem"
 
     }}>Inactive Student</h4>
       <div className="container">
@@ -143,19 +142,18 @@ function StudentListPage() {
                 </tr>
               </thead>
               <tbody>
-                {activeStudent &&
-                  activeStudent.map((student, index) => {
-                    return (
-                      <tr key={student.id}>
-                        <td className={styles.tableItem}>
-                          {index + 1}
-                        </td>
-                        <td className={styles.tableItem}>{student.name}</td>
-                        <td className={styles.tableItem}>{student.email}</td>
-                        <td className={styles.tableItem}>{student.phone}</td>
-                      </tr>
-                    );
-                  })}
+                {inactiveStudent.map((student, index) => {
+                  return (
+                    <tr key={student.id}>
+                      <td className={styles.tableItem}>
+                        {index + 1}
+                      </td>
+                      <td className={styles.tableItem}>{student.name}</td>
+                      <td className={styles.tableItem}>{student.email}</td>
+                      <td className={styles.tableItem}>{student.phone}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </Table>
           </div>

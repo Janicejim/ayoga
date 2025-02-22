@@ -1,15 +1,6 @@
 import { Knex } from "knex";
+import { ResultClassAvailability, ResultUserAndClassCredits, UserRecord } from "../utils/models";
 
-export interface ResultClassAvailability {
-  classCap: any;
-  classAttendee: any;
-}
-
-export interface ResultUserAndClassCredits {
-  userCreditLeft: any;
-  classCreditRequired: any;
-  teacher_id: number;
-}
 
 export class ClassService {
   constructor(private knex: Knex) { }
@@ -17,7 +8,7 @@ export class ClassService {
   public async getClassDetails(classId: number) {
     return (
       await this.knex.raw(
-        ` select class.id as class_id,venue_point,image,venue,class.name as name,users.name as teacher_name,class.type,uuid as class_number,link,introduction,credit,language,date,end_time,start_time,class.id,class.capacity,users.id as teacher_id,coalesce((class.capacity-booked),class.capacity)as available from class 
+        ` select class.id as class_id,venue_point,image,venue,class.name as name,users.name as teacher_name,class.type,uuid as class_number,link,introduction,credit,language,date,end_time,start_time,class.id,class.capacity,class.teacher_id  as teacher_id,coalesce((class.capacity-booked),class.capacity)as available from class 
         join users on users.id = class.teacher_id 
         left join (select count(class_id) as booked,class_id from student_class where status='active' group by class_id) as 
        class_info on class_info.class_id = class.id
@@ -62,7 +53,7 @@ export class ClassService {
     const classAttendeeNumber = await this.knex("student_class").where(
       `student_class.class_id`,
       classId
-    );
+    ).andWhere("status", "active");
     const classCap = await this.knex("class")
       .select(`class.capacity`)
       .from("class")
@@ -101,14 +92,13 @@ export class ClassService {
 
   public async checkIsJoinerOfClass(classId: number, userId: number) {
 
-
-
-
     let result = (await this.knex.raw(`SELECT 
     student_class.id,
     student_comment.comment,
+    student_comment.star,
     class.date,
-    class.end_time
+    class.end_time,
+    student_comment.created_at
 FROM 
     student_class
 LEFT JOIN 
@@ -120,7 +110,6 @@ WHERE
     AND student_class.user_id = ? 
     AND student_class.status = 'active'`, [classId, userId])).rows
 
-    // console.log({ result })
 
     if (result.length < 1) {
       return { isJoiner: false }
@@ -128,7 +117,7 @@ WHERE
       return { isJoiner: true, haveComment: false }
 
     } else {
-      return { isJoiner: true, haveComment: true, comment: result[0].comment }
+      return { isJoiner: true, haveComment: true, comment: result[0].comment, star: result[0].star, created_at: result[0].created_at }
     }
 
 
@@ -193,7 +182,7 @@ WHERE
   }
 
   public async toCancelClassSeat(
-    records: any[],
+    records: UserRecord[],
     classId: number,
     userId: number,
   ) {
@@ -237,13 +226,13 @@ WHERE
       )
     ).rows;
 
+
     const classCredit = await this.knex("class")
       .select("credit", "teacher_id")
       .from("class")
       .where(`class.id`, classId);
-
     const result: ResultUserAndClassCredits = {
-      userCreditLeft: creditRes[0]["credit"],
+      userCreditLeft: creditRes.length > 0 ? creditRes[0]["credit"] : 0,
       classCreditRequired: classCredit[0]["credit"],
       teacher_id: classCredit[0]["teacher_id"],
     };
@@ -291,13 +280,14 @@ WHERE
 
     return (
       await this.knex.raw(
-        `   select image,venue,class.name as name,users.name as instructor,class.type,uuid as class_number,link,introduction,credit,language,date,end_time,start_time as time,
-      class.capacity as max_capacity,class.id as class_id,
+        `   select image,venue,class.name as name,users.name as instructor,class.type,uuid as class_number,link,introduction,credit,language,date,end_time,start_time,
+      class.capacity as max_capacity,class.id as id,
        coalesce((class.capacity-booked),class.capacity)as capacity from class 
           inner join users on users.id = class.teacher_id
                   left join (select count(class_id) as booked,class_id from student_class where status='active' group by class_id) as 
              class_info on class_info.class_id = class.id
           where class.teacher_id = ?
+          and class.date>CURRENT_DATE
 ${classQuery}
           order by class.date desc`,
         [teacher_id]
@@ -324,5 +314,108 @@ ${classQuery}
 
     await this.knex("student_comment").update({ comment, star }).where("id", id)
 
+  }
+
+
+  public async getClassMySearch(
+    date: string,
+    start_time: string,
+    instructor: string,
+    venue: string,
+    title: string,
+    type: string,
+    yogaType: string,
+    credit: number,
+    language: string,
+    userId: number
+  ) {
+    let query = this.knex
+      .select(
+        "class.id",
+        "image",
+        "venue",
+        "class.name",
+        "users.name as instructor",
+        "class.type",
+        "uuid as class_number",
+        "credit",
+        "language",
+        "date",
+        "end_time",
+        "start_time",
+        "class.capacity as capacity",
+        this.knex.raw(
+          "coalesce((class.capacity - booked), class.capacity) as available"
+        ),
+        "yoga.name as yoga_type"
+      )
+      .from("class")
+      .join("users", "users.id", "class.teacher_id")
+      .leftJoin(
+        this.knex
+          .select(this.knex.raw("count(class_id) as booked"), "class_id")
+          .from("student_class")
+          .groupBy("class_id")
+          .as("class_info"),
+        "class_info.class_id",
+
+        "class.id"
+      )
+      .join(
+        this.knex.select("id", "name").from("yoga_type").as("yoga"),
+        "yoga.id",
+
+        "class.yoga_type_id"
+      )
+      .where("class.date", ">", this.knex.raw("CURRENT_DATE"))
+      .andWhere(
+        this.knex.raw(
+          "coalesce((class.capacity - booked), class.capacity) != 0"
+        )
+      )
+      .andWhere("teacher_id", "!=", userId);
+
+    if (date && date !== "undefined") {
+      query.where(`class.date`, date);
+    }
+    if (start_time && start_time !== "undefined") {
+      query.where(`class.start_time`, start_time);
+    }
+    if (instructor && instructor !== "undefined") {
+      query.whereILike("users.name", `%${instructor}%`);
+    }
+    if (venue && venue !== "undefined") {
+      query.whereILike("class.venue", `%${venue}%`);
+    }
+    if (title && title !== "undefined") {
+      query.whereILike("class.name", `%${title}%`);
+    }
+    if (type && type !== "undefined" && type !== "all") {
+      query.where("type", type);
+    }
+    if (yogaType && yogaType !== "undefined" && yogaType !== "all") {
+      query.where("yoga.name", yogaType);
+    }
+    if (credit && credit !== 0) {
+      query.where("credit", "<", credit);
+    }
+    if (language && language !== "undefined" && language !== "all") {
+      query.where("language", language);
+    }
+    if (userId) {
+      query.whereNotIn("class.id", function () {
+        this.select("class_id as id")
+          .from("student_class")
+          .where("user_id", userId);
+      });
+    }
+
+    return await query.orderBy("class.date", "desc");
+  }
+
+  async getYogaType() {
+    return await this.knex("yoga_type")
+      .select("id", "name")
+      .where("status", "active");
   }
 }

@@ -3,8 +3,10 @@ import { Link } from "react-router-dom";
 import styles from "../css/class.module.css";
 import { motion } from "framer-motion";
 import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
+import { ClassItem } from "../utils/models";
 
-export default function Class(props: any) {
+
+export default function Class(props: ClassItem) {
   const {
     id,
     image,
@@ -17,7 +19,6 @@ export default function Class(props: any) {
     yoga_type,
     class_number,
     credit,
-
   } = props;
 
 

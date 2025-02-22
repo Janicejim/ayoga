@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Form } from "react-bootstrap"; //
+import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-// import regStyles from "../css/Register.module.css";
-import loginStyles from "../css/Login.module.css";
-import { registerAccountThunk } from "../redux/registerAccount/thunk";
+import loginStyles from "../css/login.module.css";
 import { ErrorMessage } from "@hookform/error-message";
+import { postOrPatchWithMedia } from "../api/api";
+import { loadToken, loginSuccess } from "../redux/auth/actions";
 
 interface FormState {
   name: string;
@@ -28,22 +28,23 @@ export default function RegisterPage() {
 
   const onSubmit = async (data: FormState) => {
     const icon = data.icon[0];
-    let result = await dispatch(
-      registerAccountThunk(
-        data.name,
-        data.email,
-        data.password,
-        data.confirmPw,
-        icon,
-        data.phone
-      )
-    );
-    //@ts-ignore
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("email", data.email);
+    formData.append("password", data.password);
+    formData.append("confirmPw", data.confirmPw);
+    formData.append("phone", data.phone);
+    formData.append("icon", icon);
+    const result = await postOrPatchWithMedia("POST", "api/auth/register", formData)
     if (result.success) {
+      localStorage.setItem("token", result.token);
+      localStorage.setItem("name", result.name);
+      localStorage.setItem("icon", result.icon);
+      dispatch(loginSuccess(result.name, result.icon));
+      dispatch(loadToken(result.token));
       window.location.href = "/"
     } else {
       reset()
-      //@ts-ignore
       setError(result.msg.toUpperCase());
       setTimeout(() => { setError("") }, 2000)
 
@@ -83,7 +84,7 @@ export default function RegisterPage() {
                       message: "Name must have at least 2 characters",
                     },
                   })}
-                // onChange={handleChange}
+
                 />
                 <div className={loginStyles.error}>
                   {" "}

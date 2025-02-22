@@ -1,3 +1,4 @@
+@import "./css-variable.css";
 
 .icon{
   width: 3rem;
@@ -9,11 +10,64 @@
 .star {
     color:  var(--primary-color) !important;
     display: flex;
-    margin-bottom: 2rem;
+    margin: 2rem;
+    height:2rem
   }
+
 .createdDate{
   display: flex;
    justify-content: flex-end;
     color: gray;
     margin-top:2rem
+}
+.flex{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.front{
+  font-family: var(--primary-font);
+  margin-top: 2rem;
+}
+.feedbackContainer{
+  background-color: rgba(208, 179, 234, 0.351);
+  font-size: 1.5rem;
+  margin:1rem 0rem 1rem 0rem
+}
+.textAreaStyle{
+  width:100%;
+  height:10rem
+}
+
+.submitBtn {
+  color: white !important;
+  font-weight: 600 !important;
+  font-family: var(--primary-font);
+  border-radius: 0 !important;
+  letter-spacing: 0.08rem;
+  -webkit-font-smoothing: antialiased;
+  cursor: pointer;
+  display: inline-block;
+  font-size: calc(0.27548vw + 12.71074px) !important;
+  text-decoration: none;
+  transition: background-color 0.3s, border-color 0.3s;
+  transition-property: background-color, border-color;
+  transition-duration: 0.3s, 0.3s;
+  transition-timing-function: ease, ease;
+  transition-delay: 0s, 0s;
+  background-color: var(--primary-color) !important;
+  padding: calc(0.34435vw + 13.38843px) calc(0.34435vw + 90px) !important;
+  margin: 30px 0 30px !important;
+}
+
+.submitBtn:hover {
+  background-color: var(--btn-hover-primary-color) !important;
+  cursor: pointer;
+}
+.sectionTitle{
+  font-family: var(--primary-font);
+  font-size: 30px;
+  margin: 20px 0;
+  color: var(--text-color);
+  text-transform: capitalize;
 }

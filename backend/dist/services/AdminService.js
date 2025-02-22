@@ -122,20 +122,97 @@ var AdminService = /** @class */ (function () {
             });
         });
     };
-    AdminService.prototype.getUnCommentStudentSummary = function () {
+    AdminService.prototype.getTransactions = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.knex.raw("\n        select student_class.class_id,class.name as class_name,users_info.name as student_name,email,class.date from student_class join users on users.id=student_class.user_id join class on student_class.class_id=class.id left join student_comment on student_comment.class_id =student_class.class_id join (select id,name from users) as users_info on users_info.id=student_class.user_id  where date<current_date\n        and comment isnull order by date asc\n        \n    ")];
+                    case 0: return [4 /*yield*/, this.knex.raw("select type,id,user_id,class_id,credit,transaction_id,refund_related_id ,updated_at from user_credit_record where type !='top-up' and type !='withdrawal' order by created_at desc")];
                     case 1: return [2 /*return*/, (_a.sent()).rows];
                 }
             });
         });
     };
-    AdminService.prototype.getCompanyFinancialData = function () {
+    AdminService.prototype.getTransactionByKeyword = function (keyword) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.knex.raw("  select type,id,user_id,class_id,credit,transaction_id,refund_related_id ,updated_at from user_credit_record where type !='top-up' and type !='withdrawal'  and transaction_id=? or refund_related_id =? order by created_at desc", [keyword, keyword])];
+                    case 1: return [2 /*return*/, (_a.sent()).rows];
+                }
+            });
+        });
+    };
+    AdminService.prototype.checkCreditRecords = function (classId, userId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var useCreditRecord, earnCreditRecord;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.knex.raw("select id,transaction_id,credit,type,class_id,user_id from user_credit_record where class_id=? and user_id=? and type='use'", [classId, userId])];
+                    case 1:
+                        useCreditRecord = (_a.sent()).rows;
+                        return [4 /*yield*/, this.knex.raw("select id,transaction_id,credit,type,class_id,user_id from user_credit_record where class_id=? and type='earn'", [classId])];
+                    case 2:
+                        earnCreditRecord = (_a.sent()).rows;
+                        return [2 /*return*/, { useCreditRecord: useCreditRecord[0], earnCreditRecord: earnCreditRecord[0] }];
+                }
+            });
+        });
+    };
+    AdminService.prototype.refundCaseHandle = function (records, classId, userId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var txn, timestamp, _i, records_1, record, refundRecord, transaction_id, e_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.knex.transaction()];
+                    case 1:
+                        txn = _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 10, , 12]);
+                        timestamp = Date.now();
+                        _i = 0, records_1 = records;
+                        _a.label = 3;
+                    case 3:
+                        if (!(_i < records_1.length)) return [3 /*break*/, 7];
+                        record = records_1[_i];
+                        return [4 /*yield*/, txn("user_credit_record").insert({
+                                type: record.type == "earn" ? "student-refund" : "refund",
+                                credit: -record.credit,
+                                class_id: record.class_id,
+                                user_id: record.user_id,
+                                refund_related_id: record.transaction_id
+                            }).returning("id")];
+                    case 4:
+                        refundRecord = _a.sent();
+                        transaction_id = "rf".concat(timestamp, "-").concat(refundRecord[0].id).split("-").join("");
+                        return [4 /*yield*/, txn("user_credit_record").update({ transaction_id: transaction_id }).where("id", refundRecord[0].id)];
+                    case 5:
+                        _a.sent();
+                        _a.label = 6;
+                    case 6:
+                        _i++;
+                        return [3 /*break*/, 3];
+                    case 7: 
+                    // update student_class record to inactive
+                    return [4 /*yield*/, txn("student_class").update({ status: "inactive" })
+                            .where("class_id", classId)
+                            .andWhere("user_id", userId)];
+                    case 8:
+                        // update student_class record to inactive
+                        _a.sent();
+                        return [4 /*yield*/, txn.commit()];
+                    case 9:
+                        _a.sent();
+                        return [3 /*break*/, 12];
+                    case 10:
+                        e_1 = _a.sent();
+                        console.log(e_1);
+                        return [4 /*yield*/, txn.rollback()];
+                    case 11:
+                        _a.sent();
+                        return [3 /*break*/, 12];
+                    case 12: return [2 /*return*/];
+                }
             });
         });
     };

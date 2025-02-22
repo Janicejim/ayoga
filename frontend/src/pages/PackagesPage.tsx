@@ -1,27 +1,28 @@
-import { useSelector, useDispatch } from "react-redux";
-import { IRootState } from "../redux/store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
-import { getPackageInfo } from "../redux/packages/thunks";
-import styles from "../css/Package.module.css";
-import { loadStripe } from "@stripe/stripe-js";
-import { fetchStripe } from "../api/package";
-export default function PackagesPage() {
-  const dispatch = useDispatch();
-  const { packageItems } = useSelector((state: IRootState) => state.packages);
 
+import styles from "../css/package.module.css";
+import { loadStripe } from "@stripe/stripe-js";
+import { getData, postPatchOrDeleteWithQueryOnly } from "../api/api";
+export default function PackagesPage() {
+
+  const [packageItems, setPackageItems] = useState<any[]>([])
+
+  async function getPackageInfo() {
+    const result = await getData(`api/credit/package`);
+    if (result.success) {
+      setPackageItems(result.data)
+    }
+  }
   useEffect(() => {
-    const result = async () => {
-      dispatch(getPackageInfo());
-    };
-    result();
-  }, [dispatch]);
+    getPackageInfo()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const makePayment = async (id: number) => {
     const stripe = await loadStripe(process.env.REACT_APP_STRIPE_API_KEY!);
 
-    let res = await fetchStripe(id);
-    let stripeSession = await res.json();
+    let stripeSession = await postPatchOrDeleteWithQueryOnly("POST", `api/credit/stripe?package_id=${id}`);
     let result = await stripe!.redirectToCheckout({
       sessionId: stripeSession.session_id,
     });
@@ -42,7 +43,7 @@ export default function PackagesPage() {
       <div>
         <Container>
           <Row>
-            {packageItems &&
+            {packageItems.length > 0 &&
               packageItems.map((item, itemIndex) => {
                 return (
                   <Col key={itemIndex}>

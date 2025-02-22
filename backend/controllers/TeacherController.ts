@@ -1,20 +1,27 @@
 import { TeacherService } from "../services/TeacherService";
 import { Request, Response } from "express";
-import { form } from "../utils/formidable";
+import { createFormidableS3Form } from "../utils/formidable";
 export class TeacherController {
   constructor(private teacherService: TeacherService) { }
 
   applyTeacherRole = async (req: Request, res: Response) => {
+    const form = createFormidableS3Form()
     form.parse(req, async (err, fields, files) => {
       try {
         let user_id = req.user.id;
         let { sex, introduction, newest_qualification } = fields;
-        //@ts-ignore
-        let photo = files.photo.newFilename;
-        //@ts-ignore
-        let id_photo = files.id_photo.newFilename;
-        //@ts-ignore
-        let cert = files.cert.newFilename;
+
+
+
+
+        let photo = Array.isArray(files.photo) ? files.photo[0].newFilename : files.photo.newFilename;
+
+
+        let id_photo = Array.isArray(files.id_photo) ? files.id_photo[0].newFilename : files.id_photo.newFilename;
+
+
+        let cert = Array.isArray(files.cert) ? files.cert[0].newFilename : files.cert.newFilename;
+
         if (
           !sex ||
           !introduction ||
@@ -37,7 +44,7 @@ export class TeacherController {
         );
         res.json({
           success: true,
-          msg: "Your request is sent,our admin will handle your request as soon as possible.",
+          msg: "Your request is sent,our admin will handle your request as soon as possible. Result will send by email!",
         });
       } catch (error) {
         console.log(error);
@@ -50,6 +57,7 @@ export class TeacherController {
   };
 
   createClass = async (req: Request, res: Response) => {
+    const form = createFormidableS3Form()
     form.parse(req, async (err, fields, files) => {
       try {
         let teacher_id = req.user.id;
@@ -66,8 +74,8 @@ export class TeacherController {
           yoga_type,
           introduction,
         } = fields;
-        //@ts-ignore
-        const file = files.image.newFilename;
+
+        const file = Array.isArray(files.image) ? files.image[0].newFilename : files.image.newFilename;
 
         if (+capacity < 0 && +capacity > 20) {
           res.json({
@@ -187,6 +195,7 @@ export class TeacherController {
 
 
   editClassInfo = (req: Request, res: Response) => {
+    const form = createFormidableS3Form()
     form.parse(req, async (err, fields, files) => {
       try {
         let { class_id } = req.query;
@@ -218,8 +227,7 @@ export class TeacherController {
         let image = "";
 
         if (files.hasOwnProperty("image")) {
-          //@ts-ignore
-          image = files.image.newFilename;
+          image = Array.isArray(files.image) ? files.image[0].newFilename : files.image.newFilename;
         }
 
         if (

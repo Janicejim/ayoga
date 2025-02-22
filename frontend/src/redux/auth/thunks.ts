@@ -1,13 +1,10 @@
 import { Dispatch } from "redux";
-import {
-  fetchLogin
-} from "../../api/auth";
 import { IAuthAction, loginSuccess, loadToken, logout } from "./actions";
 import { CallHistoryMethodAction } from "connected-react-router";
+import { postOrPatchTextForm } from "../../api/api";
 export function loginThunk(username: string, password: string) {
   return async (dispatch: Dispatch<IAuthAction | CallHistoryMethodAction>) => {
-    const res = await fetchLogin(username, password);
-    const result = await res.json();
+    const result = await postOrPatchTextForm("POST", "api/auth/login", { email: username, password })
     if (result.success) {
       localStorage.setItem("token", result.token);
       dispatch(loginSuccess(result.name, result.icon));

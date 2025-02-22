@@ -1,6 +1,7 @@
 import { Chart } from 'primereact/chart';
-import React, { useEffect, useState } from 'react'
-import { fetchTeacherRevenue } from '../api/teacher';
+import { useEffect, useState } from 'react'
+import { showMsgAlert } from '../utils/alert';
+import { getData } from '../api/api';
 
 export default function TeacherRevenuePage() {
     const [chartOptions, setChartOptions] = useState({});
@@ -14,10 +15,10 @@ export default function TeacherRevenuePage() {
         const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
         const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
-        let result = await fetchTeacherRevenue()
+        let result = await getData(`api/teacher/revenue`)
 
         if (!result.success) {
-            return alert("system error")
+            return showMsgAlert("error", "system error")
         }
 
         let yearLabels = []
@@ -114,8 +115,7 @@ export default function TeacherRevenuePage() {
 
     useEffect(() => {
         getTeacherRevenue()
-
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 

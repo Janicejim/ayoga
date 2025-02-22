@@ -17,11 +17,15 @@ declare global {
 const API_VERSION = "/api";
 import { routes } from "./routes";
 
-app.use(API_VERSION, routes); // localhost:8080/api
-app.use(express.static("uploads"));
-app.use(express.static("image"));
-app.use(express.static("poses"));
+app.use(API_VERSION, routes);
 app.use(express.static("model"));
+
+/* local use:
+ app.use(express.static("uploads"));
+ app.use(express.static("image"));
+ app.use(express.static("poses"));
+ */
+
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {

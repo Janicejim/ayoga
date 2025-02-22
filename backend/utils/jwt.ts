@@ -1,4 +1,6 @@
+import dotenv from 'dotenv'
+dotenv.config()
 export default {
-    jwtSecret: "QGYJDBKADSNLNFKHBWWD",
+    jwtSecret: process.env.JWT_SECRET,
     jwtSession: false
 }

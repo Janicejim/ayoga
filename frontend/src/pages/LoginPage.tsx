@@ -2,7 +2,7 @@ import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { loginThunk } from "../redux/auth/thunks";
-import loginStyles from "../css/Login.module.css";
+import loginStyles from "../css/login.module.css";
 
 import { Link } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
@@ -24,14 +24,11 @@ export default function LoginPage() {
   const [error, setError] = useState("")
 
   const onSubmit = async (data: FormState) => {
-    let result = await dispatch(loginThunk(data.email, data.password));
-    console.log({ result })
-    //@ts-ignore
+    let result: any = await dispatch(loginThunk(data.email, data.password));
     if (result.success) {
       window.location.href = "/"
     } else {
       reset()
-      //@ts-ignore
       setError(result.msg)
       setTimeout(() => { setError("") }, 2000)
     }
@@ -108,9 +105,9 @@ export default function LoginPage() {
         </div>
         <div className={`row ${loginStyles.acRelatedBtn}`}>
           <div
-            className={`col-lg-12 ${loginStyles.inputContainer} ${loginStyles.signinlink}`}
+            className={`col-lg-12 ${loginStyles.inputContainer} ${loginStyles.signInLink}`}
           >
-            <a className={loginStyles.forgotbutton} href="/register">
+            <a className={loginStyles.forgotButton} href="/register">
               New to AYoga? Sign up
             </a>
             <br />

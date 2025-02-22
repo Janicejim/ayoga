@@ -2,16 +2,9 @@ import { Knex } from "knex";
 import xlsx from "xlsx";
 import { hashPassword } from "../utils/hash";
 import path from "path";
+import { UserInExcel } from "../utils/models";
 
-export interface User {
-  id: number;
-  email: string;
-  name: string;
-  role: string;
-  icon: string;
-  password: string;
-  phone: string;
-}
+
 
 export async function seed(knex: Knex): Promise<void> {
   let txn = await knex.transaction();
@@ -38,7 +31,7 @@ export async function seed(knex: Knex): Promise<void> {
 
     //get all the excel data:
     let dataWorkbook = xlsx.readFile(path.resolve("init_data.xlsx"));
-    let userData: User[] = xlsx.utils.sheet_to_json(
+    let userData: UserInExcel[] = xlsx.utils.sheet_to_json(
       dataWorkbook.Sheets["users"]
     );
     let yogaTypeData = xlsx.utils.sheet_to_json(
@@ -73,53 +66,23 @@ export async function seed(knex: Knex): Promise<void> {
       dataWorkbook.Sheets["student_comment"]
     );
 
-    // Inserts users
+    // Inserts data
 
     for (let user of userData) {
       user["password"] = await hashPassword(user.password);
     }
-
     await txn("users").insert(userData);
-
-    // Inserts yoga_type
-
     await txn("yoga_type").insert(yogaTypeData);
-
-    // Inserts class
-
     await txn("class").insert(classData);
-    // Inserts student_class
-
     await txn("student_class").insert(studentClassData);
-    // Inserts class_notification
-    // Inserts packages
     await txn("packages").insert(packages);
-    // Inserts bank
     await txn("bank").insert(bank);
-
-    // Inserts user_credit_record
     await txn("user_credit_record").insert(user_credit_record);
-    // Inserts target_area
-
     await txn("target_area").insert(targetAreaData);
-
-    // Inserts pose
-
     await txn("pose").insert(poseData);
-
-    // Inserts bookmark
-
     await txn("bookmark").insert(bookmarkData);
-
-
-    // Inserts teacher_info
     await txn("teacher_info").insert(teacherInfoData);
-
-
-    // Inserts student_comment
-
     await txn("student_comment").insert(studentCommentData);
-
     await txn.commit();
   } catch (e) {
     console.log(e);

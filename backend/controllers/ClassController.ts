@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 import {
-  ResultClassAvailability,
   ClassService,
 } from "../services/ClassService";
-
+import { Bearer } from "permit";
+import jwt from "../utils/jwt";
+import jwtSimple from "jwt-simple";
+import { ResultClassAvailability } from "../utils/models";
 export class ClassController {
   constructor(private classService: ClassService) { }
 
@@ -153,7 +155,7 @@ export class ClassController {
       const userId = req.user.id;
       const targetClassId = parseInt(req.params.classId);
 
-      // Check it is your own class or not
+      // Check current user is creator or not:
       const checkIsYoursClass = await this.classService.checkIsCreatorOfClass(
         targetClassId,
         userId
@@ -167,7 +169,7 @@ export class ClassController {
         return;
       }
 
-      // Check whether you have already reserved the class
+      // Check whether user have already reserved the class:
       const checkReserved = await this.classService.checkClassSeatReserved(
         targetClassId,
         userId
@@ -181,7 +183,7 @@ export class ClassController {
         return;
       }
 
-      //Check if the user have enough credit to register
+      //Check if the user have enough credit to book the class:
       const checkCreditLeft = await this.classService.checkUserAndClassCredits(
         targetClassId,
         userId
@@ -197,9 +199,10 @@ export class ClassController {
         return;
       }
 
-      // Check there are seats open
+      // Check there are seats open:
       const checkClassAvailability: ResultClassAvailability =
         await this.classService.checkClassAvailability(targetClassId);
+
       if (
         !(
           checkClassAvailability.classCap > checkClassAvailability.classAttendee
@@ -211,12 +214,12 @@ export class ClassController {
         });
         return;
       }
-      // Reserve req passes all checks
+      // insert reserve record:
       let reserveResult = await this.classService.toReserveClassSeat(
         checkCreditLeft.teacher_id,
         targetClassId,
         userId,
-        parseInt(checkCreditLeft.classCreditRequired)
+        +(checkCreditLeft.classCreditRequired)
       );
 
       if (reserveResult.success) {
@@ -264,7 +267,7 @@ export class ClassController {
         return;
       }
 
-      // Cancel req passes all checks
+      // cancel booking:
       await this.classService.toCancelClassSeat(
         [creditRecordsRelated.useCreditRecord, creditRecordsRelated.earnCreditRecord],
         targetClassId, userId
@@ -359,17 +362,18 @@ export class ClassController {
     try {
       let classId = req.params.classId;
       const userId = req.user.id;
-      let { comment, star } = req.body
+      let { comment, rating } = req.body
 
-      if (!comment || !star) {
+      if (!comment || !rating) {
         res.json({ success: false, msg: "missing comment of star" })
         return
       }
 
 
-      let comments = await this.classService.studentGiveCommentByClassId(+classId, comment, star, userId);
+      let comments = await this.classService.studentGiveCommentByClassId(+classId, comment, rating, userId);
       res.json({
         data: comments,
+        msg: "Give feedback success",
         success: true,
       });
     } catch (error) {
@@ -396,6 +400,75 @@ export class ClassController {
       let comments = await this.classService.studentEditCommentByCommentId(+commentId, comment, star);
       res.json({
         data: comments,
+        success: true,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(401).json({
+        msg: "system error",
+        success: false,
+      });
+    }
+  };
+
+
+  public getClassMySearch = async (req: Request, res: Response) => {
+    try {
+      const {
+        date = "",
+        start_time = "",
+        instructor = "",
+        venue = "",
+        title = "",
+        type = "",
+        yogaType = "",
+        credit = "",
+        language = ""
+      } = req.query || {};;
+
+      const permit = new Bearer({
+        query: "access_token",
+      });
+      const token = permit.check(req);
+      let payload;
+      let user_id;
+      if (token !== "null") {
+        payload = jwtSimple.decode(token, jwt.jwtSecret!);
+        user_id = payload.userId;
+      } else {
+        user_id = 0;
+      }
+
+      let classesData = await this.classService.getClassMySearch(
+        date as string,
+        start_time as string,
+        instructor as string,
+        venue as string,
+        title as string,
+        type as string,
+        yogaType as string,
+        +credit!,
+        language as string,
+        +user_id
+      );
+      res.json({
+        data: classesData,
+        success: true,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(401).json({
+        msg: "system error",
+        success: false,
+      });
+    }
+  };
+
+  public getYogaType = async (req: Request, res: Response) => {
+    try {
+      let yogaTypeData = await this.classService.getYogaType();
+      res.json({
+        data: yogaTypeData,
         success: true,
       });
     } catch (error) {

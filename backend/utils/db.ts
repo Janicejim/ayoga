@@ -1,5 +1,5 @@
-import Knex from "knex";
+import Knex, { Knex as KnexType } from "knex";
 
 const knexConfig = require("../knexfile");
-const knex: any = Knex(knexConfig[process.env.NODE_ENV || "development"]);
+const knex: KnexType = Knex(knexConfig[process.env.NODE_ENV || "development"]);
 export default knex;

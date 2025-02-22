@@ -45,7 +45,7 @@ var jwt_simple_1 = __importDefault(require("jwt-simple"));
 var jwt_1 = __importDefault(require("./jwt"));
 var AuthRoutes_1 = require("../routers/AuthRoutes");
 var permit = new permit_1.Bearer({
-// query:"access_token"
+    query: "access_token"
 });
 function isLoggedInAPI(req, res, next) {
     return __awaiter(this, void 0, void 0, function () {
@@ -64,14 +64,13 @@ function isLoggedInAPI(req, res, next) {
                     return [4 /*yield*/, AuthRoutes_1.authService.getUserById(userId)];
                 case 1:
                     user = _a.sent();
-                    // console.log({ user })
                     if (!user) {
                         res
                             .status(401)
                             .json({ message: "Permission Denied:Can't find the user" });
                         return [2 /*return*/];
                     }
-                    req.user = user; //declare global in model.ts
+                    req.user = user;
                     next();
                     return [3 /*break*/, 3];
                 case 2:
@@ -112,7 +111,7 @@ function isAdminAPI(req, res, next) {
                         res.status(401).json({ success: false, msg: "Admin only" });
                         return [2 /*return*/];
                     }
-                    req.user = user; //declare global in model.ts
+                    req.user = user;
                     next();
                     return [3 /*break*/, 3];
                 case 2:

@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column, ColumnEvent, ColumnEditorOptions } from "primereact/column";
 import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
-import { fetchEditUserRole, fetchUserList } from "../api/admin";
 import { showMsgAlert } from "../utils/alert";
 import { InputText } from "primereact/inputtext";
 import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
+import { getData, postPatchOrDeleteWithQueryOnly } from "../api/api";
 
 interface User {
   id: number;
@@ -59,7 +59,7 @@ export default function UserListPage() {
   const onCellEditComplete = async (e: ColumnEvent) => {
     let { rowData, newValue, field } = e;
     if (newValue.trim().length > 0) rowData[field] = newValue;
-    let result = await fetchEditUserRole(rowData.id, newValue);
+    let result = await postPatchOrDeleteWithQueryOnly("PATCH", `api/admin/user/role?user_id=${rowData.id}&role=${newValue}`)
     if (result.success) {
       showMsgAlert("success", result.msg);
     } else {
@@ -89,7 +89,15 @@ export default function UserListPage() {
   };
 
   async function getUserList(keyword?: string) {
-    let result = await fetchUserList(keyword);
+    let path;
+
+    if (keyword) {
+      path = `api/admin/users?keyword=${keyword}`;
+    } else {
+      path = `api/admin/users`;
+    }
+    let result = await getData(path);
+
     if (result.success) {
       setUsers(result.data);
     }
@@ -102,6 +110,7 @@ export default function UserListPage() {
 
   useEffect(() => {
     getUserList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

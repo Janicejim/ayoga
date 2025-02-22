@@ -22,7 +22,7 @@ async function sendEmail(toEmail: string, subject: string, content: string) {
             </div>
         `,
     });
-    console.log("finish");
+
   } catch (e) {
     console.log(e);
     return;

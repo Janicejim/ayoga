@@ -125,7 +125,7 @@ var AdminController = /** @class */ (function () {
                         return [4 /*yield*/, this.adminService.updateUserRole(+requestId, "teacher")];
                     case 3:
                         _b.sent();
-                        return [4 /*yield*/, (0, nodemailer_1.default)(user[0].email, "Apply Teacher Role Success", "You request for apply teacher role is success. Please logout and login again to reload the new role setting: ".concat(process.env.FRONTEND_URL, ". Thanks!"))];
+                        return [4 /*yield*/, (0, nodemailer_1.default)(user[0].email, "Ayoga: Apply Teacher Role Success", "You request for apply teacher role is success. Please logout and login again to reload the new role setting: ".concat(process.env.FRONTEND_URL, ". Thanks!"))];
                     case 4:
                         _b.sent();
                         res.json({
@@ -190,79 +190,65 @@ var AdminController = /** @class */ (function () {
                 }
             });
         }); };
-        this.getUnCommentStudentSummary = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+        this.getTransactions = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
             var data, error_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.adminService.getUnCommentStudentSummary()];
+                        _a.trys.push([0, 5, , 6]);
+                        data = void 0;
+                        if (!req.query.hasOwnProperty("keyword")) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.adminService.getTransactionByKeyword(req.query.keyword.toString())];
                     case 1:
                         data = _a.sent();
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, this.adminService.getTransactions()];
+                    case 3:
+                        data = _a.sent();
+                        _a.label = 4;
+                    case 4:
                         res.json({ success: true, data: data });
-                        return [3 /*break*/, 3];
-                    case 2:
+                        return [3 /*break*/, 6];
+                    case 5:
                         error_5 = _a.sent();
                         console.log(error_5);
                         res.status(401).json({
                             msg: "system error",
                             success: false,
                         });
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/];
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
                 }
             });
         }); };
-        this.sendEmailToUnCommentStudent = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-            var data, _i, data_1, record, error_6;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+        //To do:
+        this.refundCaseHandle = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+            var _a, user_id, class_id, creditRecordsRelated, error_6;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.adminService.getUnCommentStudentSummary()];
+                        _b.trys.push([0, 3, , 4]);
+                        _a = req.body, user_id = _a.user_id, class_id = _a.class_id;
+                        return [4 /*yield*/, this.adminService.checkCreditRecords(class_id, user_id)];
                     case 1:
-                        data = _a.sent();
-                        if (data.length > 0) {
-                            for (_i = 0, data_1 = data; _i < data_1.length; _i++) {
-                                record = data_1[_i];
-                                (0, nodemailer_1.default)(record.email, "Give Comment", "Please give your teacher a comment and score.Link:".concat(process.env.FRONTEND_URL, "/class/detail/").concat(record.class_id));
-                            }
-                        }
-                        res.json({ success: true, msg: "Send alert email successfully" });
-                        return [3 /*break*/, 3];
+                        creditRecordsRelated = _b.sent();
+                        return [4 /*yield*/, this.adminService.refundCaseHandle([creditRecordsRelated.useCreditRecord, creditRecordsRelated.earnCreditRecord], class_id, user_id)];
                     case 2:
-                        error_6 = _a.sent();
+                        _b.sent();
+                        res.status(200).json({
+                            matchesGlob: "Refund success",
+                            success: true,
+                        });
+                        return [3 /*break*/, 4];
+                    case 3:
+                        error_6 = _b.sent();
                         console.log(error_6);
                         res.status(401).json({
                             msg: "system error",
                             success: false,
                         });
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        }); };
-        //to do:
-        this.getCompanyFinancialData = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-            var data, error_7;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.adminService.getCompanyFinancialData()];
-                    case 1:
-                        data = _a.sent();
-                        res.json({ success: true, data: data });
-                        return [3 /*break*/, 3];
-                    case 2:
-                        error_7 = _a.sent();
-                        console.log(error_7);
-                        res.status(401).json({
-                            msg: "system error",
-                            success: false,
-                        });
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/];
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
                 }
             });
         }); };

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { fetchTeacherInfoAndStudentComment } from "../api/teacher";
 import OtherClassItems from "../components/OtherClassItem";
 import Comments from "../components/Comments";
 import { Row } from "react-bootstrap";
 import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
+import { getDataNotLogin } from "../api/api";
 
 function TeacherInfoPage() {
   const [teacherInfo, setTeacherInfo] = useState<any>({});
@@ -12,7 +12,7 @@ function TeacherInfoPage() {
   const { id } = useParams<{ id: string }>();
 
   async function getTeacherInfoAndComment() {
-    let result = await fetchTeacherInfoAndStudentComment(+id);
+    let result = await getDataNotLogin(`api/teacher/info?teacher_id=${+id}`)
     setTeacherInfo(result.data.teacherInfo[0]);
     setStudentComment(result.data.comments);
   }

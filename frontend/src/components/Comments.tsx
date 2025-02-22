@@ -8,23 +8,14 @@ import { Row } from 'react-bootstrap';
 import moment from 'moment';
 import commentStyle from "../css/comment.module.css"
 import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
+import { CommentItem } from "../utils/models"
 
-interface Comment {
-    id: number,
-    comment: string,
-    star: number,
-    name: string,
-    icon: string | null,
-    updated_at: string,
-
-}
 interface Props {
-    data: Comment[]
+    data: CommentItem[]
 }
-
 
 export default function Comments(props: Props) {
-    const [comments, setComments] = useState<Comment[]>([]);
+    const [comments, setComments] = useState<CommentItem[]>([]);
 
     useEffect(() => {
 
@@ -33,7 +24,7 @@ export default function Comments(props: Props) {
 
 
 
-    const commentTemplate = (comment: Comment) => {
+    const commentTemplate = (comment: CommentItem) => {
         return (
             <Row key={comment.id} >
 
@@ -75,7 +66,7 @@ export default function Comments(props: Props) {
 
 
 
-    const listTemplate = (comments: Comment[]) => {
+    const listTemplate = (comments: CommentItem[]) => {
         if (!comments || comments.length === 0) return null;
 
         let list = comments.map((comment) => {
@@ -88,7 +79,6 @@ export default function Comments(props: Props) {
     return (
         <div className="card">
             {listTemplate &&
-
                 //@ts-ignore
                 <DataView value={comments} listTemplate={listTemplate} paginator rows={5} />}
 

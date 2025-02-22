@@ -1,15 +1,18 @@
 import { Button, Modal } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
-import styles from "../css/PaymentSuccess.module.css";
+import styles from "../css/paymentSuccess.module.css";
 import { useEffect } from "react";
-import { fetchAddCredit } from "../api/package";
+import { postPatchOrDeleteWithQueryOnly } from "../api/api";
 
 export default function PaymentResult() {
   const { result, id } = useParams<any>();
 
   async function insertPaymentRecord() {
     if (id && result === 'success') {
-      await fetchAddCredit(id, result);
+      if (result === "cancel") {
+        return;
+      }
+      await postPatchOrDeleteWithQueryOnly("POST", `api/credit/record?package_id=${id}`)
     }
   }
   useEffect(() => {
@@ -36,15 +39,12 @@ export default function PaymentResult() {
       </Modal.Body>
 
       <Modal.Footer className={styles.modalFooter}>
-        <Link to="/classes">
+        <Link to="/class/find">
           <Button className={styles.modalButton}>Book a Class</Button>
         </Link>
         <Link to="/transaction">
           <Button className={styles.modalButton}>View Transaction</Button>
         </Link>
-        {/* <Button onClick={() => setShow(false)} className={styles.modalButton}>
-          Continue Purchase
-        </Button> */}
       </Modal.Footer>
     </Modal>
   );

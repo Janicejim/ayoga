@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Form } from "react-bootstrap"; //
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
-import loginStyles from "../css/Login.module.css";
-import { changePassword } from "../api/userInfo";
+import loginStyles from "../css/login.module.css";
+import { showMsgAlert } from "../utils/alert";
+import { postOrPatchTextForm } from "../api/api";
 
 
 interface FormState {
@@ -23,16 +24,12 @@ export default function ChangePassword() {
   const [error, setError] = useState("");
 
   const onSubmit = async (data: FormState) => {
-    console.log({ data })
-    let result = await changePassword(data)
 
-
-    //@ts-ignore
+    let result = await postOrPatchTextForm("PATCH", `api/user/password`, data)
     if (result.success) {
-      alert(result.msg)
+      showMsgAlert("success", result.msg)
     } else {
       reset()
-      //@ts-ignore
       setError(result.msg.toUpperCase());
       setTimeout(() => { setError("") }, 2000)
 

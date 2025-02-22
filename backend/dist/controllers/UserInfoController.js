@@ -37,8 +37,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserInfoController = void 0;
-var formidable_1 = require("../utils/formidable");
 var hash_1 = require("../utils/hash");
+var formidable_1 = require("../utils/formidable");
 var UserInfoController = /** @class */ (function () {
     function UserInfoController(userInfoService) {
         var _this = this;
@@ -67,14 +67,14 @@ var UserInfoController = /** @class */ (function () {
                 }
             });
         }); };
-        this.getBookingInfo = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+        this.getBookedInfo = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
             var user_id, bookingResult, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         user_id = req.user.id;
-                        return [4 /*yield*/, this.userInfoService.getBooking(user_id)];
+                        return [4 /*yield*/, this.userInfoService.getBookedRecord(user_id)];
                     case 1:
                         bookingResult = _a.sent();
                         res.json({ success: true, data: bookingResult });
@@ -196,9 +196,11 @@ var UserInfoController = /** @class */ (function () {
             });
         }); };
         this.changeProfilePic = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+            var form;
             var _this = this;
             return __generator(this, function (_a) {
-                formidable_1.form.parse(req, function (err, fields, files) { return __awaiter(_this, void 0, void 0, function () {
+                form = (0, formidable_1.createFormidableS3Form)();
+                form.parse(req, function (err, fields, files) { return __awaiter(_this, void 0, void 0, function () {
                     var icon, user_id, e_1;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
@@ -206,8 +208,7 @@ var UserInfoController = /** @class */ (function () {
                                 _a.trys.push([0, 2, , 3]);
                                 icon = "";
                                 if (files.hasOwnProperty("icon")) {
-                                    //@ts-ignore
-                                    icon = files.icon.newFilename;
+                                    icon = Array.isArray(files.icon) ? files.icon[0].newFilename : files.icon.newFilename;
                                 }
                                 else {
                                     res.json({ success: false, msg: "missing file" });
@@ -264,11 +265,11 @@ var UserInfoController = /** @class */ (function () {
             });
         }); };
         this.changePassword = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-            var _a, new_password, confirm_password, old_password, user_id, passwordInDb, checkOldPasswordIsMatch, e_3;
+            var _a, new_password, confirm_password, old_password, user_id, passwordInDb, checkOldPasswordIsMatch, hashedPassword, e_3;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        _b.trys.push([0, 4, , 5]);
+                        _b.trys.push([0, 5, , 6]);
                         _a = req.body, new_password = _a.new_password, confirm_password = _a.confirm_password, old_password = _a.old_password;
                         if (!new_password || !confirm_password || !old_password) {
                             res.json({ success: false, msg: "missing info" });
@@ -289,20 +290,46 @@ var UserInfoController = /** @class */ (function () {
                             res.json({ success: false, msg: "confirm password not match" });
                             return [2 /*return*/];
                         }
-                        return [4 /*yield*/, this.userInfoService.changePassword(user_id, new_password)];
+                        return [4 /*yield*/, (0, hash_1.hashPassword)(new_password)];
                     case 3:
+                        hashedPassword = _b.sent();
+                        return [4 /*yield*/, this.userInfoService.changePassword(user_id, hashedPassword)];
+                    case 4:
                         _b.sent();
                         res.json({
                             success: true,
                             msg: "update success",
                         });
-                        return [3 /*break*/, 5];
-                    case 4:
+                        return [3 /*break*/, 6];
+                    case 5:
                         e_3 = _b.sent();
                         console.log(e_3);
                         res.json({ success: false, msg: "system error" });
-                        return [3 /*break*/, 5];
-                    case 5: return [2 /*return*/];
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        }); };
+        this.getPosesItem = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+            var poseResult, error_7;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.userInfoService.getPosesItems()];
+                    case 1:
+                        poseResult = _a.sent();
+                        res.json({ success: true, data: poseResult });
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_7 = _a.sent();
+                        console.log(error_7);
+                        res.status(401).json({
+                            msg: "system error",
+                            success: false,
+                        });
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
                 }
             });
         }); };

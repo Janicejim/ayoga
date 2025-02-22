@@ -1,11 +1,10 @@
 import moment from "moment";
 import { Modal, Button } from "react-bootstrap";
-import { useSelector } from "react-redux";
-import { IRootState } from "../redux/store";
 import styles from "../css/classDetails.module.css";
 import { ImCancelCircle } from "react-icons/im";
 import { useState } from "react";
 import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
+import { ClassDetails } from "../utils/models";
 
 interface Props {
   closeModal: () => void;
@@ -14,26 +13,24 @@ interface Props {
   confirmationSuccess: Boolean;
   serverMessageWhenConfirming: String;
   isToCancel: Boolean;
+  data: ClassDetails
 }
 
 export function BookingModal(props: Props) {
   const {
-
-    classImage,
-    className,
-    classDate,
-    classStartTime,
-    instructorName,
-    totalCapacity,
+    image,
+    name, date,
+    start_time,
+    teacher_name,
+    capacity,
     credit,
-    availableSeat,
+    available,
     venue,
-  } = useSelector((state: IRootState) => state.classDetails);
+  } = props.data
 
   const [confirmDone, setConfirmDone] = useState<Boolean>(false);
 
   const confirmActions = () => {
-    // console.log("confirmActions called");
     props.confirmToBook();
     setConfirmDone(!confirmDone);
   };
@@ -56,15 +53,14 @@ export function BookingModal(props: Props) {
           <div className="d-flex justify-content-center flex-wrap pt-3">
             <div className={styles.classInfoPic}>
               <div className="classImage">
-                {venue === "Loading" ? (
-                  "Loading"
-                ) : (
-                  <img
-                    src={`${REACT_APP_UPLOAD_IMAGE}/${classImage}`}
-                    width="250"
-                    alt={classImage}
-                  />
-                )}
+                {venue &&
+                  (
+                    <img
+                      src={`${REACT_APP_UPLOAD_IMAGE}/${image}`}
+                      width="250"
+                      alt={image}
+                    />
+                  )}
               </div>
             </div>
             {props.isToCancel ? (
@@ -79,18 +75,18 @@ export function BookingModal(props: Props) {
 
             <div className="">
               <hr />
-              <h3 className={styles.modalNameTopMargin}>{className}</h3>
+              <h3 className={styles.modalNameTopMargin}>{name}</h3>
               <h4 className={styles.dataText}>
-                {classDate !== "Loading" &&
-                  moment(`${classDate}`).format("ddd, Do MMM YYYY") +
+                {date &&
+                  moment(`${date}`).format("ddd, Do MMM YYYY") +
                   ", " +
-                  classStartTime}
+                  start_time}
                 start_time
               </h4>
               <h4 className="">
                 Instructor:{" "}
-                {instructorName.charAt(0).toUpperCase() +
-                  instructorName.slice(1)}
+                {teacher_name.charAt(0).toUpperCase() +
+                  teacher_name.slice(1)}
               </h4>
               {props.isToCancel ? (
                 <h5>Credit to be refunded: {credit}</h5>
@@ -99,9 +95,7 @@ export function BookingModal(props: Props) {
               )}
               <div className="text-muted">
                 Available Seats:{" "}
-                {availableSeat === "Loading"
-                  ? "Loading"
-                  : availableSeat + "/" + totalCapacity}
+                {available && available + "/" + capacity}
               </div>
               <hr />
             </div>

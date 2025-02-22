@@ -43,9 +43,11 @@ var TeacherController = /** @class */ (function () {
         var _this = this;
         this.teacherService = teacherService;
         this.applyTeacherRole = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+            var form;
             var _this = this;
             return __generator(this, function (_a) {
-                formidable_1.form.parse(req, function (err, fields, files) { return __awaiter(_this, void 0, void 0, function () {
+                form = (0, formidable_1.createFormidableS3Form)();
+                form.parse(req, function (err, fields, files) { return __awaiter(_this, void 0, void 0, function () {
                     var user_id, sex, introduction, newest_qualification, photo, id_photo, cert, error_1;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
@@ -53,9 +55,9 @@ var TeacherController = /** @class */ (function () {
                                 _a.trys.push([0, 2, , 3]);
                                 user_id = req.user.id;
                                 sex = fields.sex, introduction = fields.introduction, newest_qualification = fields.newest_qualification;
-                                photo = files.photo.newFilename;
-                                id_photo = files.id_photo.newFilename;
-                                cert = files.cert.newFilename;
+                                photo = Array.isArray(files.photo) ? files.photo[0].newFilename : files.photo.newFilename;
+                                id_photo = Array.isArray(files.id_photo) ? files.id_photo[0].newFilename : files.id_photo.newFilename;
+                                cert = Array.isArray(files.cert) ? files.cert[0].newFilename : files.cert.newFilename;
                                 if (!sex ||
                                     !introduction ||
                                     !newest_qualification ||
@@ -70,7 +72,7 @@ var TeacherController = /** @class */ (function () {
                                 _a.sent();
                                 res.json({
                                     success: true,
-                                    msg: "Your request is sent,our admin will handle your request as soon as possible.",
+                                    msg: "Your request is sent,our admin will handle your request as soon as possible. Result will send by email!",
                                 });
                                 return [3 /*break*/, 3];
                             case 2:
@@ -89,9 +91,11 @@ var TeacherController = /** @class */ (function () {
             });
         }); };
         this.createClass = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+            var form;
             var _this = this;
             return __generator(this, function (_a) {
-                formidable_1.form.parse(req, function (err, fields, files) { return __awaiter(_this, void 0, void 0, function () {
+                form = (0, formidable_1.createFormidableS3Form)();
+                form.parse(req, function (err, fields, files) { return __awaiter(_this, void 0, void 0, function () {
                     var teacher_id, name_1, capacity, language, credit, date, start_time, end_time, type, yoga_type, introduction, file, venue, venue_point_lat, venue_point_lng, e_1;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
@@ -99,7 +103,7 @@ var TeacherController = /** @class */ (function () {
                                 _a.trys.push([0, 2, , 3]);
                                 teacher_id = req.user.id;
                                 name_1 = fields.name, capacity = fields.capacity, language = fields.language, credit = fields.credit, date = fields.date, start_time = fields.start_time, end_time = fields.end_time, type = fields.type, yoga_type = fields.yoga_type, introduction = fields.introduction;
-                                file = files.image.newFilename;
+                                file = Array.isArray(files.image) ? files.image[0].newFilename : files.image.newFilename;
                                 if (+capacity < 0 && +capacity > 20) {
                                     res.json({
                                         success: false,
@@ -220,7 +224,8 @@ var TeacherController = /** @class */ (function () {
             });
         }); };
         this.editClassInfo = function (req, res) {
-            formidable_1.form.parse(req, function (err, fields, files) { return __awaiter(_this, void 0, void 0, function () {
+            var form = (0, formidable_1.createFormidableS3Form)();
+            form.parse(req, function (err, fields, files) { return __awaiter(_this, void 0, void 0, function () {
                 var class_id, result, name_2, capacity, language, credit, date, start_time, end_time, type, yoga_type, introduction, image, venue, venue_point_lat, venue_point_lng, error_4;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
@@ -241,8 +246,7 @@ var TeacherController = /** @class */ (function () {
                             name_2 = fields.name, capacity = fields.capacity, language = fields.language, credit = fields.credit, date = fields.date, start_time = fields.start_time, end_time = fields.end_time, type = fields.type, yoga_type = fields.yoga_type, introduction = fields.introduction;
                             image = "";
                             if (files.hasOwnProperty("image")) {
-                                //@ts-ignore
-                                image = files.image.newFilename;
+                                image = Array.isArray(files.image) ? files.image[0].newFilename : files.image.newFilename;
                             }
                             if (!name_2 ||
                                 !date ||

@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { Redirect, Route, RouteProps } from "react-router";
+import { Redirect, Route, RouteComponentProps, RouteProps } from "react-router";
 import { IRootState } from "../redux/store";
 
 export default function PrivateRoute({ component, ...rest }: RouteProps) {
@@ -11,13 +11,13 @@ export default function PrivateRoute({ component, ...rest }: RouteProps) {
     return null;
   }
 
-  let render: (props: any) => JSX.Element;
+  let render: (props: RouteComponentProps) => JSX.Element;
 
   // Main Logic
   if (isAuthenticated) {
-    render = (props: any) => <Component {...props}></Component>;
+    render = (props: RouteComponentProps) => <Component {...props}></Component>;
   } else {
-    render = (props: any) => (
+    render = (props: RouteComponentProps) => (
       <Redirect
         to={{
           pathname: "/login",
@@ -29,8 +29,6 @@ export default function PrivateRoute({ component, ...rest }: RouteProps) {
   //
   return (
     <Route {...rest} render={render} />
-    // <div>
-    //     PrivateRoute {String(isAuthenticated)}
-    // </div>
+
   );
 }

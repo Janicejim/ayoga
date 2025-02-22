@@ -111,62 +111,38 @@ function seed(knex) {
                 case 10: return [4 /*yield*/, txn("users").insert(userData)];
                 case 11:
                     _d.sent();
-                    // Inserts yoga_type
                     return [4 /*yield*/, txn("yoga_type").insert(yogaTypeData)];
                 case 12:
-                    // Inserts yoga_type
                     _d.sent();
-                    // Inserts class
                     return [4 /*yield*/, txn("class").insert(classData)];
                 case 13:
-                    // Inserts class
                     _d.sent();
-                    // Inserts student_class
                     return [4 /*yield*/, txn("student_class").insert(studentClassData)];
                 case 14:
-                    // Inserts student_class
                     _d.sent();
-                    // Inserts class_notification
-                    // Inserts packages
                     return [4 /*yield*/, txn("packages").insert(packages)];
                 case 15:
-                    // Inserts class_notification
-                    // Inserts packages
                     _d.sent();
-                    // Inserts bank
                     return [4 /*yield*/, txn("bank").insert(bank)];
                 case 16:
-                    // Inserts bank
                     _d.sent();
-                    // Inserts user_credit_record
                     return [4 /*yield*/, txn("user_credit_record").insert(user_credit_record)];
                 case 17:
-                    // Inserts user_credit_record
                     _d.sent();
-                    // Inserts target_area
                     return [4 /*yield*/, txn("target_area").insert(targetAreaData)];
                 case 18:
-                    // Inserts target_area
                     _d.sent();
-                    // Inserts pose
                     return [4 /*yield*/, txn("pose").insert(poseData)];
                 case 19:
-                    // Inserts pose
                     _d.sent();
-                    // Inserts bookmark
                     return [4 /*yield*/, txn("bookmark").insert(bookmarkData)];
                 case 20:
-                    // Inserts bookmark
                     _d.sent();
-                    // Inserts teacher_info
                     return [4 /*yield*/, txn("teacher_info").insert(teacherInfoData)];
                 case 21:
-                    // Inserts teacher_info
                     _d.sent();
-                    // Inserts student_comment
                     return [4 /*yield*/, txn("student_comment").insert(studentCommentData)];
                 case 22:
-                    // Inserts student_comment
                     _d.sent();
                     return [4 /*yield*/, txn.commit()];
                 case 23:
