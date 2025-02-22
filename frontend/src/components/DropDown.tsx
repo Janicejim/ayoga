@@ -1,5 +1,5 @@
 import { Dropdown, DropdownButton } from "react-bootstrap";
-import AI_gameStyles from "../css/aiGame.module.css";
+import AI_gameStyles from "../css/ai_game.module.css";
 import { convertToTitleCase } from "../utils/convertTitle";
 import { useState } from "react";
 import { DropDownInfo } from "../utils/models";
