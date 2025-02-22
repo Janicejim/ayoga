@@ -1,4 +1,4 @@
-import styles from "../css/classDetails.module.css";
+import styles from "../css/class_details.module.css";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import { useEffect, useState } from "react";

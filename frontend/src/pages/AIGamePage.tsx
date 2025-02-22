@@ -4,7 +4,7 @@ import * as poseDetection from "@tensorflow-models/pose-detection";
 import * as tf from "@tensorflow/tfjs";
 import { Button } from "react-bootstrap";
 import { DropDown } from "../components/DropDown";
-import AI_gameStyles from "../css/aiGame.module.css";
+import AI_gameStyles from "../css/ai_game.module.css";
 import { convertToTitleCase } from "../utils/convertTitle";
 import { REACT_APP_API_SERVER, REACT_APP_UPLOAD_IMAGE } from "../utils/config";
 import { getData } from "../api/api";

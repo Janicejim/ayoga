@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Button, Form, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import styles from "../css/findClasses.module.css";
+import styles from "../css/find_classes.module.css";
 import Class from "../components/Class";
 import { getData, getDataNotLogin } from "../api/api";
 import { ClassItem } from "../utils/models";

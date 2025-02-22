@@ -2,7 +2,7 @@ import { Nav, Navbar } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import { IRootState } from "../redux/store";
 import { changeIsTeacherMode, logout } from "../redux/auth/actions";
-import styles from "../css/yogaNavBar.module.css";
+import styles from "../css/navbar.module.css";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { InputSwitch, InputSwitchChangeEvent } from "primereact/inputswitch";

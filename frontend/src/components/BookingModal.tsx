@@ -1,6 +1,6 @@
 import moment from "moment";
 import { Modal, Button } from "react-bootstrap";
-import styles from "../css/classDetails.module.css";
+import styles from "../css/class_details.module.css";
 import { ImCancelCircle } from "react-icons/im";
 import { useState } from "react";
 import { REACT_APP_UPLOAD_IMAGE } from "../utils/config";
